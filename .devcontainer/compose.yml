@@ -3,13 +3,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
+    init: true
     volumes:
       - ../:/workspace:cached
       - node_modules:/workspace/node_modules
 
     command: sleep infinity
-
+    env_file:
+      - ../.config/docker.env
+    ports:
+      - "3000:3000"
     networks:
       - internal_network
       - external_network
@@ -31,10 +34,9 @@ services:
     image: postgres:15-alpine
     networks:
       - internal_network
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: misskey
+
+    env_file:
+      - ../.config/docker.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
