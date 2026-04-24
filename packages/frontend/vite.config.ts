@@ -109,6 +109,11 @@ export function getConfig(): UserConfig {
 			headers: { // なんか効かない
 				'X-Frame-Options': 'DENY',
 			},
+			watch: {
+				usePolling: true,
+				interval: 1000,
+				ignored: ['!**/packages/frontend-shared/**']
+			}
 		},
 
 		plugins: [

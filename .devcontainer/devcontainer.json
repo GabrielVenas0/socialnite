@@ -1,6 +1,7 @@
 {
 	"name": "Misskey",
 	"dockerComposeFile": "compose.yml",
+	"remoteUser": "root",
 	"service": "app",
 	"workspaceFolder": "/workspace",
 	"features": {

@@ -45,6 +45,7 @@ const languages = [
 ];
 
 const primaries = {
+	'pt': 'PT',
 	'en': 'US',
 	'ja': 'JP',
 	'zh': 'CN',
@@ -79,10 +80,10 @@ export function build() {
 			switch (k) {
 				case 'ja-JP': return v;
 				case 'ja-KS':
-				case 'en-US': return merge(locales['ja-JP'], v);
+				case 'pt-PT': return merge(locales['ja-JP'], v);
 				default: return merge(
+					locales['pt-PT'],
 					locales['ja-JP'],
-					locales['en-US'],
 					locales[`${lang}-${primaries[lang]}`] ?? {},
 					v
 				);
