@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  DATABASE_URL: postgres://niters:dim29@Acn842hj!@db:5432/socialnite
+  POSTGRES_DB: socialnite
+  POSTGRES_PASSWORD: dim29@Acn842hj!
+  POSTGRES_USER: niters
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: db-config-docker-env
+  name: config-docker-env
