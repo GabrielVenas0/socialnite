@@ -1,44 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\Users\ndfu\Documents\kompose\kompose.exe convert -f docker-compose.yml
-    kompose.version: 1.38.0 (a8f5d1cbd)
-    keel.sh/policy: force
-    keel.sh/trigger: poll
-    keel.sh/pollSchedule: "@every 1m"
-  labels:
-    io.kompose.service: redis
   name: redis
+  namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: redis
+      app: redis
   strategy:
     type: Recreate
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\Users\ndfu\Documents\kompose\kompose.exe convert -f docker-compose.yml
-        kompose.version: 1.38.0 (a8f5d1cbd)
       labels:
-        io.kompose.service: redis
+        app: redis
     spec:
       containers:
-        - image: redis:7-alpine
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
           livenessProbe:
             exec:
               command:
-                - redis-cli ping
+                - redis-cli
+                - ping
             failureThreshold: 20
             periodSeconds: 5
-          name: redis
           volumeMounts:
             - mountPath: /data
-              name: redis-claim0
+              name: redis-data-volume
       restartPolicy: Always
       volumes:
-        - name: redis-claim0
+        - name: redis-data-volume
           persistentVolumeClaim:
-            claimName: redis-claim0
+            claimName: redis-data-claim

@@ -20,6 +20,30 @@ spec:
     spec:
       imagePullSecrets:
         - name: docker-cred
+
+      volumes:
+        - name: web-claim0
+          persistentVolumeClaim:
+            claimName: web-claim0
+        - name: shared-config
+          emptyDir: {}
+        - name: template-volume
+          configMap:
+            name: default-template
+
+      initContainers:
+        - name: config-builder
+          image: alpine:latest
+          command: ['sh', '-c', 'apk add --no-cache gettext && envsubst < /tmp/template/default.yml.template > /shared/default.yml']
+          envFrom:
+            - secretRef:
+                name: nite-secrets
+          volumeMounts:
+            - name: template-volume
+              mountPath: /tmp/template
+            - name: shared-config
+              mountPath: /shared
+
       containers:
         - name: web
           image: carlosramirez0/rede-social-nite:latest
@@ -27,10 +51,10 @@ spec:
             - containerPort: 3000
               protocol: TCP
           volumeMounts:
-            - mountPath: /misskey/files
-              name: web-claim0
+            - name: web-claim0
+              mountPath: /misskey/files
+            - name: shared-config
+              mountPath: /misskey/.config/default.yml
+              subPath: default.yml
+
       restartPolicy: Always
-      volumes:
-        - name: web-claim0
-          persistentVolumeClaim:
-            claimName: web-claim0

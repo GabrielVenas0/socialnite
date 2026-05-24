@@ -30,10 +30,14 @@ spec:
         io.kompose.service: db
     spec:
       containers:
-        - envFrom:
-            - configMapRef:
-                name: config-docker-env
+        - name: db
           image: postgres:15-alpine
+
+          # PUXANDO AS VARIÁVEIS DIRETAMENTE DO SECRET
+          envFrom:
+            - secretRef:
+                name: nite-secrets
+
           livenessProbe:
             exec:
               command:
@@ -42,7 +46,6 @@ spec:
                 - pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
             failureThreshold: 20
             periodSeconds: 5
-          name: db
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: db-data-volume
