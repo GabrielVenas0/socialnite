@@ -11,8 +11,6 @@ metadata:
     io.kompose.service: web
   name: web
 spec:
-imagePullSecrets:
-      - name: docker-cred
   replicas: 1
   selector:
     matchLabels:
@@ -27,6 +25,8 @@ imagePullSecrets:
       labels:
         io.kompose.service: web
     spec:
+      imagePullSecrets:
+        - name: docker-cred
       containers:
         - image: socialnite/socialnite:latest
           name: web
