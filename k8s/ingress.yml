@@ -4,13 +4,12 @@ metadata:
   name: socialnite-ingress
   namespace: default
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.tls.certresolver: "le"
     traefik.ingress.kubernetes.io/router.middlewares: default-limit-100m@kubernetescrd
 spec:
   tls:
   - hosts:
     - socialnite.nite.tec.br
-    secretName: socialnite-tls-cert
   rules:
   - host: socialnite.nite.tec.br
     http:
