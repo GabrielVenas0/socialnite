@@ -2,34 +2,27 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: C:\Users\ndfu\Documents\kompose\kompose.exe convert -f docker-compose.yml
-    kompose.version: 1.38.0 (a8f5d1cbd)
     keel.sh/policy: force
     keel.sh/trigger: poll
     keel.sh/pollSchedule: "@every 1m"
-  labels:
-    io.kompose.service: web
   name: web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: web
+      app: web
   strategy:
     type: Recreate
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\Users\ndfu\Documents\kompose\kompose.exe convert -f docker-compose.yml
-        kompose.version: 1.38.0 (a8f5d1cbd)
       labels:
-        io.kompose.service: web
+        app: web
     spec:
       imagePullSecrets:
         - name: docker-cred
       containers:
-        - image: socialnite/socialnite:latest
-          name: web
+        - name: web
+          image: carlosramirez0/rede-social-nite:latest
           ports:
             - containerPort: 3000
               protocol: TCP
