@@ -4,6 +4,9 @@ metadata:
   annotations:
     kompose.cmd: C:\Users\ndfu\Documents\kompose\kompose.exe convert -f docker-compose.yml
     kompose.version: 1.38.0 (a8f5d1cbd)
+    keel.sh/policy: force
+    keel.sh/trigger: poll
+    keel.sh/pollSchedule: "@every 1m"
   labels:
     io.kompose.service: web
   name: web
