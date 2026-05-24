@@ -46,6 +46,13 @@ spec:
 
       containers:
         - name: web
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
           image: carlosramirez0/rede-social-nite:latest
           ports:
             - containerPort: 3000
