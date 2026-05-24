@@ -22,7 +22,7 @@ spec:
         - name: docker-cred
 
       volumes:
-        - name: web-claim0
+        - name: web
           persistentVolumeClaim:
             claimName: web-claim0
         - name: shared-config
@@ -58,7 +58,7 @@ spec:
             - containerPort: 3000
               protocol: TCP
           volumeMounts:
-            - name: web-claim0
+            - name: web
               mountPath: /misskey/files
             - name: shared-config
               mountPath: /misskey/.config/default.yml
