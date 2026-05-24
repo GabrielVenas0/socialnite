@@ -11,6 +11,8 @@ metadata:
     io.kompose.service: web
   name: web
 spec:
+imagePullSecrets:
+      - name: docker-cred
   replicas: 1
   selector:
     matchLabels:
