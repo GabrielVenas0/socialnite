@@ -7,7 +7,6 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     traefik.ingress.kubernetes.io/router.middlewares: default-limit-100m@kubernetescrd
 spec:
-  # Removemos a linha ingressClassName: nginx (se existir no seu arquivo)
   tls:
   - hosts:
     - socialnite.nite.tec.br
