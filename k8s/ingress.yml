@@ -2,24 +2,24 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: socialnite-ingress
+  namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: default-limit-100m@kubernetescrd
 spec:
-  ingressClassName: "nginx"
+  # Removemos a linha ingressClassName: nginx (se existir no seu arquivo)
   tls:
-    - hosts:
-        - socialnite.nite.tec.br
-      secretName: socialnite-tls-cert
+  - hosts:
+    - socialnite.nite.tec.br
+    secretName: socialnite-tls-cert
   rules:
-    - host: socialnite.nite.tec.br
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: web
-                port:
-                  number: 3000
+  - host: socialnite.nite.tec.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web
+            port:
+              number: 3000
