@@ -52,6 +52,8 @@ js-built
 /meili_data
 npm-debug.log
 *.pem
+!public-key.pem
+
 run.bat
 api-docs.json
 *.log

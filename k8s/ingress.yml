@@ -5,7 +5,6 @@ metadata:
   namespace: default
   annotations:
     traefik.ingress.kubernetes.io/router.tls.certresolver: "le"
-    traefik.ingress.kubernetes.io/router.middlewares: default-limit-100m@kubernetescrd
 spec:
   tls:
   - hosts:
