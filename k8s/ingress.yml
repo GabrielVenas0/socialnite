@@ -8,16 +8,16 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: default-limit-100m@kubernetescrd
 spec:
   tls:
-  - hosts:
-    - socialnite.nite.tec.br
+    - hosts:
+        - https://radiologically-nongenerative-lillyana.ngrok-free.dev
   rules:
-  - host: socialnite.nite.tec.br
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web
-            port:
-              number: 3000
+    - host: https://radiologically-nongenerative-lillyana.ngrok-free.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
