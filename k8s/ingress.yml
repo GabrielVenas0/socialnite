@@ -4,8 +4,7 @@ metadata:
   name: socialnite-ingress
   namespace: default
   annotations:
-    traefik.ingress.kubernetes.io/router.tls.certresolver: "le"
-    traefik.ingress.kubernetes.io/router.middlewares: default-limit-100m@kubernetescrd
+    kubernetes.io/ingress.class: traefik
 spec:
   tls:
     - hosts:
