@@ -8,9 +8,9 @@ metadata:
 spec:
   tls:
     - hosts:
-        - https://radiologically-nongenerative-lillyana.ngrok-free.dev
+        - https://socialnite.radiologically-nongenerative-lillyana.ngrok-free.dev
   rules:
-    - host: https://radiologically-nongenerative-lillyana.ngrok-free.dev
+    - host: https://socialnite.radiologically-nongenerative-lillyana.ngrok-free.dev
       http:
         paths:
           - path: /

@@ -5,7 +5,7 @@ metadata:
   namespace: default
 data:
   default.yml.template: |
-    url: https://radiologically-nongenerative-lillyana.ngrok-free.dev
+    url: https://socialnite.radiologically-nongenerative-lillyana.ngrok-free.dev
     port: 3000
 
     db:
