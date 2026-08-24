@@ -36,20 +36,12 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Preparar chave SSH sanitizada
-        env:
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          printf '%s\n' "$SSH_KEY" | tr -d '\r' > deploy_key
-          chmod 600 deploy_key
-          ssh-keygen -y -f deploy_key
-
       - name: Login no Docker Hub e subir containers via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key_path: deploy_key
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
@@ -57,7 +49,3 @@ jobs:
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
             docker image prune -f
-
-      - name: Remover chave temporária
-        if: always()
-        run: rm -f deploy_key
