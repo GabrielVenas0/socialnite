@@ -35,6 +35,14 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Debug - validar formato da chave (temporário)
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_KEY" > /tmp/test_key
+          chmod 600 /tmp/test_key
+          wc -l /tmp/test_key
+          ssh-keygen -y -f /tmp/test_key || echo "CHAVE INVÁLIDA"
       - name: Login no Docker Hub e subir containers via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
