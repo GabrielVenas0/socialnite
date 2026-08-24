@@ -1,0 +1,68 @@
+# docker-compose.prod.yml
+services:
+  traefik:
+    image: traefik:v3.1
+    restart: always
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt:/letsencrypt
+
+  web:
+    image: ${DOCKERHUB_USERNAME}/rede-social-nite:latest
+    restart: always
+    env_file:
+      - .config/docker.env
+    volumes:
+      - ./.config/default.yml:/misskey/.config/default.yml:ro
+      - files:/misskey/files
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nite.rule=Host(`social.nite.tec.br`)"
+      - "traefik.http.routers.nite.entrypoints=websecure"
+      - "traefik.http.routers.nite.tls.certresolver=letsencrypt"
+      - "traefik.http.services.nite.loadbalancer.server.port=3000"
+
+  redis:
+    restart: always
+    image: redis:7-alpine
+    volumes:
+      - ./redis:/data
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 5s
+      retries: 20
+
+  db:
+    restart: always
+    image: postgres:15-alpine
+    env_file:
+      - .config/docker.env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
+      interval: 5s
+      retries: 20
+
+volumes:
+  files:
+  letsencrypt:

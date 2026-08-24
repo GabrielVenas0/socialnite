@@ -1,5 +1,3 @@
-# このconfigは、 dockerでMisskey本体を起動せず、 redisとpostgresql などだけを起動します
-
 services:
   redis:
     restart: always
@@ -26,15 +24,3 @@ services:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
       retries: 20
-
-#  meilisearch:
-#    restart: always
-#    image: getmeili/meilisearch:v1.3.4
-#    environment:
-#      - MEILI_NO_ANALYTICS=true
-#      - MEILI_ENV=production
-#    env_file:
-#      - .config/meilisearch.env
-#    volumes:
-#      - ./meili_data:/meili_data
-

@@ -5,8 +5,8 @@ services:
     links:
       - db
       - redis
-#     - mcaptcha
-#     - meilisearch
+    #     - mcaptcha
+    #     - meilisearch
     depends_on:
       db:
         condition: service_healthy
