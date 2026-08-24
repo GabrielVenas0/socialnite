@@ -36,23 +36,20 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Debug - validar formato da chave (temporário)
+      - name: Preparar chave SSH sanitizada
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          echo "$SSH_KEY" | wc -l
-          echo "$SSH_KEY" | head -1
-          echo "$SSH_KEY" | tail -1
-          echo "$SSH_KEY" > /tmp/test_key
-          chmod 600 /tmp/test_key
-          ssh-keygen -y -f /tmp/test_key || echo "CHAVE INVÁLIDA"
+          printf '%s\n' "$SSH_KEY" | tr -d '\r' > deploy_key
+          chmod 600 deploy_key
+          ssh-keygen -y -f deploy_key
 
       - name: Login no Docker Hub e subir containers via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key_path: deploy_key
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
@@ -60,3 +57,7 @@ jobs:
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
             docker image prune -f
+
+      - name: Remover chave temporária
+        if: always()
+        run: rm -f deploy_key
