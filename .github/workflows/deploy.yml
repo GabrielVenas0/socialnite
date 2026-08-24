@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - prod
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -39,10 +40,13 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          echo "$SSH_KEY" | wc -l
+          echo "$SSH_KEY" | head -1
+          echo "$SSH_KEY" | tail -1
           echo "$SSH_KEY" > /tmp/test_key
           chmod 600 /tmp/test_key
-          wc -l /tmp/test_key
           ssh-keygen -y -f /tmp/test_key || echo "CHAVE INVÁLIDA"
+
       - name: Login no Docker Hub e subir containers via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
