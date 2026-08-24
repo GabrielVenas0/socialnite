@@ -27,7 +27,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rede-social-nite:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/socialnite:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
