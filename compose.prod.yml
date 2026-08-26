@@ -1,7 +1,7 @@
 # docker-compose.prod.yml
 services:
   web:
-    image: ${DOCKERHUB_USERNAME}/rede-social-nite:latest
+    image: ${DOCKERHUB_USERNAME}/socialnite:latest
     restart: always
     env_file:
       - .config/docker.env
