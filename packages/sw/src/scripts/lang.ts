@@ -6,21 +6,21 @@
 /*
  * Language manager for SW
  */
-import { get, set } from 'idb-keyval';
-import { I18n } from '@@/js/i18n.js';
-import type { Locale } from '../../../../locales/index.js';
+import { get, set } from "idb-keyval";
+import { I18n } from "@@/js/i18n.js";
+import type { Locale } from "../../../../locales/index.js";
 
 class SwLang {
 	public cacheName = `mk-cache-${_VERSION_}`;
 
-	public lang: Promise<string> = get('lang').then(async prelang => {
-		if (!prelang) return 'en-US';
+	public lang: Promise<string> = get("lang").then(async (prelang) => {
+		if (!prelang) return "pt-PT";
 		return prelang;
 	});
 
 	public setLang(newLang: string): Promise<I18n<Locale>> {
 		this.lang = Promise.resolve(newLang);
-		set('lang', newLang);
+		set("lang", newLang);
 		return this.fetchLocale();
 	}
 
@@ -39,9 +39,9 @@ class SwLang {
 		if (!localeRes || _DEV_) {
 			localeRes = await fetch(localeUrl);
 			const clone = localeRes.clone();
-			if (!clone.clone().ok) throw new Error('locale fetching error');
+			if (!clone.clone().ok) throw new Error("locale fetching error");
 
-			caches.open(this.cacheName).then(cache => cache.put(localeUrl, clone));
+			caches.open(this.cacheName).then((cache) => cache.put(localeUrl, clone));
 		}
 
 		return new I18n<Locale>(await localeRes.json());

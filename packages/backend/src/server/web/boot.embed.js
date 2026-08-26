@@ -3,95 +3,103 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-'use strict';
+"use strict";
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
 	window.onerror = (e) => {
 		console.error(e);
-		renderError('SOMETHING_HAPPENED');
+		renderError("SOMETHING_HAPPENED");
 	};
 	window.onunhandledrejection = (e) => {
 		console.error(e);
-		renderError('SOMETHING_HAPPENED_IN_PROMISE');
+		renderError("SOMETHING_HAPPENED_IN_PROMISE");
 	};
 
-	let forceError = localStorage.getItem('forceError');
+	let forceError = localStorage.getItem("forceError");
 	if (forceError != null) {
-		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.');
+		renderError(
+			"FORCED_ERROR",
+			"This error is forced by having forceError in local storage.",
+		);
 		return;
 	}
 
 	// パラメータに応じてsplashのスタイルを変更
 	const params = new URLSearchParams(location.search);
-	if (params.has('rounded') && params.get('rounded') === 'false') {
-		document.documentElement.classList.add('norounded');
+	if (params.has("rounded") && params.get("rounded") === "false") {
+		document.documentElement.classList.add("norounded");
 	}
-	if (params.has('border') && params.get('border') === 'false') {
-		document.documentElement.classList.add('noborder');
+	if (params.has("border") && params.get("border") === "false") {
+		document.documentElement.classList.add("noborder");
 	}
 
 	//#region Detect language & fetch translations
 	const supportedLangs = LANGS;
 	/** @type { string } */
-	let lang = localStorage.getItem('lang');
+	let lang = localStorage.getItem("lang");
 	if (lang == null || !supportedLangs.includes(lang)) {
 		if (supportedLangs.includes(navigator.language)) {
 			lang = navigator.language;
 		} else {
-			lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
+			lang = supportedLangs.find((x) => x.split("-")[0] === navigator.language);
 
 			// Fallback
-			if (lang == null) lang = 'en-US';
+			if (lang == null) lang = "pt-PT";
 		}
 	}
 
 	// for https://github.com/misskey-dev/misskey/issues/10202
-	if (lang == null || lang.toString == null || lang.toString() === 'null') {
-		console.error('invalid lang value detected!!!', typeof lang, lang);
-		lang = 'en-US';
+	if (lang == null || lang.toString == null || lang.toString() === "null") {
+		console.error("invalid lang value detected!!!", typeof lang, lang);
+		lang = "pt-PT";
 	}
 	//#endregion
 
 	//#region Script
 	async function importAppScript() {
-		await import(CLIENT_ENTRY ? `/embed_vite/${CLIENT_ENTRY.replace('scripts', lang)}` : '/embed_vite/src/_boot_.ts')
-			.catch(async e => {
-				console.error(e);
-				renderError('APP_IMPORT');
-			});
+		await import(
+			CLIENT_ENTRY
+				? `/embed_vite/${CLIENT_ENTRY.replace("scripts", lang)}`
+				: "/embed_vite/src/_boot_.ts"
+		).catch(async (e) => {
+			console.error(e);
+			renderError("APP_IMPORT");
+		});
 	}
 
 	// タイミングによっては、この時点でDOMの構築が済んでいる場合とそうでない場合とがある
-	if (document.readyState !== 'loading') {
+	if (document.readyState !== "loading") {
 		importAppScript();
 	} else {
-		window.addEventListener('DOMContentLoaded', () => {
+		window.addEventListener("DOMContentLoaded", () => {
 			importAppScript();
 		});
 	}
 	//#endregion
 
 	async function addStyle(styleText) {
-		let css = document.createElement('style');
+		let css = document.createElement("style");
 		css.appendChild(document.createTextNode(styleText));
 		document.head.appendChild(css);
 	}
 
 	async function renderError(code) {
 		// Cannot set property 'innerHTML' of null を回避
-		if (document.readyState === 'loading') {
-			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
+		if (document.readyState === "loading") {
+			await new Promise((resolve) =>
+				window.addEventListener("DOMContentLoaded", resolve),
+			);
 		}
 
 		let messages = null;
-		const bootloaderLocales = localStorage.getItem('bootloaderLocales');
+		const bootloaderLocales = localStorage.getItem("bootloaderLocales");
 		if (bootloaderLocales) {
 			messages = JSON.parse(bootloaderLocales);
 		}
 		if (!messages) {
 			// older version of misskey does not store bootloaderLocales, stores locale as a whole
-			const legacyLocale = localStorage.getItem('locale');
+			const legacyLocale = localStorage.getItem("locale");
 			if (legacyLocale) {
 				const parsed = JSON.parse(legacyLocale);
 				messages = {
@@ -102,8 +110,8 @@
 		}
 		if (!messages) messages = {};
 
-		const title = messages?.title || 'Failed to initialize Misskey';
-		const reload = messages?.reload || 'Reload';
+		const title = messages?.title || "Failed to initialize Misskey";
+		const reload = messages?.reload || "Reload";
 
 		document.body.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg>
 		<div class="message">${title}</div>
