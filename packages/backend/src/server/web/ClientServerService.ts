@@ -185,7 +185,7 @@ export class ClientServerService {
 	@bindThis
 	private async generateCommonPugData(meta: MiMeta) {
 		return {
-			instanceName: meta.name ?? 'Misskey',
+			instanceName: meta.name ?? 'Social Nite',
 			icon: meta.iconUrl,
 			appleTouchIcon: meta.app512IconUrl,
 			themeColor: meta.themeColor,
@@ -398,7 +398,7 @@ export class ClientServerService {
 
 		// OpenSearch XML
 		fastify.get('/opensearch.xml', async (request, reply) => {
-			const name = this.meta.name ?? 'Misskey';
+			const name = this.meta.name ?? 'Social Nite';
 			let content = '';
 			content += '<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">';
 			content += `<ShortName>${name}</ShortName>`;
@@ -419,7 +419,7 @@ export class ClientServerService {
 			return await reply.view('base', {
 				img: this.meta.bannerUrl,
 				url: this.config.url,
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				desc: this.meta.description,
 				...await this.generateCommonPugData(this.meta),
 				...data,
@@ -794,7 +794,7 @@ export class ClientServerService {
 
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				...await this.generateCommonPugData(this.meta),
 				embedCtx: htmlSafeJsonStringify({
 					user: _user,
@@ -820,7 +820,7 @@ export class ClientServerService {
 
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				...await this.generateCommonPugData(this.meta),
 				embedCtx: htmlSafeJsonStringify({
 					note: _note,
@@ -841,7 +841,7 @@ export class ClientServerService {
 
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				...await this.generateCommonPugData(this.meta),
 				embedCtx: htmlSafeJsonStringify({
 					clip: _clip,
@@ -854,7 +854,7 @@ export class ClientServerService {
 
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				...await this.generateCommonPugData(this.meta),
 			});
 		});

@@ -419,7 +419,7 @@ function menuEdit() {
 
 	.instanceIcon {
 		display: inline-block;
-		width: 38px;
+		width: 65px;
 		aspect-ratio: 1;
 		border-radius: 8px;
 	}
@@ -644,7 +644,7 @@ function menuEdit() {
 
 	.instanceIcon {
 		display: inline-block;
-		width: 30px;
+		width: 60px;
 		aspect-ratio: 1;
 		border-radius: 8px;
 	}

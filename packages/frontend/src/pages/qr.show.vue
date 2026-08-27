@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div><MkCondensedLine :minScale="2 / 3">{{ acct }}</MkCondensedLine></div>
 			</div>
 		</div>
-		<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" @click="requestDeviceMotion"/>
-		<img v-else v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo"/>
+		<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="logoImg" alt="Social Nite Logo" @click="requestDeviceMotion"/>
+		<img v-else v-flip :class="$style.logo" :src="logoImg" alt="Social Nite Logo"/>
 	</div>
 </div>
 </template>
@@ -34,7 +34,7 @@ import type { Directive } from 'vue';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
 import { userPage, userName } from '@/filters/user.js';
-import misskeysvg from '/client-assets/misskey.svg';
+import logoImg from '/client-assets/socialnite-logo.png';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
 
