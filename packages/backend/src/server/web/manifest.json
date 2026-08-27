@@ -1,6 +1,6 @@
 {
-	"short_name": "Misskey",
-	"name": "Misskey",
+	"short_name": "Social Nite",
+	"name": "Social Nite",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#313a42",

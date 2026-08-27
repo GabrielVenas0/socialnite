@@ -1,6 +1,6 @@
 <div align="center">
 <a href="https://misskey-hub.net">
-	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="300"/>
+	<img src="./assets/logonite.png" alt="Social Nite logo" style="border-radius:50%" width="300"/>
 </a>
 
 **🌎 **Misskey** is an open source, federated social media platform that's free forever! 🚀**
