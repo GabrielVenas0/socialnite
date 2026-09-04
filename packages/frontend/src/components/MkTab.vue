@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<i v-if="option.icon" :class="[option.icon, $style.icon]"></i>
 			{{ option.label }}
+			<span v-if="option.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 		</button>
 	</div>
 </template>
@@ -23,6 +24,8 @@ export type Tab<T = string> = {
 	key: T;
 	icon?: string;
 	label?: string;
+	/** mostra um ponto de aviso na aba (ex.: pedidos de seguidor pendentes) */
+	indicate?: boolean;
 };
 </script>
 
@@ -72,6 +75,14 @@ function update(key: T['key']) {
 
 	> .icon {
 		margin-right: 6px;
+	}
+
+	> .indicator {
+		margin-left: 5px;
+		font-size: 10px;
+		line-height: 1;
+		color: var(--MI_THEME-indicator);
+		vertical-align: middle;
 	}
 }
 

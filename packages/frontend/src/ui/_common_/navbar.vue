@@ -15,9 +15,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 		<div :class="$style.middle">
-			<MkA v-tooltip.noDelay.right="i18n.ts.timeline" :class="$style.item" :activeClass="$style.active" to="/" exact>
-				<i :class="$style.itemIcon" class="ti ti-home ti-fw" style="viewTransitionName: navbar-homeIcon;"></i><span :class="$style.itemText">{{ i18n.ts.timeline }}</span>
-			</MkA>
+			<button
+				v-for="tl in navbarTimelines"
+				:key="tl"
+				v-tooltip.noDelay.right="i18n.ts._timelines[tl]"
+				class="_button"
+				:class="[$style.item, { [$style.active]: isOnTimeline && store.r.tl.value.src === tl }]"
+				@click="switchBasicTimeline(tl)"
+			>
+				<i class="ti-fw" :class="[$style.itemIcon, basicTimelineIconClass(tl)]"></i><span :class="$style.itemText">{{ i18n.ts._timelines[tl] }}</span>
+			</button>
+			<button v-if="$i != null" v-tooltip.noDelay.right="i18n.ts.lists" class="_button" :class="$style.item" @click="chooseList">
+				<i :class="$style.itemIcon" class="ti ti-list ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.lists }}</span>
+			</button>
+			<button v-if="$i != null" v-tooltip.noDelay.right="i18n.ts.antennas" class="_button" :class="$style.item" @click="chooseAntenna">
+				<i :class="$style.itemIcon" class="ti ti-antenna ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.antennas }}</span>
+			</button>
+			<button v-if="$i != null" v-tooltip.noDelay.right="i18n.ts.channel" class="_button" :class="$style.item" @click="chooseChannel">
+				<i :class="$style.itemIcon" class="ti ti-device-tv ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.channel }}</span>
+			</button>
+			<div :class="$style.divider"></div>
 			<template v-for="item in prefer.r.menu.value">
 				<div v-if="item === '-'" :class="$style.divider"></div>
 				<component
@@ -111,8 +128,20 @@ import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { getAccountMenu } from '@/accounts.js';
 import { $i } from '@/i.js';
+import { availableBasicTimelines, basicTimelineIconClass } from '@/timelines.js';
+import { switchBasicTimeline, chooseList, chooseAntenna, chooseChannel } from '@/utility/timeline-nav.js';
 
 const router = useRouter();
+
+// só destaca a timeline ativa quando estamos de fato na página de timeline
+const isOnTimeline = computed(() => ['/', '/timeline'].includes(router.currentRef.value.route.path));
+
+// Social Nite: a navbar mostra só "início" e "local".
+// - "global": com a federação desligada, mostra o mesmo que "local".
+// - "social": é exatamente a união de "início" e "local", então não traz nota nenhuma
+//   que já não esteja numa das duas.
+const HIDDEN_TIMELINES = ['global', 'social'];
+const navbarTimelines = computed(() => availableBasicTimelines().filter(tl => !HIDDEN_TIMELINES.includes(tl)));
 
 const props = defineProps<{
 	showWidgetButton?: boolean;

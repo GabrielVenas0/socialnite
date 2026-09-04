@@ -286,15 +286,9 @@ export async function mainBoot() {
 		//}
 		//miLocalStorage.setItem('lastUsed', Date.now().toString());
 
-		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
-		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !window.location.pathname.startsWith('/miauth')) {
-			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
-				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {
-					closed: () => dispose(),
-				});
-			}
-		}
+		// Social Nite: o popup de doação do Misskey aponta para o Patreon do projeto
+		// original, então não faz sentido exibi-lo aqui. A página "Sobre" continua
+		// linkando o projeto original, como exige a AGPL.
 
 		const modifiedVersionMustProminentlyOfferInAgplV3Section13Read = miLocalStorage.getItem('modifiedVersionMustProminentlyOfferInAgplV3Section13Read');
 		if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey') {

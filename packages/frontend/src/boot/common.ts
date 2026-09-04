@@ -32,7 +32,7 @@ import { $i } from "@/i.js";
 import { launchPlugins } from "@/plugin.js";
 
 export async function common(createVue: () => Promise<App<Element>>) {
-	console.info(`Misskey v${version}`);
+	console.info(`Social Nite v${version}`);
 
 	if (_DEV_) {
 		console.warn("Development mode!!!");
