@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
+		<p v-else-if="stats.length === 0" class="empty">{{ i18n.ts.trendsAboutTip }}</p>
 		<TransitionGroup v-else tag="div" :name="prefer.s.animation ? 'chart' : ''" class="tags">
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
@@ -82,6 +83,14 @@ defineExpose<WidgetComponentExpose>({
 .wbrkwala {
 	height: (62px + 1px) + (62px + 1px) + (62px + 1px) + (62px + 1px) + 62px;
 	overflow: hidden;
+
+	> .empty {
+		margin: 0;
+		padding: 16px;
+		font-size: 0.85em;
+		line-height: 1.5;
+		color: var(--MI_THEME-fgTransparentWeak);
+	}
 
 	> .tags {
 		.chart-move {

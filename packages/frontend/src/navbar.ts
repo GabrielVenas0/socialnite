@@ -4,15 +4,9 @@
  */
 
 import { computed, reactive } from 'vue';
-import { ui } from '@@/js/config.js';
 import { clearCache } from './utility/clear-cache.js';
 import { $i } from '@/i.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
-import { lookup } from '@/utility/lookup.js';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { unisonReload } from '@/utility/unison-reload.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -37,58 +31,30 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: '/my/drive',
 	},
-	followRequests: {
-		title: i18n.ts.followRequests,
-		icon: 'ti ti-user-plus',
-		indicated: computed(() => $i != null && $i.hasPendingReceivedFollowRequest),
-		to: '/my/follow-requests',
-	},
+	// Social Nite: "followRequests" saiu da navbar e virou uma aba dentro de
+	// Notificações (e do widget de notificações), onde o pedido já chegava.
 	explore: {
 		title: i18n.ts.explore,
-		icon: 'ti ti-hash',
+		icon: 'ti ti-world',
 		to: '/explore',
 	},
 	announcements: {
 		title: i18n.ts.announcements,
 		icon: 'ti ti-speakerphone',
+		// Social Nite: atalho visível só para a administração — quem publica os avisos.
+		// Avisos com display "dialog" ou "banner" continuam aparecendo para todos.
+		show: computed(() => $i != null && ($i.isAdmin || $i.isModerator)),
 		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
-	search: {
-		title: i18n.ts.search,
-		icon: 'ti ti-search',
-		to: '/search',
-	},
-	lookup: {
-		title: i18n.ts.lookup,
-		icon: 'ti ti-world-search',
-		action: (ev) => {
-			lookup();
-		},
-	},
+	// Social Nite: removidos de 'Mais' — 'lookup' (depende de federação),
+	// 'lists'/'antennas' (já são atalhos fixos no topo da navbar),
+	// 'favorites' (sobrepõe Notas Salvas) e 'tools' (console de API, uso interno).
 	qr: {
 		title: i18n.ts.qr,
 		icon: 'ti ti-qrcode',
 		show: computed(() => $i != null),
 		to: '/qr',
-	},
-	lists: {
-		title: i18n.ts.lists,
-		icon: 'ti ti-list',
-		show: computed(() => $i != null),
-		to: '/my/lists',
-	},
-	antennas: {
-		title: i18n.ts.antennas,
-		icon: 'ti ti-antenna',
-		show: computed(() => $i != null),
-		to: '/my/antennas',
-	},
-	favorites: {
-		title: i18n.ts.favorites,
-		icon: 'ti ti-star',
-		show: computed(() => $i != null),
-		to: '/my/favorites',
 	},
 	pages: {
 		title: i18n.ts.pages,
@@ -96,7 +62,7 @@ export const navbarItemDef = reactive({
 		to: '/pages',
 	},
 	play: {
-		title: 'Play',
+		title: 'Dê o Play',
 		icon: 'ti ti-player-play',
 		to: '/play',
 	},
@@ -111,11 +77,8 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: '/my/clips',
 	},
-	channels: {
-		title: i18n.ts.channel,
-		icon: 'ti ti-device-tv',
-		to: '/channels',
-	},
+	// Social Nite: "channels" saiu daqui — Canais já tem um atalho fixo no topo da
+	// navbar, junto das timelines, e apareciam duas vezes.
 	chat: {
 		title: i18n.ts.directMessage_short,
 		icon: 'ti ti-messages',
@@ -130,44 +93,18 @@ export const navbarItemDef = reactive({
 		to: '/my/achievements',
 	},
 	games: {
-		title: 'Misskey Games',
+		title: 'Nite Games',
 		icon: 'ti ti-device-gamepad',
 		to: '/games',
 	},
-	ui: {
-		title: i18n.ts.switchUi,
-		icon: 'ti ti-devices',
-		action: (ev: MouseEvent) => {
-			os.popupMenu([{
-				text: i18n.ts.default,
-				active: ui === 'default' || ui === null,
-				action: () => {
-					miLocalStorage.setItem('ui', 'default');
-					unisonReload();
-				},
-			}, {
-				text: i18n.ts.deck,
-				active: ui === 'deck',
-				action: () => {
-					miLocalStorage.setItem('ui', 'deck');
-					unisonReload();
-				},
-			}], ev.currentTarget ?? ev.target);
-		},
-	},
+	// Social Nite: "ui" (Alternar UI) removido — o modo Deck é outra interface,
+	// que não passou pelo mesmo ajuste visual.
 	about: {
+		// Social Nite: "Sobre" abre a página de documentação (visão geral, regras e
+		// termos) em vez do menu suspenso do Misskey.
 		title: i18n.ts.about,
 		icon: 'ti ti-info-circle',
-		action: (ev) => {
-			openInstanceMenu(ev);
-		},
-	},
-	tools: {
-		title: i18n.ts.tools,
-		icon: 'ti ti-tool',
-		action: (ev) => {
-			openToolsMenu(ev);
-		},
+		to: '/about',
 	},
 	reload: {
 		title: i18n.ts.reload,

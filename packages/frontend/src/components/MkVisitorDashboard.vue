@@ -7,7 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="instance" :class="$style.root">
 	<div :class="[$style.main, $style.panel]">
 		<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.mainIcon"/>
-		<button class="_button _acrylic" :class="$style.mainMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
 		<div :class="$style.mainFg">
 			<h1 :class="$style.mainTitle">
 				<!-- 背景色によってはロゴが見えなくなるのでとりあえず無効に -->
@@ -67,7 +66,6 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
-import { openInstanceMenu } from '@/ui/_common_/common.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
@@ -91,10 +89,6 @@ function signup() {
 	}, {
 		closed: () => dispose(),
 	});
-}
-
-function showMenu(ev: MouseEvent) {
-	openInstanceMenu(ev);
 }
 </script>
 
@@ -123,17 +117,6 @@ function showMenu(ev: MouseEvent) {
 	margin-top: -47px;
 	vertical-align: bottom;
 	filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
-}
-
-.mainMenu {
-	position: absolute;
-	top: 16px;
-	right: 16px;
-	width: 32px;
-	height: 32px;
-	border-radius: 8px;
-	font-size: 18px;
-	z-index: 50;
 }
 
 .mainFg {

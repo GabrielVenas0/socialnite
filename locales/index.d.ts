@@ -5474,6 +5474,22 @@ export interface Locale extends ILocale {
      */
     "driveAboutTip": string;
     /**
+     * アンテナは、保存されて自動で動き続ける検索です。キーワードを指定すると、フォローしていないユーザーのものも含め、条件に合う新しいノートが自動的にここに集まります。
+     */
+    "antennasAboutTip": string;
+    /**
+     * チャンネルは特定の話題のための公開スペースです。誰でもフォローでき、そこに投稿されたノートは他のタイムラインに混ざりません。
+     */
+    "channelsAboutTip": string;
+    /**
+     * ここには、直近数時間にこのサーバーでよく使われているハッシュタグと、それぞれを話題にした人数が表示されます。ノートに #ハッシュタグ が付けられるようになると、ここに表示されます。
+     */
+    "trendsAboutTip": string;
+    /**
+     * ここでは、名前を知らなくても新しい人を見つけられます。話題のノート、新しく参加した人、アクティブな人、サーバーでロールを持っている人などが表示されます。最初にフォローする相手を探すのに最適です。
+     */
+    "exploreAboutTip": string;
+    /**
      * スクロールして閉じる
      */
     "scrollToClose": string;
@@ -5704,6 +5720,18 @@ export interface Locale extends ILocale {
          */
         "history": string;
         /**
+         * ここでは1対1で個別に会話できます。ここでのやり取りはタイムラインには表示されません。下のリストから相手を選ぶか、「チャットを開始」から名前で検索してください。グループでの会話にはチャンネルを使ってください。
+         */
+        "chatAboutTip": string;
+        /**
+         * 会話を始める
+         */
+        "startWithSomeoneYouFollow": string;
+        /**
+         * まだ誰もフォローしていません。「みつける」から誰かをフォローすると会話できます。
+         */
+        "noFollowingToChatWith": string;
+        /**
          * 履歴はありません
          */
         "noHistory": string;
@@ -5711,6 +5739,18 @@ export interface Locale extends ILocale {
          * グループはありません
          */
         "noRooms": string;
+        /**
+         * グループチャット
+         */
+        "groupChats": string;
+        /**
+         * グループチャット名
+         */
+        "groupChatName": string;
+        /**
+         * まだグループチャットに参加していません。「チャットを開始」から作成できます。
+         */
+        "noGroupChatsYet": string;
         /**
          * ユーザーを招待
          */
