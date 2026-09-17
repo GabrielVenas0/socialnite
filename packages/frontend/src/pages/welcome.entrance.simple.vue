@@ -65,5 +65,14 @@ import { instance as meta } from '@/instance.js';
 	width: min(430px, calc(100% - 32px));
 	margin: auto;
 	padding: 100px 0 100px 0;
+
+	// Em telas grandes o card ocupa mais espaco para nao parecer um layout mobile esticado
+	@media (min-width: 1200px) {
+		width: min(620px, calc(100% - 64px));
+	}
+
+	@media (min-width: 1700px) {
+		width: min(700px, calc(100% - 64px));
+	}
 }
 </style>

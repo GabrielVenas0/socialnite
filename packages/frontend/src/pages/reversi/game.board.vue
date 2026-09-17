@@ -444,7 +444,7 @@ function autoplay() {
 
 function share() {
 	os.post({
-		initialText: `#MisskeyReversi\n${url}/reversi/g/${game.value.id}`,
+		initialText: `#SocialNiteReversi\n${url}/reversi/g/${game.value.id}`,
 		instant: true,
 	});
 }

@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker>
 					<MkFolder :defaultOpen="true">
 						<template #icon><SearchIcon><i class="ti ti-bolt"></i></SearchIcon></template>
-						<template #label><SearchLabel>Misskey® Fan-out Timeline Technology™ (FTT)</SearchLabel></template>
+						<template #label><SearchLabel>Fan-out Timeline Technology (FTT)</SearchLabel></template>
 						<template v-if="fttForm.savedState.enableFanoutTimeline" #suffix>Enabled</template>
 						<template v-else #suffix>Disabled</template>
 						<template v-if="fttForm.modified.value" #footer>
@@ -122,7 +122,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker>
 					<MkFolder :defaultOpen="true">
 						<template #icon><SearchIcon><i class="ti ti-bolt"></i></SearchIcon></template>
-						<template #label><SearchLabel>Misskey® Reactions Boost Technology™ (RBT)</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+						<template #label><SearchLabel>Reactions Boost Technology (RBT)</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
 						<template v-if="rbtForm.savedState.enableReactionsBuffering" #suffix>Enabled</template>
 						<template v-else #suffix>Disabled</template>
 						<template v-if="rbtForm.modified.value" #footer>

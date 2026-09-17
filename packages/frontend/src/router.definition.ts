@@ -423,6 +423,10 @@ export const ROUTE_DEF = [{
 		name: 'federation',
 		component: page(() => import('@/pages/admin/federation.vue')),
 	}, {
+		path: '/visitor-preview',
+		name: 'visitorPreview',
+		component: page(() => import('@/pages/admin/visitor-preview.vue')),
+	}, {
 		path: '/announcements',
 		name: 'announcements',
 		component: page(() => import('@/pages/admin/announcements.vue')),
