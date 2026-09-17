@@ -924,6 +924,8 @@ emailRequiredForSignup: "Tornar o endereço de e-mail obrigatório durante o cad
 unread: "Não lido"
 filter: "Filtrar"
 controlPanel: "Painel de controle"
+visitorPreview: "Prévia do Visitante"
+visitorPreviewDescription: "Veja o que era mostrado aos visitantes antes de ser removido da página inicial pública: estatísticas, linha do tempo ao vivo e instâncias federadas."
 manageAccounts: "Gerenciar contas"
 makeReactionsPublic: "Deixar o histórico de reações em Público"
 makeReactionsPublicDescription: "Isto vai deixar o histórico de todas as suas reações visíveis para qualquer um ver."

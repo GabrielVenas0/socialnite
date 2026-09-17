@@ -142,6 +142,11 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/admin/federation',
 		active: currentPage.value?.route.name === 'federation',
 	}, {
+		icon: 'ti ti-eye',
+		text: i18n.ts.visitorPreview,
+		to: '/admin/visitor-preview',
+		active: currentPage.value?.route.name === 'visitorPreview',
+	}, {
 		icon: 'ti ti-clock-play',
 		text: i18n.ts.federationJobs,
 		to: '/admin/federation-job-queue',

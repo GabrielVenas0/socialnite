@@ -28,52 +28,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<div v-if="stats && instance.clientOptions.showActivitiesForVisitor !== false" :class="$style.stats">
-		<div :class="[$style.statsItem, $style.panel]">
-			<div :class="$style.statsItemLabel">{{ i18n.ts.users }}</div>
-			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalUsersCount"/></div>
-		</div>
-		<div :class="[$style.statsItem, $style.panel]">
-			<div :class="$style.statsItemLabel">{{ i18n.ts.notes }}</div>
-			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalNotesCount"/></div>
-		</div>
-	</div>
-	<div v-if="instance.policies.ltlAvailable && instance.clientOptions.showTimelineForVisitor !== false" :class="[$style.tl, $style.panel]">
-		<div :class="$style.tlHeader">{{ i18n.ts.letsLookAtTimeline }}</div>
-		<div :class="$style.tlBody">
-			<MkStreamingNotesTimeline src="local"/>
-		</div>
-	</div>
-	<div v-if="instance.clientOptions.showActivitiesForVisitor !== false" :class="$style.panel">
-		<XActiveUsersChart/>
-	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
 import { instanceName } from '@@/js/config.js';
-import type { MenuItem } from '@/types/menu.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
-import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import MkNumber from '@/components/MkNumber.vue';
-import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
-
-const stats = ref<Misskey.entities.StatsResponse | null>(null);
-
-if (instance.clientOptions.showActivitiesForVisitor !== false) {
-	misskeyApi('stats', {}).then((res) => {
-		stats.value = res;
-	});
-}
 
 function signin() {
 	const { dispose } = os.popup(XSigninDialog, {
@@ -117,6 +82,11 @@ function signup() {
 	margin-top: -47px;
 	vertical-align: bottom;
 	filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+
+	@media (min-width: 1200px) {
+		width: 110px;
+		margin-top: -60px;
+	}
 }
 
 .mainFg {
@@ -129,6 +99,11 @@ function signup() {
 	margin: 0;
 	padding: 16px 32px 24px 32px;
 	font-size: 1.4em;
+
+	@media (min-width: 1200px) {
+		padding: 24px 48px 28px 48px;
+		font-size: 1.9em;
+	}
 }
 
 .mainLogo {
@@ -139,53 +114,28 @@ function signup() {
 
 .mainAbout {
 	padding: 0 32px;
-}
 
-.mainWarn {
-	padding: 32px 32px 0 32px;
+	@media (min-width: 1200px) {
+		padding: 0 48px;
+		font-size: 1.1em;
+		line-height: 1.6;
+	}
 }
 
 .mainActions {
 	padding: 32px;
+
+	@media (min-width: 1200px) {
+		padding: 40px 48px 48px 48px;
+	}
 }
 
 .mainAction {
 	line-height: 28px;
-}
 
-.stats {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	grid-gap: 16px;
-}
-
-.statsItem {
-	overflow: clip;
-	padding: 16px 20px;
-}
-
-.statsItemLabel {
-	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
-	font-size: 0.9em;
-}
-
-.statsItemCount {
-	font-weight: bold;
-	font-size: 1.2em;
-	color: var(--MI_THEME-accent);
-}
-
-.tl {
-	overflow: clip;
-}
-
-.tlHeader {
-	padding: 12px 16px;
-	border-bottom: solid 1px var(--MI_THEME-divider);
-}
-
-.tlBody {
-	height: 350px;
-	overflow: auto;
+	@media (min-width: 1200px) {
+		line-height: 36px;
+		font-size: 1.05em;
+	}
 }
 </style>

@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div v-if="meta" :class="$style.root">
 	<MkFeaturedPhotos :class="$style.bg"/>
-	<XTimeline :class="$style.tl"/>
 	<div :class="$style.shape1"></div>
 	<div :class="$style.shape2"></div>
 	<div :class="$style.logoWrapper">
@@ -16,47 +15,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.contents">
 		<MkVisitorDashboard/>
 	</div>
-	<div v-if="instances && instances.length > 0" :class="$style.federation">
-		<MkMarqueeText :duration="40">
-			<MkA v-for="instance in instances" :key="instance.id" :class="$style.federationInstance" :to="`/instance-info/${instance.host}`" behavior="window">
-				<!--<MkInstanceCardMini :instance="instance"/>-->
-				<img v-if="instance.iconUrl" :class="$style.federationInstanceIcon" :src="getInstanceIcon(instance)" alt=""/>
-				<span class="_monospace">{{ instance.host }}</span>
-			</MkA>
-		</MkMarqueeText>
-	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import XTimeline from './welcome.timeline.vue';
-import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import logoImg from '/client-assets/socialnite-logo.png';
-import { misskeyApiGet } from '@/utility/misskey-api.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
-import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { instance as meta } from '@/instance.js';
-
-const instances = ref<Misskey.entities.FederationInstance[]>();
-
-function getInstanceIcon(instance: Misskey.entities.FederationInstance): string {
-	if (!instance.iconUrl) {
-		return '';
-	}
-
-	return getProxiedImageUrl(instance.iconUrl, 'preview');
-}
-
-misskeyApiGet('federation/instances', {
-	sort: '+pubSub',
-	limit: 20,
-	blocked: false,
-}).then(_instances => {
-	instances.value = _instances;
-});
 </script>
 
 <style lang="scss" module>
@@ -72,24 +38,6 @@ misskeyApiGet('federation/instances', {
 	right: 0;
 	width: 80vw; // 100%からshapeの幅を引いている
 	height: 100vh;
-}
-
-.tl {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	right: 64px;
-	margin: auto;
-	padding: 128px 0;
-	width: 500px;
-	height: calc(100% - 256px);
-	overflow: hidden;
-	-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
-	mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
-
-	@media (max-width: 1200px) {
-		display: none;
-	}
 }
 
 .shape1 {
@@ -137,48 +85,17 @@ misskeyApiGet('federation/instances', {
 .contents {
 	position: relative;
 	width: min(430px, calc(100% - 32px));
-	margin-left: 128px;
+	margin: auto;
 	padding: 100px 0 100px 0;
 
-	@media (max-width: 1200px) {
-		margin: auto;
+	// Em telas grandes o card ocupa mais espaco para nao parecer um layout mobile esticado
+	@media (min-width: 1200px) {
+		width: min(620px, calc(100% - 64px));
+		margin-left: 12vw;
 	}
-}
 
-.federation {
-	position: fixed;
-	bottom: 16px;
-	left: 0;
-	right: 0;
-	margin: auto;
-	background: color(from var(--MI_THEME-panel) srgb r g b / 0.5);
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
-	backdrop-filter: var(--MI-blur, blur(15px));
-	border-radius: 999px;
-	overflow: clip;
-	width: 800px;
-	padding: 8px 0;
-
-	@media (max-width: 900px) {
-		display: none;
+	@media (min-width: 1700px) {
+		width: min(700px, calc(100% - 64px));
 	}
-}
-
-.federationInstance {
-	display: inline-flex;
-	align-items: center;
-	vertical-align: bottom;
-	padding: 6px 12px 6px 6px;
-	margin: 0 10px 0 0;
-	background: var(--MI_THEME-panel);
-	border-radius: 999px;
-}
-
-.federationInstanceIcon {
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	margin-right: 5px;
-	border-radius: 999px;
 }
 </style>
