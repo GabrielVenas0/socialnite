@@ -47,7 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
 				<template #suffix><i v-if="agreeNote" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
-				<a href="https://misskey-hub.net/docs/for-users/onboarding/warning/" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }} <i class="ti ti-external-link"></i></a>
+				<ol class="_gaps_s" :class="$style.rules">
+					<li :class="$style.rule"><div :class="$style.ruleText">{{ i18n.ts.basicNotesDataDeletion }}</div></li>
+					<li :class="$style.rule"><div :class="$style.ruleText">{{ i18n.ts.basicNotesDriveCaution }}</div></li>
+					<li :class="$style.rule"><div :class="$style.ruleText">{{ i18n.ts.basicNotesUsernamePermanent }}</div></li>
+					<li :class="$style.rule"><div :class="$style.ruleText">{{ i18n.ts.basicNotesAccountDeletion }}</div></li>
+				</ol>
 
 				<MkSwitch :modelValue="agreeNote" style="margin-top: 16px;" data-cy-signup-rules-notes-agree @update:modelValue="updateAgreeNote">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>

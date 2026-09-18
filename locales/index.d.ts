@@ -1255,6 +1255,22 @@ export interface Locale extends ILocale {
      */
     "basicNotesBeforeCreateAccount": string;
     /**
+     * 投稿を削除しても、他の人が保存した通知やスクリーンショット、共有などには、その後もしばらく残ってしまうことがあります。
+     */
+    "basicNotesDataDeletion": string;
+    /**
+     * 「ドライブ」は一般的な非公開ストレージではありません。アップロードしたファイルは、投稿に添付していなくても、直接リンクを知っている人なら誰でもアクセスできます。機密情報のアップロードは避けてください。
+     */
+    "basicNotesDriveCaution": string;
+    /**
+     * ユーザー名(@ユーザー名)は登録後に変更できません。アカウントを削除した場合も、同じユーザー名を再び使用することはできません。
+     */
+    "basicNotesUsernamePermanent": string;
+    /**
+     * アカウントの削除には時間がかかることがあります。特にドライブに多くのファイルをアップロードしている場合、削除が完了しないこともあります。
+     */
+    "basicNotesAccountDeletion": string;
+    /**
      * 利用規約
      */
     "termsOfService": string;

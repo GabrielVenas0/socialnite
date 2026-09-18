@@ -59,7 +59,7 @@ export class MiMeta {
 	public maintainerEmail: string | null;
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
 	public disableRegistration: boolean;
 
