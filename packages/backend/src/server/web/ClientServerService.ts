@@ -146,7 +146,7 @@ export class ClientServerService {
 			'background_color': '#141318',
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'theme_color': this.meta.themeColor || '#753cdf',
+			'theme_color': this.meta.themeColor || '#0972c4',
 			'icons': [{
 				// 空文字列の場合右辺を使いたいため
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

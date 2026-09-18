@@ -11,7 +11,7 @@
 	"orientation": "natural",
 	"categories": ["social", "social networking"],
 	"background_color": "#141318",
-	"theme_color": "#753cdf",
+	"theme_color": "#0972c4",
 	"icons": [
 		{
 			"src": "/static-assets/icons/192-maskable.png",
