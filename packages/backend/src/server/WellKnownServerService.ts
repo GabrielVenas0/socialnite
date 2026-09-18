@@ -111,6 +111,22 @@ export class WellKnownServerService {
 			return this.oauth2ProviderService.generateRFC8414();
 		});
 
+		// Digital Asset Links: lets the Social Nite Android app (TWA) open in
+		// full-screen "trusted" mode instead of showing Chrome Custom Tabs UI.
+		fastify.get('/.well-known/assetlinks.json', async (request, reply) => {
+			reply.header('Cache-Control', 'public, max-age=3600');
+			return [{
+				relation: ['delegate_permission/common.handle_all_urls'],
+				target: {
+					namespace: 'android_app',
+					package_name: 'br.tec.nite.social.twa',
+					sha256_cert_fingerprints: [
+						'0E:84:33:34:F4:D6:9A:CF:A6:89:80:83:48:B2:A9:78:41:BA:6E:CB:5A:9F:52:C4:5C:81:85:52:BA:37:A7:BC',
+					],
+				},
+			}];
+		});
+
 		/* TODO
 fastify.get('/.well-known/change-password', async (request, reply) => {
 });
