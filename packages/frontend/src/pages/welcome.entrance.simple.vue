@@ -6,10 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div v-if="meta" :class="$style.root">
 	<MkFeaturedPhotos :class="$style.bg"/>
-	<div :class="$style.logoWrapper">
-		<div :class="$style.poweredBy">Powered by</div>
-		<img :src="logoImg" :class="$style.misskey"/>
-	</div>
 	<div :class="$style.contents">
 		<MkVisitorDashboard/>
 	</div>
@@ -18,9 +14,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
-import logoImg from '/client-assets/socialnite-logo.png';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { instance as meta } from '@/instance.js';
+import { store } from '@/store.js';
+
+// The entrance screen is the first thing anyone sees, so it always shows
+// dark/blue branding here regardless of any previously stored preference.
+if (!store.s.darkMode) {
+	store.set('darkMode', true);
+}
 </script>
 
 <style lang="scss" module>
@@ -36,28 +38,6 @@ import { instance as meta } from '@/instance.js';
 	right: 0;
 	width: 100vw;
 	height: 100vh;
-}
-
-.logoWrapper {
-	position: fixed;
-	top: 36px;
-	left: 36px;
-	flex: auto;
-	color: #fff;
-	user-select: none;
-	pointer-events: none;
-}
-
-.poweredBy {
-	margin-bottom: 2px;
-}
-
-.misskey {
-	width: 120px;
-
-	@media (max-width: 450px) {
-		width: 100px;
-	}
 }
 
 .contents {
