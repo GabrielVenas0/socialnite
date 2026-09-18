@@ -2176,7 +2176,7 @@ _registry:
   domain: "Domínio"
   createKey: "Criar chave"
 _aboutMisskey:
-  about: "Misskey é um software de código aberto desenvolvido por syulio desde 2014."
+  about: "O Social Nite é um espaço para compartilhar ideias, acompanhar a comunidade e transformar cada nota em uma nova conexão."
   contributors: "Contribuidores principais"
   allContributors: "Todos os contribuidores"
   source: "Código-fonte"

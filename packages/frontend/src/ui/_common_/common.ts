@@ -52,6 +52,7 @@ function toolsMenuItems(): MenuItem[] {
 
 export function openInstanceMenu(ev: MouseEvent) {
 	const menuItems: MenuItem[] = [];
+	const isAdmin = $i?.isAdmin === true;
 
 	menuItems.push({
 		text: instance.name ?? host,
@@ -68,26 +69,14 @@ export function openInstanceMenu(ev: MouseEvent) {
 		to: '/about#emojis',
 	});
 
-	if (instance.federation !== 'none') {
-		menuItems.push({
+	if (isAdmin) {
+		menuItems.push({ type: 'divider' }, {
 			type: 'link',
-			text: i18n.ts.federation,
-			icon: 'ti ti-whirl',
-			to: '/about#federation',
+			text: i18n.ts.ads,
+			icon: 'ti ti-ad',
+			to: '/ads',
 		});
 	}
-
-	menuItems.push({
-		type: 'link',
-		text: i18n.ts.charts,
-		icon: 'ti ti-chart-line',
-		to: '/about#charts',
-	}, { type: 'divider' }, {
-		type: 'link',
-		text: i18n.ts.ads,
-		icon: 'ti ti-ad',
-		to: '/ads',
-	});
 
 	if ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) {
 		menuItems.push({
@@ -98,17 +87,19 @@ export function openInstanceMenu(ev: MouseEvent) {
 		});
 	}
 
-	menuItems.push({
-		type: 'parent',
-		text: i18n.ts.tools,
-		icon: 'ti ti-tool',
-		children: toolsMenuItems(),
-	}, { type: 'divider' }, {
-		type: 'link',
-		text: i18n.ts.inquiry,
-		icon: 'ti ti-help-circle',
-		to: '/contact',
-	});
+	if (isAdmin) {
+		menuItems.push({
+			type: 'parent',
+			text: i18n.ts.tools,
+			icon: 'ti ti-tool',
+			children: toolsMenuItems(),
+		}, { type: 'divider' }, {
+			type: 'link',
+			text: i18n.ts.inquiry,
+			icon: 'ti ti-help-circle',
+			to: '/contact',
+		});
+	}
 
 	if (instance.impressumUrl) {
 		menuItems.push({
@@ -145,11 +136,10 @@ export function openInstanceMenu(ev: MouseEvent) {
 	}
 
 	menuItems.push({
-		type: 'a',
+		type: 'link',
 		text: i18n.ts.document,
 		icon: 'ti ti-bulb',
-		href: 'https://misskey-hub.net/docs/for-users/',
-		target: '_blank',
+		to: '/about-misskey',
 	});
 
 	if ($i) {

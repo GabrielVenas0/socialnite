@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m znqjceqz">
 				<div v-panel class="about">
 					<div ref="containerEl" class="container" :class="{ playing: easterEggEngine != null }">
-						<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
+						<img src="/client-assets/socialnite-logo.png" alt="Logo do Social Nite" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
 						<div class="misskey">Social Nite</div>
 						<div class="version">v{{ version }}</div>
 						<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }">
@@ -21,7 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="thereIsTreasure" class="_button treasure" @click="getTreasure"><img src="/fluent-emoji/1f3c6.png" class="treasureImg"></button>
 				</div>
 				<div style="text-align: center;">
-					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/about-misskey/" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
+					{{ i18n.ts._aboutMisskey.about }}<br>
+					Esta documentação apresenta os recursos e as regras da rede.
 				</div>
 				<div v-if="$i != null" style="text-align: center;">
 					<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #SocialNite</MkButton>
@@ -127,7 +128,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.aboutMisskey,
+	title: 'Documentação do Social Nite',
 	icon: null,
 }));
 </script>
