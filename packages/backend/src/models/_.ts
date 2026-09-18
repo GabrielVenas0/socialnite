@@ -80,6 +80,7 @@ import { MiSystemAccount } from '@/models/SystemAccount.js';
 import { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
 import { MiUser } from '@/models/User.js';
+import { MiUserGoogleAccount } from '@/models/UserGoogleAccount.js';
 import { MiUserIp } from '@/models/UserIp.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUserList } from '@/models/UserList.js';
@@ -208,6 +209,7 @@ export {
 	MiSystemAccount,
 	MiUsedUsername,
 	MiUser,
+	MiUserGoogleAccount,
 	MiUserIp,
 	MiUserKeypair,
 	MiUserList,
@@ -287,6 +289,7 @@ export type SwSubscriptionsRepository = Repository<MiSwSubscription> & MiReposit
 export type SystemAccountsRepository = Repository<MiSystemAccount> & MiRepository<MiSystemAccount>;
 export type UsedUsernamesRepository = Repository<MiUsedUsername> & MiRepository<MiUsedUsername>;
 export type UsersRepository = Repository<MiUser> & MiRepository<MiUser>;
+export type UserGoogleAccountsRepository = Repository<MiUserGoogleAccount> & MiRepository<MiUserGoogleAccount>;
 export type UserIpsRepository = Repository<MiUserIp> & MiRepository<MiUserIp>;
 export type UserKeypairsRepository = Repository<MiUserKeypair> & MiRepository<MiUserKeypair>;
 export type UserListsRepository = Repository<MiUserList> & MiRepository<MiUserList>;

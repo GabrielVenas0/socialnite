@@ -39,15 +39,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton type="submit" large primary rounded style="margin: 0 auto;" data-cy-signin-page-input-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</form>
 
-		<!-- パスワードレスログイン -->
-		<div :class="$style.orHr">
-			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
-		</div>
-		<div>
-			<MkButton type="submit" style="margin: auto auto;" large rounded primary gradate @click="emit('passkeyClick', $event)">
-				<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ i18n.ts.signinWithPasskey }}
-			</MkButton>
-		</div>
+		<!-- Entrar com Google -->
+		<template v-if="instance.enableGoogleSignin">
+			<div :class="$style.orHr">
+				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
+			</div>
+			<div>
+				<MkButton type="button" style="margin: auto auto;" large rounded primary gradate @click="onGoogleClick">
+					<i class="ti ti-brand-google" style="font-size: medium;"></i>{{ i18n.ts.signinWithGoogle }}
+				</MkButton>
+			</div>
+		</template>
 	</div>
 </div>
 </template>
@@ -61,6 +63,7 @@ import { host as configHost } from '@@/js/config.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { instance } from '@/instance.js';
 
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -78,8 +81,11 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'usernameSubmitted', v: string): void;
-	(ev: 'passkeyClick', v: MouseEvent): void;
 }>();
+
+function onGoogleClick(): void {
+	location.href = '/sign-in-with-google';
+}
 
 const host = toUnicode(configHost);
 

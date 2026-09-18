@@ -10,6 +10,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<XBotProtection/>
 
+				<SearchMarker v-slot="slotProps" :keywords="['google', 'oauth', 'signin', 'login']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-brand-google"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.signinWithGoogle }}</SearchLabel></template>
+						<template v-if="googleSigninForm.savedState.enableGoogleSignin" #suffix>{{ i18n.ts.enabled }}</template>
+						<template v-else #suffix>{{ i18n.ts.disabled }}</template>
+						<template v-if="googleSigninForm.modified.value" #footer>
+							<MkFormFooter :form="googleSigninForm"/>
+						</template>
+
+						<div class="_gaps_m">
+							<div><SearchText>{{ i18n.ts.signinWithGoogleDescription }}</SearchText></div>
+
+							<SearchMarker>
+								<MkSwitch v-model="googleSigninForm.state.enableGoogleSignin">
+									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel></template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<SearchMarker>
+								<MkInput v-model="googleSigninForm.state.googleClientId">
+									<template #prefix><i class="ti ti-id"></i></template>
+									<template #label><SearchLabel>Client ID</SearchLabel></template>
+								</MkInput>
+							</SearchMarker>
+
+							<SearchMarker>
+								<MkInput v-model="googleSigninForm.state.googleClientSecret" type="password">
+									<template #prefix><i class="ti ti-key"></i></template>
+									<template #label><SearchLabel>Client Secret</SearchLabel></template>
+								</MkInput>
+							</SearchMarker>
+
+							<MkInfo>{{ i18n.tsx.googleSigninRedirectUri({ url: googleSigninRedirectUri }) }}</MkInfo>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
 				<SearchMarker v-slot="slotProps" :keywords="['sensitive', 'media', 'detection']">
 					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 						<template #icon><SearchIcon><i class="ti ti-eye-off"></i></SearchIcon></template>
@@ -166,6 +204,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
@@ -197,6 +236,21 @@ const sensitiveMediaDetectionForm = useForm({
 			null as never,
 		setSensitiveFlagAutomatically: state.setSensitiveFlagAutomatically,
 		enableSensitiveMediaDetectionForVideos: state.enableSensitiveMediaDetectionForVideos,
+	});
+	fetchInstance(true);
+});
+
+const googleSigninRedirectUri = `${location.origin}/sign-in-with-google/callback`;
+
+const googleSigninForm = useForm({
+	enableGoogleSignin: meta.enableGoogleSignin,
+	googleClientId: meta.googleClientId ?? '',
+	googleClientSecret: meta.googleClientSecret ?? '',
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		enableGoogleSignin: state.enableGoogleSignin,
+		googleClientId: state.googleClientId,
+		googleClientSecret: state.googleClientSecret,
 	});
 	fetchInstance(true);
 });

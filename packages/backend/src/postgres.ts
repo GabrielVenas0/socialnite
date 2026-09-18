@@ -60,6 +60,7 @@ import { MiSignin } from '@/models/Signin.js';
 import { MiSwSubscription } from '@/models/SwSubscription.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
 import { MiUser } from '@/models/User.js';
+import { MiUserGoogleAccount } from '@/models/UserGoogleAccount.js';
 import { MiUserIp } from '@/models/UserIp.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUserList } from '@/models/UserList.js';
@@ -193,6 +194,7 @@ export const entities = [
 	MiAuthSession,
 	MiAccessToken,
 	MiUser,
+	MiUserGoogleAccount,
 	MiUserProfile,
 	MiUserKeypair,
 	MiUserPublickey,

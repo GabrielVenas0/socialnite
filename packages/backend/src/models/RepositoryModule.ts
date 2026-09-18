@@ -66,6 +66,7 @@ import {
 	MiSystemWebhook,
 	MiUsedUsername,
 	MiUser,
+	MiUserGoogleAccount,
 	MiUserIp,
 	MiUserKeypair,
 	MiUserList,
@@ -180,6 +181,12 @@ const $userPendingsRepository: Provider = {
 const $userSecurityKeysRepository: Provider = {
 	provide: DI.userSecurityKeysRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiUserSecurityKey).extend(miRepository as MiRepository<MiUserSecurityKey>),
+	inject: [DI.db],
+};
+
+const $userGoogleAccountsRepository: Provider = {
+	provide: DI.userGoogleAccountsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiUserGoogleAccount).extend(miRepository as MiRepository<MiUserGoogleAccount>),
 	inject: [DI.db],
 };
 
@@ -556,6 +563,7 @@ const $reversiGamesRepository: Provider = {
 		$userKeypairsRepository,
 		$userPendingsRepository,
 		$userSecurityKeysRepository,
+		$userGoogleAccountsRepository,
 		$userPublickeysRepository,
 		$userListsRepository,
 		$userListFavoritesRepository,
@@ -633,6 +641,7 @@ const $reversiGamesRepository: Provider = {
 		$userKeypairsRepository,
 		$userPendingsRepository,
 		$userSecurityKeysRepository,
+		$userGoogleAccountsRepository,
 		$userPublickeysRepository,
 		$userListsRepository,
 		$userListFavoritesRepository,

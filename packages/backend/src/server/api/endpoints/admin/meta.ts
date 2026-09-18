@@ -220,6 +220,18 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			enableGoogleSignin: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			googleClientId: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			googleClientSecret: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			sensitiveMediaDetection: {
 				type: 'string',
 				optional: false, nullable: false,
@@ -683,6 +695,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				mcaptchaSecretKey: instance.mcaptchaSecretKey,
 				recaptchaSecretKey: instance.recaptchaSecretKey,
 				turnstileSecretKey: instance.turnstileSecretKey,
+				enableGoogleSignin: instance.enableGoogleSignin,
+				googleClientId: instance.googleClientId,
+				googleClientSecret: instance.googleClientSecret,
 				sensitiveMediaDetection: instance.sensitiveMediaDetection,
 				sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
 				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,

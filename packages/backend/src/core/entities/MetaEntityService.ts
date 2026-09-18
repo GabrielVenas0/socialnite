@@ -95,6 +95,7 @@ export class MetaEntityService {
 			enableTurnstile: instance.enableTurnstile,
 			turnstileSiteKey: instance.turnstileSiteKey,
 			enableTestcaptcha: instance.enableTestcaptcha,
+			enableGoogleSignin: instance.enableGoogleSignin,
 			googleAnalyticsMeasurementId: instance.googleAnalyticsMeasurementId,
 			swPublickey: instance.swPublicKey,
 			themeColor: instance.themeColor,

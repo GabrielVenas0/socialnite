@@ -29,6 +29,9 @@ export const ROUTE_DEF = [{
 	path: '/timeline',
 	component: PageTimeline,
 }, {
+	path: '/sign-in-with-google/done',
+	component: page(() => import('@/pages/sign-in-with-google-done.vue')),
+}, {
 	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
 }, {

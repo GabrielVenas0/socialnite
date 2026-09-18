@@ -123,6 +123,10 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		enableGoogleSignin: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		googleAnalyticsMeasurementId: {
 			type: 'string',
 			optional: false, nullable: true,

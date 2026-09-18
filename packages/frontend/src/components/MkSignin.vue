@@ -23,7 +23,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:initialUsername="initialUsername"
 
 			@usernameSubmitted="onUsernameSubmitted"
-			@passkeyClick="onPasskeyLogin"
 		/>
 
 		<!-- 2. パスワード入力 -->
@@ -111,24 +110,6 @@ const password = ref('');
 const credentialRequest = shallowRef<CredentialRequestOptions | null>(null);
 const passkeyContext = ref('');
 const doingPasskeyFromInputPage = ref(false);
-
-function onPasskeyLogin(): void {
-	if (webAuthnSupported()) {
-		doingPasskeyFromInputPage.value = true;
-		waiting.value = true;
-		misskeyApi('signin-with-passkey', {})
-			.then((res) => {
-				passkeyContext.value = res.context ?? '';
-				credentialRequest.value = parseRequestOptionsFromJSON({
-					publicKey: res.option,
-				});
-
-				page.value = 'passkey';
-				waiting.value = false;
-			})
-			.catch(onSigninApiError);
-	}
-}
 
 function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 	waiting.value = true;

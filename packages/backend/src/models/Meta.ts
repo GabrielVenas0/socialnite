@@ -268,6 +268,23 @@ export class MiMeta {
 	})
 	public enableTestcaptcha: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public enableGoogleSignin: boolean;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public googleClientId: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public googleClientSecret: string | null;
+
 	// chaptcha系を追加した際にはnodeinfoのレスポンスに追加するのを忘れないようにすること
 
 	@Column('enum', {
