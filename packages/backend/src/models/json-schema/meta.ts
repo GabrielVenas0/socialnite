@@ -83,6 +83,10 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		requirePhoneAndEmailForSignup: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		enableHcaptcha: {
 			type: 'boolean',
 			optional: false, nullable: false,

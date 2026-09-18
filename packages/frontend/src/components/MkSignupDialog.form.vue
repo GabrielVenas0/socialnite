@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else-if="usernameState === 'max-range'" style="color: var(--MI_THEME-error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.tooLong }}</span>
 				</template>
 			</MkInput>
-			<MkInput v-if="instance.emailRequiredForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
+			<MkInput v-if="instance.emailRequiredForSignup || instance.requirePhoneAndEmailForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
 				<template #label>{{ i18n.ts.emailAddress }} <div v-tooltip:dialog="i18n.ts._signup.emailAddressInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 				<template #prefix><i class="ti ti-mail"></i></template>
 				<template #caption>
@@ -44,6 +44,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else-if="emailState === 'unavailable'" style="color: var(--MI_THEME-error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.unavailable }}</span>
 					<span v-else-if="emailState === 'error'" style="color: var(--MI_THEME-error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.error }}</span>
 				</template>
+			</MkInput>
+			<MkInput v-if="instance.requirePhoneAndEmailForSignup" v-model="phone" type="tel" :spellcheck="false" required data-cy-signup-phone>
+				<template #label>{{ i18n.ts.phone }}</template>
+				<template #prefix><i class="ti ti-phone"></i></template>
 			</MkInput>
 			<MkInput v-model="password" type="password" autocomplete="new-password" required data-cy-signup-password @update:modelValue="onChangePassword">
 				<template #label>{{ i18n.ts.password }}</template>
@@ -117,6 +121,7 @@ const password = ref<string>('');
 const retypedPassword = ref<string>('');
 const invitationCode = ref<string>('');
 const email = ref('');
+const phone = ref('');
 const usernameState = ref<null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range'>(null);
 const emailState = ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:banned' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
 const passwordStrength = ref<'' | 'low' | 'medium' | 'high'>('');
@@ -138,6 +143,7 @@ const shouldDisableSubmitting = computed((): boolean => {
 		instance.enableTurnstile && !turnstileResponse.value ||
 		instance.enableTestcaptcha && !testcaptchaResponse.value ||
 		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
+		instance.requirePhoneAndEmailForSignup && (email.value === '' || phone.value === '') ||
 		instance.disableRegistration && invitationCode.value === '' ||
 		usernameState.value !== 'ok' ||
 		passwordRetypeState.value !== 'match';
@@ -256,10 +262,11 @@ async function onSubmit(): Promise<void> {
 	if (submitting.value) return;
 	submitting.value = true;
 
-	const signupPayload: Misskey.entities.SignupRequest = {
+	const signupPayload: Misskey.entities.SignupRequest & { phone?: string } = {
 		username: username.value,
 		password: password.value,
 		emailAddress: email.value,
+		phone: phone.value,
 		invitationCode: invitationCode.value,
 		'hcaptcha-response': hCaptchaResponse.value,
 		'm-captcha-response': mCaptchaResponse.value,

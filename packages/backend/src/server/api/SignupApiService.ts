@@ -63,6 +63,7 @@ export class SignupApiService {
 				host?: string;
 				invitationCode?: string;
 				emailAddress?: string;
+				phone?: string;
 				'hcaptcha-response'?: string;
 				'g-recaptcha-response'?: string;
 				'turnstile-response'?: string;
@@ -113,6 +114,18 @@ export class SignupApiService {
 		const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] ?? null) : null;
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
+		const phone = body['phone'];
+
+		if (!this.meta.emailRequiredForSignup && this.meta.requirePhoneAndEmailForSignup) {
+			if (emailAddress == null || typeof emailAddress !== 'string' || emailAddress === '') {
+				reply.code(400);
+				return;
+			}
+			if (phone == null || typeof phone !== 'string' || phone === '') {
+				reply.code(400);
+				return;
+			}
+		}
 
 		if (this.meta.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
@@ -218,6 +231,13 @@ export class SignupApiService {
 				const { account, secret } = await this.signupService.signup({
 					username, password, host,
 				});
+
+				if (emailAddress || phone) {
+					await this.userProfilesRepository.update({ userId: account.id }, {
+						...(emailAddress ? { email: emailAddress } : {}),
+						...(phone ? { phone } : {}),
+					});
+				}
 
 				const res = await this.userEntityService.pack(account, account, {
 					schema: 'MeDetailed',

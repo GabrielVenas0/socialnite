@@ -1655,6 +1655,26 @@ export interface Locale extends ILocale {
      */
     "hcaptchaSecretKey": string;
     /**
+     * Googleでログイン
+     */
+    "signinWithGoogle": string;
+    /**
+     * Social Nite独自のパスワードなしで、Googleアカウントでログイン・新規登録できるようにします。認証情報はhttps://console.cloud.google.com/apis/credentials(種類は「ウェブアプリケーション」)で作成してください。
+     */
+    "signinWithGoogleDescription": string;
+    /**
+     * Google Cloud Consoleの認証情報に、次のリダイレクトURIを登録してください: {url}
+     */
+    "googleSigninRedirectUri": ParameterizedString<"url">;
+    /**
+     * 登録時に電話番号とメールアドレスを必須にする
+     */
+    "requirePhoneAndEmailForSignup": string;
+    /**
+     * 有効にすると、今後登録する人は電話番号とメールアドレスの入力が必須になります(確認リンクの送信はせず、情報を収集するだけです)。既存のアカウントには影響しません。
+     */
+    "requirePhoneAndEmailForSignupDescription": string;
+    /**
      * mCaptcha
      */
     "mcaptcha": string;
@@ -2758,6 +2778,10 @@ export interface Locale extends ILocale {
      * メールアドレス
      */
     "emailAddress": string;
+    /**
+     * 電話番号
+     */
+    "phone": string;
     /**
      * SMTP サーバーの設定
      */

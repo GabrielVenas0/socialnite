@@ -48,6 +48,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 				</SearchMarker>
 
+				<SearchMarker v-slot="slotProps" :keywords="['phone', 'email', 'signup', 'required']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-address-book"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.requirePhoneAndEmailForSignup }}</SearchLabel></template>
+						<template v-if="phoneEmailForm.savedState.requirePhoneAndEmailForSignup" #suffix>{{ i18n.ts.enabled }}</template>
+						<template v-else #suffix>{{ i18n.ts.disabled }}</template>
+						<template v-if="phoneEmailForm.modified.value" #footer>
+							<MkFormFooter :form="phoneEmailForm"/>
+						</template>
+
+						<div class="_gaps_m">
+							<div><SearchText>{{ i18n.ts.requirePhoneAndEmailForSignupDescription }}</SearchText></div>
+
+							<SearchMarker>
+								<MkSwitch v-model="phoneEmailForm.state.requirePhoneAndEmailForSignup">
+									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel></template>
+								</MkSwitch>
+							</SearchMarker>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
 				<SearchMarker v-slot="slotProps" :keywords="['sensitive', 'media', 'detection']">
 					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 						<template #icon><SearchIcon><i class="ti ti-eye-off"></i></SearchIcon></template>
@@ -251,6 +273,15 @@ const googleSigninForm = useForm({
 		enableGoogleSignin: state.enableGoogleSignin,
 		googleClientId: state.googleClientId,
 		googleClientSecret: state.googleClientSecret,
+	});
+	fetchInstance(true);
+});
+
+const phoneEmailForm = useForm({
+	requirePhoneAndEmailForSignup: meta.requirePhoneAndEmailForSignup,
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		requirePhoneAndEmailForSignup: state.requirePhoneAndEmailForSignup,
 	});
 	fetchInstance(true);
 });
