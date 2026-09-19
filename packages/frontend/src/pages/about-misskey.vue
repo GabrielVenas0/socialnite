@@ -18,7 +18,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkEmoji v-else class="emoji" :emoji="emoji.emoji" :normal="true" :noStyle="true"/>
 						</span>
 					</div>
-					<button v-if="thereIsTreasure" class="_button treasure" @click="getTreasure"><img src="/fluent-emoji/1f3c6.png" class="treasureImg"></button>
 				</div>
 				<div style="text-align: center;">
 					{{ i18n.ts._aboutMisskey.about }}<br>
@@ -27,7 +26,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="$i != null" style="text-align: center;">
 					<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #SocialNite</MkButton>
 				</div>
-				<FormSection v-if="instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey'">
+				<FormSection>
+					<div class="_gaps_s">
+						<FormLink to="/about">
+							<template #icon><i class="ti ti-book"></i></template>
+							Regras e Termos da rede
+						</FormLink>
+						<FormLink to="/about#emojis">
+							<template #icon><i class="ti ti-mood-smile"></i></template>
+							Emojis personalizados
+						</FormLink>
+					</div>
+				</FormSection>
+				<FormSection>
 					<div class="_gaps_s">
 						<MkInfo>
 							{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name ?? host }) }}
@@ -64,11 +75,8 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
-import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
-
-const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
 
 let easterEggReady = false;
 const easterEggEmojis = ref<{
@@ -112,11 +120,6 @@ function iLoveMisskey() {
 	});
 }
 
-function getTreasure() {
-	thereIsTreasure.value = false;
-	claimAchievement('foundTreasure');
-}
-
 onBeforeUnmount(() => {
 	if (easterEggEngine.value) {
 		easterEggEngine.value.stop();
@@ -138,20 +141,6 @@ definePage(() => ({
 	> .about {
 		position: relative;
 		border-radius: var(--MI-radius);
-
-		> .treasure {
-			position: absolute;
-			top: 60px;
-			left: 0;
-			right: 0;
-			margin: 0 auto;
-			width: min-content;
-
-			> .treasureImg {
-				width: 25px;
-				vertical-align: bottom;
-			}
-		}
 
 		> .container {
 			position: relative;

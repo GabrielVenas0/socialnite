@@ -59,24 +59,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkFoldableSection>
 
 	<MkFoldableSection v-if="$i.policies.chatAvailability === 'available'">
-		<template #header>{{ i18n.ts._chat.startWithSomeoneYouFollow }}</template>
+		<template #header>{{ showingNetwork ? 'Pessoas da rede' : i18n.ts._chat.startWithSomeoneYouFollow }}</template>
 
-		<MkLoading v-if="followingFetching"/>
-		<div v-else-if="following.length === 0" :class="$style.noFollowing">
+		<MkLoading v-if="peopleFetching"/>
+		<div v-else-if="people.length === 0" :class="$style.noFollowing">
 			{{ i18n.ts._chat.noFollowingToChatWith }}
 		</div>
 		<div v-else class="_gaps_s">
 			<MkA
-				v-for="f in following"
-				:key="f.id"
+				v-for="person in people"
+				:key="person.id"
 				class="_panel"
 				:class="$style.person"
-				:to="`/chat/user/${f.followee!.id}`"
+				:to="`/chat/user/${person.id}`"
 			>
-				<MkAvatar :class="$style.personAvatar" :user="f.followee!" indicator :preview="false"/>
+				<MkAvatar :class="$style.personAvatar" :user="person" indicator :preview="false"/>
 				<div :class="$style.personBody">
-					<MkUserName :class="$style.personName" :user="f.followee!"/>
-					<MkAcct :class="$style.personAcct" :user="f.followee!"/>
+					<MkUserName :class="$style.personName" :user="person"/>
+					<MkAcct :class="$style.personAcct" :user="person"/>
 				</div>
 				<i class="ti ti-message" :class="$style.personIcon"></i>
 			</MkA>
@@ -113,14 +113,28 @@ const searched = ref(false);
 const searchResults = ref<Misskey.entities.ChatMessage[]>([]);
 
 // Social Nite: lista quem você segue direto aqui, para dar de onde começar uma
-// conversa sem ter que adivinhar o nome de alguém no seletor.
-const following = ref<Misskey.entities.Following[]>([]);
-const followingFetching = ref(true);
+// conversa sem ter que adivinhar o nome de alguém no seletor. Em servidor novo
+// ninguém segue ninguém ainda, então cai para as pessoas da própria rede.
+const people = ref<Misskey.entities.UserLite[]>([]);
+const peopleFetching = ref(true);
+const showingNetwork = ref(false);
 
-misskeyApi('users/following', { userId: $i.id, limit: 30 }).then(res => {
-	following.value = res;
+misskeyApi('users/following', { userId: $i.id, limit: 30 }).then(async res => {
+	const followees = res.map(f => f.followee).filter(u => u != null);
+
+	if (followees.length > 0) {
+		people.value = followees;
+		return;
+	}
+
+	showingNetwork.value = true;
+	people.value = (await misskeyApi('users', {
+		origin: 'local',
+		sort: '+updatedAt',
+		limit: 30,
+	})).filter(u => u.id !== $i.id);
 }).finally(() => {
-	followingFetching.value = false;
+	peopleFetching.value = false;
 });
 
 // Social Nite: grupos de conversa (salas) — os que você criou e os que participa,

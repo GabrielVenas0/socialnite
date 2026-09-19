@@ -114,6 +114,22 @@ export async function mainBoot() {
 			}
 		});
 
+		// Social Nite: contas criadas antes da exigência de e-mail e telefone ficariam
+		// sem como recuperar a senha. Enquanto faltar dado, o diálogo não fecha.
+		if (instance.requirePhoneAndEmailForSignup) {
+			const needsEmail = !$i.email;
+			const needsPhone = !$i.phone;
+
+			if (needsEmail || needsPhone) {
+				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkCompleteProfileDialog.vue')), {
+					needsEmail,
+					needsPhone,
+				}, {
+					closed: () => dispose(),
+				});
+			}
+		}
+
 		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
 			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
 				announcement,

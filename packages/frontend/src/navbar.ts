@@ -44,12 +44,48 @@ export const navbarItemDef = reactive({
 		// Social Nite: atalho visível só para a administração — quem publica os avisos.
 		// Avisos com display "dialog" ou "banner" continuam aparecendo para todos.
 		show: computed(() => $i != null && ($i.isAdmin || $i.isModerator)),
+		adminOnly: true,
 		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
-	// Social Nite: removidos de 'Mais' — 'lookup' (depende de federação),
-	// 'lists'/'antennas' (já são atalhos fixos no topo da navbar),
-	// 'favorites' (sobrepõe Notas Salvas) e 'tools' (console de API, uso interno).
+	// Social Nite: estes saíram do menu do usuário comum — 'lookup' depende de federação,
+	// 'favorites' sobrepõe Notas Salvas e as ferramentas são de uso interno. Seguem
+	// visíveis para a administração, marcadas com o selo "só admin" em 'Mais'.
+	search: {
+		title: i18n.ts.search,
+		icon: 'ti ti-search',
+		show: computed(() => $i != null && ($i.isAdmin || $i.isModerator)),
+		adminOnly: true,
+		to: '/search',
+	},
+	lookup: {
+		title: i18n.ts.lookup,
+		icon: 'ti ti-world-search',
+		show: computed(() => $i != null && ($i.isAdmin || $i.isModerator)),
+		adminOnly: true,
+		to: '/lookup',
+	},
+	favorites: {
+		title: i18n.ts.favorites,
+		icon: 'ti ti-star',
+		show: computed(() => $i != null && ($i.isAdmin || $i.isModerator)),
+		adminOnly: true,
+		to: '/my/favorites',
+	},
+	scratchpad: {
+		title: i18n.ts.scratchpad,
+		icon: 'ti ti-terminal-2',
+		show: computed(() => $i != null && $i.isAdmin),
+		adminOnly: true,
+		to: '/scratchpad',
+	},
+	apiConsole: {
+		title: 'Console de API',
+		icon: 'ti ti-code',
+		show: computed(() => $i != null && $i.isAdmin),
+		adminOnly: true,
+		to: '/api-console',
+	},
 	qr: {
 		title: i18n.ts.qr,
 		icon: 'ti ti-qrcode',
@@ -96,6 +132,12 @@ export const navbarItemDef = reactive({
 		title: 'Nite Games',
 		icon: 'ti ti-device-gamepad',
 		to: '/games',
+	},
+	ranking: {
+		title: 'Ranking',
+		icon: 'ti ti-trophy',
+		show: computed(() => $i != null),
+		to: '/ranking',
 	},
 	// Social Nite: "ui" (Alternar UI) removido — o modo Deck é outra interface,
 	// que não passou pelo mesmo ajuste visual.

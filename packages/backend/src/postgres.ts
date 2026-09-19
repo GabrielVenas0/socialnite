@@ -35,6 +35,8 @@ import { MiFollowing } from '@/models/Following.js';
 import { MiFollowRequest } from '@/models/FollowRequest.js';
 import { MiGalleryLike } from '@/models/GalleryLike.js';
 import { MiGalleryPost } from '@/models/GalleryPost.js';
+import { MiStory } from '@/models/Story.js';
+import { MiStoryView } from '@/models/StoryView.js';
 import { MiHashtag } from '@/models/Hashtag.js';
 import { MiInstance } from '@/models/Instance.js';
 import { MiMeta } from '@/models/Meta.js';
@@ -218,6 +220,8 @@ export const entities = [
 	MiPageLike,
 	MiGalleryPost,
 	MiGalleryLike,
+	MiStory,
+	MiStoryView,
 	MiDriveFile,
 	MiDriveFolder,
 	MiPoll,

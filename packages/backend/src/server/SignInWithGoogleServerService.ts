@@ -98,7 +98,7 @@ export class SignInWithGoogleServerService {
 				prompt: 'select_account',
 			});
 
-			reply.redirect(`${GOOGLE_AUTH_ENDPOINT}?${params.toString()}`);
+			return reply.redirect(`${GOOGLE_AUTH_ENDPOINT}?${params.toString()}`);
 		});
 
 		fastify.get<{

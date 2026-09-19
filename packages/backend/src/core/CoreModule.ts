@@ -111,6 +111,8 @@ import { FollowingEntityService } from './entities/FollowingEntityService.js';
 import { FollowRequestEntityService } from './entities/FollowRequestEntityService.js';
 import { GalleryLikeEntityService } from './entities/GalleryLikeEntityService.js';
 import { GalleryPostEntityService } from './entities/GalleryPostEntityService.js';
+import { StoryEntityService } from './entities/StoryEntityService.js';
+import { StoryService } from './StoryService.js';
 import { HashtagEntityService } from './entities/HashtagEntityService.js';
 import { InstanceEntityService } from './entities/InstanceEntityService.js';
 import { InviteCodeEntityService } from './entities/InviteCodeEntityService.js';
@@ -262,6 +264,8 @@ const $FollowingEntityService: Provider = { provide: 'FollowingEntityService', u
 const $FollowRequestEntityService: Provider = { provide: 'FollowRequestEntityService', useExisting: FollowRequestEntityService };
 const $GalleryLikeEntityService: Provider = { provide: 'GalleryLikeEntityService', useExisting: GalleryLikeEntityService };
 const $GalleryPostEntityService: Provider = { provide: 'GalleryPostEntityService', useExisting: GalleryPostEntityService };
+const $StoryEntityService: Provider = { provide: 'StoryEntityService', useExisting: StoryEntityService };
+const $StoryService: Provider = { provide: 'StoryService', useExisting: StoryService };
 const $HashtagEntityService: Provider = { provide: 'HashtagEntityService', useExisting: HashtagEntityService };
 const $InstanceEntityService: Provider = { provide: 'InstanceEntityService', useExisting: InstanceEntityService };
 const $InviteCodeEntityService: Provider = { provide: 'InviteCodeEntityService', useExisting: InviteCodeEntityService };
@@ -415,6 +419,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FollowRequestEntityService,
 		GalleryLikeEntityService,
 		GalleryPostEntityService,
+		StoryEntityService,
+		StoryService,
 		HashtagEntityService,
 		InstanceEntityService,
 		InviteCodeEntityService,
@@ -564,6 +570,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FollowRequestEntityService,
 		$GalleryLikeEntityService,
 		$GalleryPostEntityService,
+		$StoryEntityService,
+		$StoryService,
 		$HashtagEntityService,
 		$InstanceEntityService,
 		$InviteCodeEntityService,
@@ -713,6 +721,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FollowRequestEntityService,
 		GalleryLikeEntityService,
 		GalleryPostEntityService,
+		StoryEntityService,
+		StoryService,
 		HashtagEntityService,
 		InstanceEntityService,
 		InviteCodeEntityService,
@@ -860,6 +870,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FollowRequestEntityService,
 		$GalleryLikeEntityService,
 		$GalleryPostEntityService,
+		$StoryEntityService,
+		$StoryService,
 		$HashtagEntityService,
 		$InstanceEntityService,
 		$InviteCodeEntityService,

@@ -58,6 +58,8 @@ import {
 	miRepository,
 	MiRetentionAggregation,
 	MiReversiGame,
+	MiStory,
+	MiStoryView,
 	MiRole,
 	MiRoleAssignment,
 	MiSignin,
@@ -544,6 +546,18 @@ const $reversiGamesRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $storiesRepository: Provider = {
+	provide: DI.storiesRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiStory).extend(miRepository as MiRepository<MiStory>),
+	inject: [DI.db],
+};
+
+const $storyViewsRepository: Provider = {
+	provide: DI.storyViewsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiStoryView).extend(miRepository as MiRepository<MiStoryView>),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [],
 	providers: [
@@ -623,6 +637,8 @@ const $reversiGamesRepository: Provider = {
 		$chatApprovalsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
+		$storiesRepository,
+		$storyViewsRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -701,6 +717,8 @@ const $reversiGamesRepository: Provider = {
 		$chatApprovalsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
+		$storiesRepository,
+		$storyViewsRepository,
 	],
 })
 export class RepositoryModule {

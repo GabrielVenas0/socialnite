@@ -16,6 +16,7 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
+import { instance } from '@/instance.js';
 import { WatermarkRenderer } from '@/utility/watermark.js';
 
 export type UploaderFeatures = {
@@ -111,12 +112,29 @@ function getCompressionSettings(level: 0 | 1 | 2 | 3) {
 	}
 }
 
+function isCompressible(type: string): boolean {
+	return IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(type) || VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(type);
+}
+
+// Nível de compressão inicial quando o arquivo passa do limite de envio.
+// Vídeo de celular já vem comprimido: o nível 1 (qualidade muito alta) quase não reduz,
+// então começa no médio e vai direto ao máximo se for muito maior que o limite.
+function getAutoCompressionLevel(file: File, limitBytes: number): 1 | 2 | 3 {
+	if (VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type)) {
+		return file.size > limitBytes * 4 ? 3 : 2;
+	}
+	return 1;
+}
+
 export function useUploader(options: {
 	folderId?: string | null;
 	multiple?: boolean;
 	features?: UploaderFeatures;
 } = {}) {
 	const $i = ensureSignin();
+
+	// Maior arquivo que o servidor aceita para este usuário (mesma regra de utility/drive.ts).
+	const maxUploadBytes = () => Math.min(instance.maxFileSize, $i.policies.maxFileSizeMb * 1024 * 1024);
 
 	const events = new EventEmitter<{
 		'itemUploaded': (ctx: { item: UploaderItem; }) => void;
@@ -135,6 +153,16 @@ export function useUploader(options: {
 		const id = genId();
 		const filename = file.name ?? 'untitled';
 		const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+
+		const preferredLevel = IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0;
+
+		// Acima do limite de envio: comprime sozinho, mesmo que a preferência seja "Nenhum".
+		const limit = maxUploadBytes();
+		const tooBig = isCompressible(file.type) && file.size > limit;
+		if (tooBig) {
+			os.toast(`O arquivo passa do limite de ${Math.floor(limit / 1024 / 1024)} MB e será comprimido automaticamente.`);
+		}
+
 		items.value.push({
 			id,
 			name: prefer.s.keepOriginalFilename ? filename : id + extension,
@@ -146,7 +174,7 @@ export function useUploader(options: {
 			aborted: false,
 			uploaded: null,
 			uploadFailed: false,
-			compressionLevel: IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
+			compressionLevel: tooBig && preferredLevel === 0 ? getAutoCompressionLevel(file, limit) : preferredLevel,
 			watermarkPresetId: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? prefer.s.defaultWatermarkPresetId : null,
 			file: markRaw(file),
 		});
@@ -516,6 +544,26 @@ export function useUploader(options: {
 		item.preprocessing = true;
 		item.preprocessProgress = null;
 
+		await preprocessOnce(item);
+
+		// Ainda acima do limite mesmo comprimido: aumenta a compressão até caber (ou até o máximo).
+		while (
+			isCompressible(item.file.type) &&
+			!item.aborted &&
+			items.value.includes(item) &&
+			(item.preprocessedFile ?? item.file).size > maxUploadBytes() &&
+			item.compressionLevel < 3
+		) {
+			item.compressionLevel = (item.compressionLevel + 1) as 1 | 2 | 3;
+			item.preprocessProgress = null;
+			await preprocessOnce(item);
+		}
+
+		item.preprocessing = false;
+		item.preprocessProgress = null;
+	}
+
+	async function preprocessOnce(item: UploaderItem): Promise<void> {
 		if (IMAGE_PREPROCESS_NEEDED_TYPES.includes(item.file.type)) {
 			try {
 				await preprocessForImage(item);
@@ -535,9 +583,6 @@ export function useUploader(options: {
 				// nop
 			}
 		}
-
-		item.preprocessing = false;
-		item.preprocessProgress = null;
 	}
 
 	async function preprocessForImage(item: UploaderItem): Promise<void> {

@@ -87,3 +87,7 @@ vite.config.local-dev.ts.timestamp-*
 
 k8s/secrets.yaml
 
+# Social Nite: credenciais (Google OAuth, VAPID, SMTP). Nunca versionar.
+/credenciais/
+client_secret*.json
+

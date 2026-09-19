@@ -797,14 +797,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 		</div>
 
-		<hr>
+		<!-- Social Nite: Barra de navegação, Barra de status, Deck e CSS personalizado
+		     ficam só para a administração — mexem na interface inteira do cliente. -->
+		<template v-if="$i.isAdmin">
+			<hr>
 
-		<div class="_gaps_s">
-			<FormLink to="/settings/navbar"><template #icon><i class="ti ti-list"></i></template>{{ i18n.ts.navbar }}</FormLink>
-			<FormLink to="/settings/statusbar"><template #icon><i class="ti ti-list"></i></template>{{ i18n.ts.statusbar }}</FormLink>
-			<FormLink to="/settings/deck"><template #icon><i class="ti ti-columns"></i></template>{{ i18n.ts.deck }}</FormLink>
-			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
-		</div>
+			<div class="_gaps_s">
+				<FormLink to="/settings/navbar"><template #icon><i class="ti ti-list"></i></template>{{ i18n.ts.navbar }}</FormLink>
+				<FormLink to="/settings/statusbar"><template #icon><i class="ti ti-list"></i></template>{{ i18n.ts.statusbar }}</FormLink>
+				<FormLink to="/settings/deck"><template #icon><i class="ti ti-columns"></i></template>{{ i18n.ts.deck }}</FormLink>
+				<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
+			</div>
+		</template>
 	</div>
 </SearchMarker>
 </template>

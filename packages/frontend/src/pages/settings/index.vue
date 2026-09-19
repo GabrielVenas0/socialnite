@@ -122,12 +122,13 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
 		active: currentPage.value?.route.name === 'sounds',
-	}, {
+	}, ...($i?.isAdmin ? [{
+		// Social Nite: Plugins roda código de terceiros no cliente — administração apenas.
 		icon: 'ti ti-plug',
 		text: i18n.ts.plugins,
 		to: '/settings/plugin',
 		active: currentPage.value?.route.name === 'plugin',
-	}],
+	}] : [])],
 }, {
 	items: [{
 		icon: 'ti ti-cloud',
@@ -139,12 +140,13 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.muteAndBlock,
 		to: '/settings/mute-block',
 		active: currentPage.value?.route.name === 'mute-block',
-	}, {
+	}, ...($i?.isAdmin ? [{
+		// Social Nite: Integração de serviço expõe o Console de API — administração apenas.
 		icon: 'ti ti-link',
 		text: i18n.ts._settings.serviceConnection,
 		to: '/settings/connect',
 		active: currentPage.value?.route.name === 'connect',
-	}, {
+	}] : []), {
 		icon: 'ti ti-package',
 		text: i18n.ts._settings.accountData,
 		to: '/settings/account-data',

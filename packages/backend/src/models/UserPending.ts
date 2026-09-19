@@ -31,4 +31,9 @@ export class MiUserPending {
 		length: 128,
 	})
 	public password: string;
+
+	@Column('varchar', {
+		length: 32, nullable: true,
+	})
+	public phone: string | null;
 }

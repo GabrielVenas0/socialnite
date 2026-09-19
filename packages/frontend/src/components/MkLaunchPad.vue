@@ -11,12 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-if="item.action" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
+					<span v-if="item.adminOnly" class="_beta adminBadge">só admin</span>
 					<span v-if="item.indicate && item.indicateValue" class="_indicateCounter indicatorWithValue">{{ item.indicateValue }}</span>
 					<span v-else-if="item.indicate" class="indicator _blink"><i class="_indicatorCircle"></i></span>
 				</button>
 				<MkA v-else v-click-anime :to="item.to" class="item" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
+					<span v-if="item.adminOnly" class="_beta adminBadge">só admin</span>
 					<span v-if="item.indicate && item.indicateValue" class="_indicateCounter indicatorWithValue">{{ item.indicateValue }}</span>
 					<span v-else-if="item.indicate" class="indicator _blink"><i class="_indicatorCircle"></i></span>
 				</MkA>
@@ -61,6 +63,7 @@ const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k =>
 	action: def.action,
 	indicate: def.indicated,
 	indicateValue: def.indicateValue,
+	adminOnly: def.adminOnly === true,
 }));
 
 function close() {
@@ -121,6 +124,14 @@ function close() {
 				font-size: 0.8em;
 				line-height: 1.5em;
 				text-align: center;
+			}
+
+			> .adminBadge {
+				position: absolute;
+				top: 6px;
+				right: 6px;
+				font-size: 0.65em;
+				pointer-events: none;
 			}
 
 			> .indicatorWithValue {
