@@ -30,12 +30,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #prefix><i class="ti ti-phone"></i></template>
 			</MkInput>
 
-			<MkInput v-if="needsEmail" v-model="password" type="password" autocomplete="current-password">
-				<template #label>Sua senha</template>
-				<template #prefix><i class="ti ti-lock"></i></template>
-				<template #caption>Confirme sua senha para alterar o e-mail.</template>
-			</MkInput>
-
 			<MkButton primary rounded :disabled="!canSubmit" @click="save">Salvar</MkButton>
 		</div>
 	</div>
@@ -65,10 +59,9 @@ const dialog = useTemplateRef('dialog');
 
 const email = ref('');
 const phone = ref('');
-const password = ref('');
 
 const canSubmit = computed(() => {
-	if (props.needsEmail && (email.value.length === 0 || password.value.length === 0)) return false;
+	if (props.needsEmail && email.value.length === 0) return false;
 	if (props.needsPhone && phone.value.length === 0) return false;
 	return true;
 });
@@ -81,10 +74,8 @@ async function save() {
 		}
 
 		if (props.needsEmail) {
-			await misskeyApi('i/update-email', {
-				password: password.value,
-				email: email.value,
-			});
+			// Sem senha: o backend só dispensa quando a conta ainda não tem e-mail.
+			await misskeyApi('i/update-email', { email: email.value } as never);
 			if ($i != null) $i.email = email.value;
 		}
 	} catch (err) {

@@ -60,7 +60,7 @@ export const paramDef = {
 		email: { type: 'string', nullable: true },
 		token: { type: 'string', nullable: true },
 	},
-	required: ['password'],
+	required: [],
 } as const;
 
 @Injectable()
@@ -96,9 +96,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			const passwordMatched = await bcrypt.compare(ps.password, profile.password!);
-			if (!passwordMatched) {
-				throw new ApiError(meta.errors.incorrectPassword);
+			// Social Nite: conta antiga que já estava logada e ainda não tem e-mail completa o
+			// cadastro sem senha (quem entrou há tempos pode não lembrar dela). O e-mail só vale
+			// depois de confirmado por link, e a recuperação de senha passa a ir para ele.
+			// Trocar ou remover um e-mail que já existe continua exigindo a senha.
+			const isFirstEmail = !profile.email && ps.email != null;
+
+			if (!isFirstEmail) {
+				const passwordMatched = ps.password != null && await bcrypt.compare(ps.password, profile.password!);
+				if (!passwordMatched) {
+					throw new ApiError(meta.errors.incorrectPassword);
+				}
 			}
 
 			if (ps.email != null) {
