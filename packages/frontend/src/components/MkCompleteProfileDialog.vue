@@ -7,8 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="420"
-	:canClose="false"
 	:withOkButton="false"
+	@close="dialog?.close()"
+	@esc="dialog?.close()"
 	@closed="emit('closed')"
 >
 	<template #header>Complete seu cadastro</template>
@@ -17,6 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps">
 			<MkInfo>
 				Para conseguir recuperar sua senha e receber avisos, precisamos do seu e-mail e do seu telefone.
+				Se preferir, você pode preencher depois: seu cadastro fica pendente e avisamos de novo na próxima vez que você abrir o Social Nite.
 			</MkInfo>
 
 			<MkInput v-if="needsEmail" v-model="email" type="email" :spellcheck="false">
@@ -31,6 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkInput>
 
 			<MkButton primary rounded :disabled="!canSubmit" @click="save">Salvar</MkButton>
+			<MkButton rounded @click="dialog?.close()">Preencher depois</MkButton>
 		</div>
 	</div>
 </MkModalWindow>

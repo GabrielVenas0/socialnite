@@ -115,7 +115,8 @@ export async function mainBoot() {
 		});
 
 		// Social Nite: contas criadas antes da exigência de e-mail e telefone ficariam
-		// sem como recuperar a senha. Enquanto faltar dado, o diálogo não fecha.
+		// sem como recuperar a senha. O diálogo pode ser dispensado (a pessoa segue usando a
+		// rede), mas o cadastro continua pendente e ele volta a cada abertura enquanto faltar dado.
 		if (instance.requirePhoneAndEmailForSignup) {
 			const needsEmail = !$i.email;
 			const needsPhone = !$i.phone;
