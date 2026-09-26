@@ -58,6 +58,8 @@ import {
 	miRepository,
 	MiRetentionAggregation,
 	MiReversiGame,
+	MiStory,
+	MiStoryView,
 	MiRole,
 	MiRoleAssignment,
 	MiSignin,
@@ -66,6 +68,7 @@ import {
 	MiSystemWebhook,
 	MiUsedUsername,
 	MiUser,
+	MiUserGoogleAccount,
 	MiUserIp,
 	MiUserKeypair,
 	MiUserList,
@@ -180,6 +183,12 @@ const $userPendingsRepository: Provider = {
 const $userSecurityKeysRepository: Provider = {
 	provide: DI.userSecurityKeysRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiUserSecurityKey).extend(miRepository as MiRepository<MiUserSecurityKey>),
+	inject: [DI.db],
+};
+
+const $userGoogleAccountsRepository: Provider = {
+	provide: DI.userGoogleAccountsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiUserGoogleAccount).extend(miRepository as MiRepository<MiUserGoogleAccount>),
 	inject: [DI.db],
 };
 
@@ -537,6 +546,18 @@ const $reversiGamesRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $storiesRepository: Provider = {
+	provide: DI.storiesRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiStory).extend(miRepository as MiRepository<MiStory>),
+	inject: [DI.db],
+};
+
+const $storyViewsRepository: Provider = {
+	provide: DI.storyViewsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiStoryView).extend(miRepository as MiRepository<MiStoryView>),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [],
 	providers: [
@@ -556,6 +577,7 @@ const $reversiGamesRepository: Provider = {
 		$userKeypairsRepository,
 		$userPendingsRepository,
 		$userSecurityKeysRepository,
+		$userGoogleAccountsRepository,
 		$userPublickeysRepository,
 		$userListsRepository,
 		$userListFavoritesRepository,
@@ -615,6 +637,8 @@ const $reversiGamesRepository: Provider = {
 		$chatApprovalsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
+		$storiesRepository,
+		$storyViewsRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -633,6 +657,7 @@ const $reversiGamesRepository: Provider = {
 		$userKeypairsRepository,
 		$userPendingsRepository,
 		$userSecurityKeysRepository,
+		$userGoogleAccountsRepository,
 		$userPublickeysRepository,
 		$userListsRepository,
 		$userListFavoritesRepository,
@@ -692,6 +717,8 @@ const $reversiGamesRepository: Provider = {
 		$chatApprovalsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
+		$storiesRepository,
+		$storyViewsRepository,
 	],
 })
 export class RepositoryModule {

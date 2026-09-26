@@ -59,7 +59,7 @@ export class MiMeta {
 	public maintainerEmail: string | null;
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
 	public disableRegistration: boolean;
 
@@ -192,6 +192,11 @@ export class MiMeta {
 	@Column('boolean', {
 		default: false,
 	})
+	public requirePhoneAndEmailForSignup: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public enableHcaptcha: boolean;
 
 	@Column('varchar', {
@@ -267,6 +272,23 @@ export class MiMeta {
 		default: false,
 	})
 	public enableTestcaptcha: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableGoogleSignin: boolean;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public googleClientId: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public googleClientSecret: string | null;
 
 	// chaptcha系を追加した際にはnodeinfoのレスポンスに追加するのを忘れないようにすること
 

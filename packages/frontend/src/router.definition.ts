@@ -6,7 +6,7 @@
 import { defineAsyncComponent } from 'vue';
 import type { AsyncComponentLoader } from 'vue';
 import type { RouteDef } from '@/lib/nirax.js';
-import { $i, iAmModerator } from '@/i.js';
+import { $i } from '@/i.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
 import PageTimeline from '@/pages/timeline.vue';
@@ -16,6 +16,12 @@ export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 	loadingComponent: MkLoading,
 	errorComponent: MkError,
 });
+
+// Lido na navegacao, nao na carga do modulo: as rotas sao montadas antes de
+// refreshCurrentAccount(), entao um snapshot congelado mandava o admin para o 404.
+function isModeratorNow(): boolean {
+	return $i != null && ($i.isAdmin === true || $i.isModerator === true);
+}
 
 function chatPage(...args: Parameters<typeof page>) {
 	return $i?.policies.chatAvailability !== 'unavailable' ? page(...args) : page(() => import('@/pages/not-found.vue'));
@@ -28,6 +34,9 @@ export const ROUTE_DEF = [{
 }, {
 	path: '/timeline',
 	component: PageTimeline,
+}, {
+	path: '/sign-in-with-google/done',
+	component: page(() => import('@/pages/sign-in-with-google-done.vue')),
 }, {
 	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
@@ -216,6 +225,16 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/about.vue')),
 	hash: 'initialTab',
 }, {
+	// Social Nite: URLs próprias para os documentos legais. Serviços externos
+	// (Google OAuth, lojas de app) exigem links diretos, sem hash de aba.
+	path: '/tos',
+	component: page(() => import('@/pages/tos.vue')),
+	loginRequired: false,
+}, {
+	path: '/privacy-policy',
+	component: page(() => import('@/pages/privacy-policy.vue')),
+	loginRequired: false,
+}, {
 	path: '/contact',
 	component: page(() => import('@/pages/contact.vue')),
 }, {
@@ -379,13 +398,13 @@ export const ROUTE_DEF = [{
 	loginRequired: true,
 }, {
 	path: '/admin/user/:userId',
-	component: iAmModerator ? page(() => import('@/pages/admin-user.vue')) : page(() => import('@/pages/not-found.vue')),
+	component: page(() => isModeratorNow() ? import('@/pages/admin-user.vue') : import('@/pages/not-found.vue')),
 }, {
 	path: '/admin/file/:fileId',
-	component: iAmModerator ? page(() => import('@/pages/admin-file.vue')) : page(() => import('@/pages/not-found.vue')),
+	component: page(() => isModeratorNow() ? import('@/pages/admin-file.vue') : import('@/pages/not-found.vue')),
 }, {
 	path: '/admin',
-	component: iAmModerator ? page(() => import('@/pages/admin/index.vue')) : page(() => import('@/pages/not-found.vue')),
+	component: page(() => isModeratorNow() ? import('@/pages/admin/index.vue') : import('@/pages/not-found.vue')),
 	children: [{
 		path: '/overview',
 		name: 'overview',
@@ -422,6 +441,10 @@ export const ROUTE_DEF = [{
 		path: '/federation',
 		name: 'federation',
 		component: page(() => import('@/pages/admin/federation.vue')),
+	}, {
+		path: '/visitor-preview',
+		name: 'visitorPreview',
+		component: page(() => import('@/pages/admin/visitor-preview.vue')),
 	}, {
 		path: '/announcements',
 		name: 'announcements',
@@ -578,6 +601,10 @@ export const ROUTE_DEF = [{
 	path: '/games',
 	component: page(() => import('@/pages/games.vue')),
 	loginRequired: false,
+}, {
+	path: '/ranking',
+	component: page(() => import('@/pages/ranking.vue')),
+	loginRequired: true,
 }, {
 	path: '/bubble-game',
 	component: page(() => import('@/pages/drop-and-fusion.vue')),

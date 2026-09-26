@@ -15,6 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'directNotes'">
 			<MkNotesTimeline :paginator="directNotesPaginator"/>
 		</div>
+		<div v-else-if="tab === 'followRequests'" class="_gaps">
+			<MkTab v-model="followRequestsTab" :tabs="followRequestsTabs"/>
+			<MkFollowRequestList :type="followRequestsTab"/>
+		</div>
 	</div>
 </PageWithHeader>
 </template>
@@ -24,12 +28,22 @@ import { computed, markRaw, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
+import MkTab from '@/components/MkTab.vue';
+import MkFollowRequestList from '@/components/MkFollowRequestList.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { $i } from '@/i.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const tab = ref('all');
+
+// sub-abas de "Pedidos de seguidor", as mesmas da página /my/follow-requests
+const followRequestsTab = ref<'list' | 'sent'>($i?.isLocked ? 'list' : 'sent');
+const followRequestsTabs = computed(() => [
+	{ key: 'list' as const, label: i18n.ts._followRequest.recieved, icon: 'ti ti-download' },
+	{ key: 'sent' as const, label: i18n.ts._followRequest.sent, icon: 'ti ti-upload' },
+]);
 const includeTypes = ref<string[] | null>(null);
 const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value!.includes(t)) : null);
 
@@ -87,6 +101,11 @@ const headerTabs = computed(() => [{
 	key: 'directNotes',
 	title: i18n.ts.directNotes,
 	icon: 'ti ti-mail',
+}, {
+	key: 'followRequests',
+	title: i18n.ts.followRequests,
+	icon: 'ti ti-user-plus',
+	indicated: $i != null && $i.hasPendingReceivedFollowRequest,
 }]);
 
 definePage(() => ({

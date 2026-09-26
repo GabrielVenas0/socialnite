@@ -35,6 +35,8 @@ import { MiFollowing } from '@/models/Following.js';
 import { MiFollowRequest } from '@/models/FollowRequest.js';
 import { MiGalleryLike } from '@/models/GalleryLike.js';
 import { MiGalleryPost } from '@/models/GalleryPost.js';
+import { MiStory } from '@/models/Story.js';
+import { MiStoryView } from '@/models/StoryView.js';
 import { MiHashtag } from '@/models/Hashtag.js';
 import { MiInstance } from '@/models/Instance.js';
 import { MiMeta } from '@/models/Meta.js';
@@ -60,6 +62,7 @@ import { MiSignin } from '@/models/Signin.js';
 import { MiSwSubscription } from '@/models/SwSubscription.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
 import { MiUser } from '@/models/User.js';
+import { MiUserGoogleAccount } from '@/models/UserGoogleAccount.js';
 import { MiUserIp } from '@/models/UserIp.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUserList } from '@/models/UserList.js';
@@ -193,6 +196,7 @@ export const entities = [
 	MiAuthSession,
 	MiAccessToken,
 	MiUser,
+	MiUserGoogleAccount,
 	MiUserProfile,
 	MiUserKeypair,
 	MiUserPublickey,
@@ -216,6 +220,8 @@ export const entities = [
 	MiPageLike,
 	MiGalleryPost,
 	MiGalleryLike,
+	MiStory,
+	MiStoryView,
 	MiDriveFile,
 	MiDriveFolder,
 	MiPoll,

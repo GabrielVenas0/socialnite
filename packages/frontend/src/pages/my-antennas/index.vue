@@ -6,7 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
-		<div>
+		<div class="_gaps">
+			<MkTip k="antennas">
+				{{ i18n.ts.antennasAboutTip }}
+			</MkTip>
+
 			<MkResult v-if="antennas.length === 0" type="empty"/>
 
 			<MkButton :link="true" to="/my/antennas/create" primary :class="$style.add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>

@@ -111,6 +111,24 @@ export class WellKnownServerService {
 			return this.oauth2ProviderService.generateRFC8414();
 		});
 
+		// Metade do servidor no handshake do Digital Asset Links. Sem ela o Android nao
+		// confirma que o site e o .apk sao do mesmo dono: o TWA cai em Custom Tabs (barra
+		// de URL visivel) e o Chrome nao delega as notificacoes para o app.
+		// O fingerprint precisa bater com a keystore que assina br.tec.nite.social.twa.
+		fastify.get('/.well-known/assetlinks.json', async (request, reply) => {
+			reply.header('Cache-Control', 'public, max-age=3600');
+			return [{
+				relation: ['delegate_permission/common.handle_all_urls'],
+				target: {
+					namespace: 'android_app',
+					package_name: 'br.tec.nite.social.twa',
+					sha256_cert_fingerprints: [
+						'0E:84:33:34:F4:D6:9A:CF:A6:89:80:83:48:B2:A9:78:41:BA:6E:CB:5A:9F:52:C4:5C:81:85:52:BA:37:A7:BC',
+					],
+				},
+			}];
+		});
+
 		/* TODO
 fastify.get('/.well-known/change-password', async (request, reply) => {
 });

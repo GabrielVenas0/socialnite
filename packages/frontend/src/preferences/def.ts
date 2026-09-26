@@ -163,7 +163,7 @@ export const PREF_DEF = definePreferences({
 		default: null as Theme | null,
 	},
 	syncDeviceDarkMode: {
-		default: true,
+		default: false,
 	},
 	defaultNoteVisibility: {
 		default: 'public' as (typeof Misskey.noteVisibilities)[number],
@@ -188,15 +188,10 @@ export const PREF_DEF = definePreferences({
 			'notifications',
 			'clips',
 			'drive',
-			'followRequests',
 			'chat',
 			'-',
 			'explore',
 			'announcements',
-			'channels',
-			'search',
-			'-',
-			'ui',
 		],
 	},
 	statusbars: {

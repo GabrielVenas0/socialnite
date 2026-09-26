@@ -4253,6 +4253,7 @@ export type components = {
             securityKeys: boolean;
             email?: string | null;
             emailVerified?: boolean | null;
+            phone?: string | null;
             securityKeysList?: {
                 /**
                  * Format: id
@@ -5375,6 +5376,8 @@ export type components = {
             clientOptions: Record<string, never>;
             disableRegistration: boolean;
             emailRequiredForSignup: boolean;
+            requirePhoneAndEmailForSignup: boolean;
+            enableGoogleSignin: boolean;
             enableHcaptcha: boolean;
             hcaptchaSiteKey: string | null;
             enableMcaptcha: boolean;
@@ -9323,6 +9326,10 @@ export interface operations {
                         cacheRemoteFiles: boolean;
                         cacheRemoteSensitiveFiles: boolean;
                         emailRequiredForSignup: boolean;
+                        requirePhoneAndEmailForSignup: boolean;
+                        enableGoogleSignin: boolean;
+                        googleClientId: string | null;
+                        googleClientSecret: string | null;
                         enableHcaptcha: boolean;
                         hcaptchaSiteKey: string | null;
                         enableMcaptcha: boolean;
@@ -12675,6 +12682,10 @@ export interface operations {
                     cacheRemoteFiles?: boolean;
                     cacheRemoteSensitiveFiles?: boolean;
                     emailRequiredForSignup?: boolean;
+                    requirePhoneAndEmailForSignup?: boolean;
+                    enableGoogleSignin?: boolean;
+                    googleClientId?: string | null;
+                    googleClientSecret?: string | null;
                     enableHcaptcha?: boolean;
                     hcaptchaSiteKey?: string | null;
                     hcaptchaSecretKey?: string | null;

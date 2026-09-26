@@ -4,7 +4,7 @@ html
 	#msg
 	script.
 		const msg = document.getElementById('msg');
-		const successText = `\nSuccess Flush! <a href="/">Back to Misskey</a>\n成功しました。<a href="/">Misskeyを開き直してください。</a>`;
+		const successText = `\nLimpeza concluída! <a href="/">Voltar ao Social Nite</a>`;
 
 		if (!document.cookie) {
 			message('Your site data is fully cleared by your browser.');
@@ -35,8 +35,8 @@ html
 
 					message(successText);
 				} catch (e) {
-					message(`\n${e}\n\nFlush Failed. <a href="/flush">Please retry.</a>\n失敗しました。<a href="/flush">もう一度試してみてください。</a>`);
-					message(`\nIf you retry more than 3 times, try manually clearing the browser cache or contact to instance admin.\n3回以上試しても失敗する場合、ブラウザのキャッシュを手動で消去し、それでもだめならインスタンス管理者に連絡してみてください。\n`)
+					message(`\n${e}\n\nA limpeza falhou. <a href="/flush">Tente novamente.</a>`);
+					message(`\nSe falhar mais de 3 vezes, limpe o cache do navegador manualmente ou entre em contato com o administrador do servidor.\n`)
 
 					console.error(e);
 					setTimeout(() => {

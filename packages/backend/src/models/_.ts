@@ -72,6 +72,8 @@ import { MiRelay } from '@/models/Relay.js';
 import { MiRenoteMuting } from '@/models/RenoteMuting.js';
 import { MiRetentionAggregation } from '@/models/RetentionAggregation.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
+import { MiStory } from '@/models/Story.js';
+import { MiStoryView } from '@/models/StoryView.js';
 import { MiRole } from '@/models/Role.js';
 import { MiRoleAssignment } from '@/models/RoleAssignment.js';
 import { MiSignin } from '@/models/Signin.js';
@@ -80,6 +82,7 @@ import { MiSystemAccount } from '@/models/SystemAccount.js';
 import { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
 import { MiUser } from '@/models/User.js';
+import { MiUserGoogleAccount } from '@/models/UserGoogleAccount.js';
 import { MiUserIp } from '@/models/UserIp.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUserList } from '@/models/UserList.js';
@@ -208,6 +211,7 @@ export {
 	MiSystemAccount,
 	MiUsedUsername,
 	MiUser,
+	MiUserGoogleAccount,
 	MiUserIp,
 	MiUserKeypair,
 	MiUserList,
@@ -234,6 +238,8 @@ export {
 	MiChatApproval,
 	MiBubbleGameRecord,
 	MiReversiGame,
+	MiStory,
+	MiStoryView,
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
@@ -287,6 +293,7 @@ export type SwSubscriptionsRepository = Repository<MiSwSubscription> & MiReposit
 export type SystemAccountsRepository = Repository<MiSystemAccount> & MiRepository<MiSystemAccount>;
 export type UsedUsernamesRepository = Repository<MiUsedUsername> & MiRepository<MiUsedUsername>;
 export type UsersRepository = Repository<MiUser> & MiRepository<MiUser>;
+export type UserGoogleAccountsRepository = Repository<MiUserGoogleAccount> & MiRepository<MiUserGoogleAccount>;
 export type UserIpsRepository = Repository<MiUserIp> & MiRepository<MiUserIp>;
 export type UserKeypairsRepository = Repository<MiUserKeypair> & MiRepository<MiUserKeypair>;
 export type UserListsRepository = Repository<MiUserList> & MiRepository<MiUserList>;
@@ -313,3 +320,5 @@ export type ChatRoomInvitationsRepository = Repository<MiChatRoomInvitation> & M
 export type ChatApprovalsRepository = Repository<MiChatApproval> & MiRepository<MiChatApproval>;
 export type BubbleGameRecordsRepository = Repository<MiBubbleGameRecord> & MiRepository<MiBubbleGameRecord>;
 export type ReversiGamesRepository = Repository<MiReversiGame> & MiRepository<MiReversiGame>;
+export type StoriesRepository = Repository<MiStory> & MiRepository<MiStory>;
+export type StoryViewsRepository = Repository<MiStoryView> & MiRepository<MiStoryView>;

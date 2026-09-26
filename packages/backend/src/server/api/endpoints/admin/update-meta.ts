@@ -71,6 +71,7 @@ export const paramDef = {
 		cacheRemoteFiles: { type: 'boolean' },
 		cacheRemoteSensitiveFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
+		requirePhoneAndEmailForSignup: { type: 'boolean' },
 		enableHcaptcha: { type: 'boolean' },
 		hcaptchaSiteKey: { type: 'string', nullable: true },
 		hcaptchaSecretKey: { type: 'string', nullable: true },
@@ -85,6 +86,9 @@ export const paramDef = {
 		turnstileSiteKey: { type: 'string', nullable: true },
 		turnstileSecretKey: { type: 'string', nullable: true },
 		enableTestcaptcha: { type: 'boolean' },
+		enableGoogleSignin: { type: 'boolean' },
+		googleClientId: { type: 'string', nullable: true },
+		googleClientSecret: { type: 'string', nullable: true },
 		googleAnalyticsMeasurementId: { type: 'string', nullable: true },
 		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
 		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
@@ -344,6 +348,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.emailRequiredForSignup = ps.emailRequiredForSignup;
 			}
 
+			if (ps.requirePhoneAndEmailForSignup !== undefined) {
+				set.requirePhoneAndEmailForSignup = ps.requirePhoneAndEmailForSignup;
+			}
+
 			if (ps.enableHcaptcha !== undefined) {
 				set.enableHcaptcha = ps.enableHcaptcha;
 			}
@@ -398,6 +406,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.enableTestcaptcha !== undefined) {
 				set.enableTestcaptcha = ps.enableTestcaptcha;
+			}
+
+			if (ps.enableGoogleSignin !== undefined) {
+				set.enableGoogleSignin = ps.enableGoogleSignin;
+			}
+
+			if (ps.googleClientId !== undefined) {
+				set.googleClientId = ps.googleClientId === '' ? null : ps.googleClientId;
+			}
+
+			if (ps.googleClientSecret !== undefined) {
+				set.googleClientSecret = ps.googleClientSecret === '' ? null : ps.googleClientSecret;
 			}
 
 			if (ps.googleAnalyticsMeasurementId !== undefined) {

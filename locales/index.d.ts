@@ -1255,6 +1255,22 @@ export interface Locale extends ILocale {
      */
     "basicNotesBeforeCreateAccount": string;
     /**
+     * 投稿を削除しても、他の人が保存した通知やスクリーンショット、共有などには、その後もしばらく残ってしまうことがあります。
+     */
+    "basicNotesDataDeletion": string;
+    /**
+     * 「ドライブ」は一般的な非公開ストレージではありません。アップロードしたファイルは、投稿に添付していなくても、直接リンクを知っている人なら誰でもアクセスできます。機密情報のアップロードは避けてください。
+     */
+    "basicNotesDriveCaution": string;
+    /**
+     * ユーザー名(@ユーザー名)は登録後に変更できません。アカウントを削除した場合も、同じユーザー名を再び使用することはできません。
+     */
+    "basicNotesUsernamePermanent": string;
+    /**
+     * アカウントの削除には時間がかかることがあります。特にドライブに多くのファイルをアップロードしている場合、削除が完了しないこともあります。
+     */
+    "basicNotesAccountDeletion": string;
+    /**
      * 利用規約
      */
     "termsOfService": string;
@@ -1638,6 +1654,26 @@ export interface Locale extends ILocale {
      * シークレットキー
      */
     "hcaptchaSecretKey": string;
+    /**
+     * Googleでログイン
+     */
+    "signinWithGoogle": string;
+    /**
+     * Social Nite独自のパスワードなしで、Googleアカウントでログイン・新規登録できるようにします。認証情報はhttps://console.cloud.google.com/apis/credentials(種類は「ウェブアプリケーション」)で作成してください。
+     */
+    "signinWithGoogleDescription": string;
+    /**
+     * Google Cloud Consoleの認証情報に、次のリダイレクトURIを登録してください: {url}
+     */
+    "googleSigninRedirectUri": ParameterizedString<"url">;
+    /**
+     * 登録時に電話番号とメールアドレスを必須にする
+     */
+    "requirePhoneAndEmailForSignup": string;
+    /**
+     * 有効にすると、今後登録する人は電話番号とメールアドレスの入力が必須になります(確認リンクの送信はせず、情報を収集するだけです)。既存のアカウントには影響しません。
+     */
+    "requirePhoneAndEmailForSignupDescription": string;
     /**
      * mCaptcha
      */
@@ -2742,6 +2778,10 @@ export interface Locale extends ILocale {
      * メールアドレス
      */
     "emailAddress": string;
+    /**
+     * 電話番号
+     */
+    "phone": string;
     /**
      * SMTP サーバーの設定
      */
@@ -5474,6 +5514,22 @@ export interface Locale extends ILocale {
      */
     "driveAboutTip": string;
     /**
+     * アンテナは、保存されて自動で動き続ける検索です。キーワードを指定すると、フォローしていないユーザーのものも含め、条件に合う新しいノートが自動的にここに集まります。
+     */
+    "antennasAboutTip": string;
+    /**
+     * チャンネルは特定の話題のための公開スペースです。誰でもフォローでき、そこに投稿されたノートは他のタイムラインに混ざりません。
+     */
+    "channelsAboutTip": string;
+    /**
+     * ここには、直近数時間にこのサーバーでよく使われているハッシュタグと、それぞれを話題にした人数が表示されます。ノートに #ハッシュタグ が付けられるようになると、ここに表示されます。
+     */
+    "trendsAboutTip": string;
+    /**
+     * ここでは、名前を知らなくても新しい人を見つけられます。話題のノート、新しく参加した人、アクティブな人、サーバーでロールを持っている人などが表示されます。最初にフォローする相手を探すのに最適です。
+     */
+    "exploreAboutTip": string;
+    /**
      * スクロールして閉じる
      */
     "scrollToClose": string;
@@ -5704,6 +5760,18 @@ export interface Locale extends ILocale {
          */
         "history": string;
         /**
+         * ここでは1対1で個別に会話できます。ここでのやり取りはタイムラインには表示されません。下のリストから相手を選ぶか、「チャットを開始」から名前で検索してください。グループでの会話にはチャンネルを使ってください。
+         */
+        "chatAboutTip": string;
+        /**
+         * 会話を始める
+         */
+        "startWithSomeoneYouFollow": string;
+        /**
+         * まだ誰もフォローしていません。「みつける」から誰かをフォローすると会話できます。
+         */
+        "noFollowingToChatWith": string;
+        /**
          * 履歴はありません
          */
         "noHistory": string;
@@ -5711,6 +5779,18 @@ export interface Locale extends ILocale {
          * グループはありません
          */
         "noRooms": string;
+        /**
+         * グループチャット
+         */
+        "groupChats": string;
+        /**
+         * グループチャット名
+         */
+        "groupChatName": string;
+        /**
+         * まだグループチャットに参加していません。「チャットを開始」から作成できます。
+         */
+        "noGroupChatsYet": string;
         /**
          * ユーザーを招待
          */

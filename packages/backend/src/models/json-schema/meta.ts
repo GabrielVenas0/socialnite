@@ -83,6 +83,10 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		requirePhoneAndEmailForSignup: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		enableHcaptcha: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -120,6 +124,10 @@ export const packedMetaLiteSchema = {
 			optional: false, nullable: true,
 		},
 		enableTestcaptcha: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		enableGoogleSignin: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},

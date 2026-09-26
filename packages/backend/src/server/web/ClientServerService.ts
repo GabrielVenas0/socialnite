@@ -131,17 +131,41 @@ export class ClientServerService {
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 			'name': this.meta.name || this.config.host,
-			'start_url': '/',
-			'display': 'standalone',
-			'background_color': '#313a42',
+			'id': '/',
+			'scope': '/',
+			'lang': 'pt-PT',
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'theme_color': this.meta.themeColor || '#86b300',
+			'description': this.meta.description || 'Social Nite — a tua rede social.',
+			'start_url': '/',
+			'display': 'standalone',
+			'display_override': ['window-controls-overlay', 'standalone'],
+			'orientation': 'natural',
+			'categories': ['social', 'social networking'],
+			// Cores da marca Social Nite (ver themes/d_social_nite.json5)
+			'background_color': '#141318',
+			// 空文字列の場合右辺を使いたいため
+			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+			'theme_color': this.meta.themeColor || '#0972c4',
 			'icons': [{
+				// 空文字列の場合右辺を使いたいため
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				'src': this.meta.app192IconUrl ? this.meta.app192IconUrl : '/static-assets/icons/192-maskable.png',
+				'sizes': '192x192',
+				'type': 'image/png',
+				'purpose': 'maskable',
+			}, {
 				// 空文字列の場合右辺を使いたいため
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				'src': this.meta.app192IconUrl || '/static-assets/icons/192.png',
 				'sizes': '192x192',
+				'type': 'image/png',
+				'purpose': 'any',
+			}, {
+				// 空文字列の場合右辺を使いたいため
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				'src': this.meta.app512IconUrl ? this.meta.app512IconUrl : '/static-assets/icons/512-maskable.png',
+				'sizes': '512x512',
 				'type': 'image/png',
 				'purpose': 'maskable',
 			}, {
@@ -150,7 +174,7 @@ export class ClientServerService {
 				'src': this.meta.app512IconUrl || '/static-assets/icons/512.png',
 				'sizes': '512x512',
 				'type': 'image/png',
-				'purpose': 'maskable',
+				'purpose': 'any',
 			}, {
 				'src': '/static-assets/splash.png',
 				'sizes': '300x300',
@@ -185,7 +209,7 @@ export class ClientServerService {
 	@bindThis
 	private async generateCommonPugData(meta: MiMeta) {
 		return {
-			instanceName: meta.name ?? 'Misskey',
+			instanceName: meta.name ?? 'Social Nite',
 			icon: meta.iconUrl,
 			appleTouchIcon: meta.app512IconUrl,
 			themeColor: meta.themeColor,
@@ -398,7 +422,7 @@ export class ClientServerService {
 
 		// OpenSearch XML
 		fastify.get('/opensearch.xml', async (request, reply) => {
-			const name = this.meta.name ?? 'Misskey';
+			const name = this.meta.name ?? 'Social Nite';
 			let content = '';
 			content += '<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">';
 			content += `<ShortName>${name}</ShortName>`;
@@ -419,7 +443,7 @@ export class ClientServerService {
 			return await reply.view('base', {
 				img: this.meta.bannerUrl,
 				url: this.config.url,
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				desc: this.meta.description,
 				...await this.generateCommonPugData(this.meta),
 				...data,
@@ -794,7 +818,7 @@ export class ClientServerService {
 
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				...await this.generateCommonPugData(this.meta),
 				embedCtx: htmlSafeJsonStringify({
 					user: _user,
@@ -820,7 +844,7 @@ export class ClientServerService {
 
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				...await this.generateCommonPugData(this.meta),
 				embedCtx: htmlSafeJsonStringify({
 					note: _note,
@@ -841,7 +865,7 @@ export class ClientServerService {
 
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				...await this.generateCommonPugData(this.meta),
 				embedCtx: htmlSafeJsonStringify({
 					clip: _clip,
@@ -854,7 +878,7 @@ export class ClientServerService {
 
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
+				title: this.meta.name ?? 'Social Nite',
 				...await this.generateCommonPugData(this.meta),
 			});
 		});

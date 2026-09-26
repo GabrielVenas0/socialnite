@@ -8,29 +8,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="tab === 'overview'" class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 20px;">
 		<XOverview/>
 	</div>
+	<div v-else-if="tab === 'rules'" class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 20px;">
+		<XRules/>
+	</div>
+	<div v-else-if="tab === 'terms'" class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 20px;">
+		<XTerms/>
+	</div>
 	<div v-else-if="tab === 'emojis'" class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 20px;">
 		<XEmojis/>
-	</div>
-	<div v-else-if="instance.federation !== 'none' && tab === 'federation'" class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 20px;">
-		<XFederation/>
-	</div>
-	<div v-else-if="tab === 'charts'" class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 20px;">
-		<MkInstanceStats/>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/utility/achievements.js';
 import { definePage } from '@/page.js';
 
 const XOverview = defineAsyncComponent(() => import('@/pages/about.overview.vue'));
+const XRules = defineAsyncComponent(() => import('@/pages/about.rules.vue'));
+const XTerms = defineAsyncComponent(() => import('@/pages/about.terms.vue'));
 const XEmojis = defineAsyncComponent(() => import('@/pages/about.emojis.vue'));
-const XFederation = defineAsyncComponent(() => import('@/pages/about.federation.vue'));
-const MkInstanceStats = defineAsyncComponent(() => import('@/components/MkInstanceStats.vue'));
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;
@@ -40,29 +38,24 @@ const props = withDefaults(defineProps<{
 
 const tab = ref(props.initialTab);
 
-watch(tab, () => {
-	if (tab.value === 'charts') {
-		claimAchievement('viewInstanceChart');
-	}
-});
-
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 }, {
+	// Social Nite: regulamento e termos vivem aqui, versionados no repositório
+	key: 'rules',
+	title: i18n.ts.serverRules,
+	icon: 'ti ti-checkup-list',
+}, {
+	key: 'terms',
+	title: i18n.ts.termsOfService,
+	icon: 'ti ti-license',
+}, {
 	key: 'emojis',
 	title: i18n.ts.customEmojis,
 	icon: 'ti ti-icons',
-}, ...(instance.federation !== 'none' ? [{
-	key: 'federation',
-	title: i18n.ts.federation,
-	icon: 'ti ti-whirl',
-}] : []), {
-	key: 'charts',
-	title: i18n.ts.charts,
-	icon: 'ti ti-chart-line',
 }]);
 
 definePage(() => ({

@@ -67,7 +67,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	darkMode: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	realtimeMode: {
 		where: 'device',

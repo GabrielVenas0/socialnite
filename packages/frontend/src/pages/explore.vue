@@ -5,6 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<div class="_spacer" style="--MI_SPACER-w: 1200px; padding-bottom: 0;">
+		<MkTip k="explore">
+			{{ i18n.ts.exploreAboutTip }}
+		</MkTip>
+	</div>
 	<div v-if="tab === 'featured'">
 		<XFeatured/>
 	</div>

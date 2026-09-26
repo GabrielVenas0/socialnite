@@ -63,6 +63,7 @@ export class SignupApiService {
 				host?: string;
 				invitationCode?: string;
 				emailAddress?: string;
+				phone?: string;
 				'hcaptcha-response'?: string;
 				'g-recaptcha-response'?: string;
 				'turnstile-response'?: string;
@@ -113,6 +114,18 @@ export class SignupApiService {
 		const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] ?? null) : null;
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
+		const phone = body['phone'];
+
+		if (this.meta.requirePhoneAndEmailForSignup) {
+			if (emailAddress == null || typeof emailAddress !== 'string' || emailAddress === '') {
+				reply.code(400);
+				return;
+			}
+			if (phone == null || typeof phone !== 'string' || phone === '') {
+				reply.code(400);
+				return;
+			}
+		}
 
 		if (this.meta.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
@@ -196,13 +209,14 @@ export class SignupApiService {
 				email: emailAddress!,
 				username: username,
 				password: hash,
+				phone: phone ?? null,
 			});
 
 			const link = `${this.config.url}/signup-complete/${code}`;
 
-			this.emailService.sendEmail(emailAddress!, 'Signup',
-				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
-				`To complete signup, please click this link: ${link}`);
+			this.emailService.sendEmail(emailAddress!, 'Complete seu cadastro',
+				`Para concluir seu cadastro no Social Nite, clique neste link:<br><a href="${link}">${link}</a>`,
+				`Para concluir seu cadastro no Social Nite, clique neste link: ${link}`);
 
 			if (ticket) {
 				await this.registrationTicketsRepository.update(ticket.id, {
@@ -218,6 +232,25 @@ export class SignupApiService {
 				const { account, secret } = await this.signupService.signup({
 					username, password, host,
 				});
+
+				if (emailAddress || phone) {
+					// Sem e-mail verificado, request-reset-password devolve 204 e não envia nada,
+					// então a verificação precisa sair já no cadastro.
+					const emailVerifyCode = emailAddress ? secureRndstr(16, { chars: L_CHARS }) : null;
+
+					await this.userProfilesRepository.update({ userId: account.id }, {
+						...(emailAddress ? { email: emailAddress, emailVerifyCode } : {}),
+						...(phone ? { phone } : {}),
+					});
+
+					if (emailAddress && emailVerifyCode) {
+						const link = `${this.config.url}/verify-email/${emailVerifyCode}`;
+
+						this.emailService.sendEmail(emailAddress, 'Confirme seu e-mail',
+							`Para confirmar seu e-mail no Social Nite, clique neste link:<br><a href="${link}">${link}</a>`,
+							`Para confirmar seu e-mail no Social Nite, clique neste link: ${link}`);
+					}
+				}
 
 				const res = await this.userEntityService.pack(account, account, {
 					schema: 'MeDetailed',
@@ -270,6 +303,7 @@ export class SignupApiService {
 				email: pendingUser.email,
 				emailVerified: true,
 				emailVerifyCode: null,
+				...(pendingUser.phone ? { phone: pendingUser.phone } : {}),
 			});
 
 			const ticket = await this.registrationTicketsRepository.findOneBy({ pendingUserId: pendingUser.id });

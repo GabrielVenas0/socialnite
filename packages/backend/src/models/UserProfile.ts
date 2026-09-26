@@ -86,6 +86,12 @@ export class MiUserProfile {
 	})
 	public emailVerifyCode: string | null;
 
+	@Column('varchar', {
+		length: 32, nullable: true,
+		comment: 'The phone number of the User.',
+	})
+	public phone: string | null;
+
 	@Column('boolean', {
 		default: false,
 	})
