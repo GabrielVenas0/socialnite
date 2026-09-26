@@ -49,6 +49,16 @@ services:
       interval: 5s
       retries: 20
 
+  neo4j:
+    restart: always
+    image: neo4j:5-community
+    networks:
+      - internal_network
+    env_file:
+      - .config/docker.env
+    volumes:
+      - neo4j_data:/data
+
 #  mcaptcha:
 #    restart: always
 #    image: mcaptcha/mcaptcha:latest
