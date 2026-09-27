@@ -5,6 +5,10 @@ services:
     restart: always
     env_file:
       - .config/docker.env
+    # environment:
+    #   - NEO4J_HOST=neo4j
+    #   - NEO4J_PORT=7687
+    #   - NEO4J_URL=neo4j://neo4j:7687
     volumes:
       - ./.config/default.yml:/misskey/.config/default.yml:ro
       - files:/misskey/files
@@ -13,6 +17,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      # neo4j:
+      #   condition: service_healthy
 
   redis:
     restart: always
@@ -36,6 +42,22 @@ services:
       interval: 5s
       retries: 20
 
+  # neo4j:
+  #   restart: always
+  #   image: neo4j:5-community
+  #   environment:
+  #     - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD}
+  #   volumes:
+  #     - neo4j_data:/data
+  #     - neo4j_logs:/logs
+  #   healthcheck:
+  #     test:
+  #       ["CMD-SHELL", "wget -q -O /dev/null http://localhost:7474 || exit 1"]
+  #     interval: 5s
+  #     retries: 20
+  #     start_period: 30s
+
 volumes:
   files:
-  letsencrypt:
+  # neo4j_data:
+  # neo4j_logs:
