@@ -80,9 +80,9 @@ export function build() {
 			switch (k) {
 				case 'ja-JP': return v;
 				case 'ja-KS': return merge(locales['ja-JP'], v);
-				// pt-PT é o idioma padrão do Social Nite: se uma chave faltar, cai em
-				// inglês antes do japonês, para não vazar texto em japonês na interface.
-				case 'pt-PT': return merge(locales['ja-JP'], locales['en-US'], v);
+				// pt-PT é o idioma padrão do Social Nite. Se uma chave faltar,
+				// use inglês como fallback para nunca exibir japonês na interface.
+				case 'pt-PT': return merge(locales['en-US'], v);
 				default: return merge(
 					locales['pt-PT'],
 					locales['ja-JP'],
