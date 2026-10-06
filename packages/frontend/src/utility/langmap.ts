@@ -333,10 +333,10 @@ export const langmap = {
 		nativeName: 'Italiano',
 	},
 	'ja': {
-		nativeName: '日本語',
+		nativeName: 'Japonês',
 	},
 	'ja-JP': {
-		nativeName: '日本語 (日本)',
+		nativeName: 'Japonês (Japão)',
 	},
 	'jv-ID': {
 		nativeName: 'Basa Jawa',

@@ -532,7 +532,7 @@ const monoDefinitions = computed(() => {
 function getScoreUnit(gameMode: string) {
 	return gameMode === 'normal' ? 'pt' :
 		gameMode === 'square' ? 'pt' :
-		gameMode === 'yen' ? '円' :
+		gameMode === 'yen' ? 'ienes' :
 		gameMode === 'sweets' ? 'kcal' :
 		'' as never;
 }

@@ -64,7 +64,7 @@ const methodName = computed(() => {
 		case 'webhook':
 			return i18n.ts._abuseReport._notificationRecipient._recipientType.webhook;
 		default:
-			return '不明';
+			return 'Desconhecido';
 	}
 });
 

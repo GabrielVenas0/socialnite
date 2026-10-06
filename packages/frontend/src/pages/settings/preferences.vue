@@ -978,7 +978,7 @@ function getEmojiIndexLangName(targetLang: typeof emojiIndexLangs[number]) {
 	} else {
 		// 絵文字辞書限定の言語定義
 		switch (targetLang) {
-			case 'ja-JP_hira': return 'ひらがな';
+			case 'ja-JP_hira': return 'Hiragana';
 			default: return targetLang;
 		}
 	}

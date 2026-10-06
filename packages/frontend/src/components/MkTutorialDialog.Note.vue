@@ -45,7 +45,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 	userId: '0000000001',
 	user: {
 		id: '0000000001',
-		name: '藍',
+		name: 'Azul',
 		username: 'ai',
 		host: null,
 		avatarDecorations: [],

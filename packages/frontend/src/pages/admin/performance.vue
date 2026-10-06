@@ -143,7 +143,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker>
 					<MkFolder :defaultOpen="true">
 						<template #icon><SearchIcon><i class="ti ti-recycle"></i></SearchIcon></template>
-						<template #label><SearchLabel>Remote Notes Cleaning (仮)</SearchLabel></template>
+						<template #label><SearchLabel>Limpeza de notas remotas (provisório)</SearchLabel></template>
 						<template v-if="remoteNotesCleaningForm.savedState.enableRemoteNotesCleaning" #suffix>Enabled</template>
 						<template v-else #suffix>Disabled</template>
 						<template v-if="remoteNotesCleaningForm.modified.value" #footer>

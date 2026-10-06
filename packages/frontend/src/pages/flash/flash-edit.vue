@@ -59,50 +59,50 @@ var name = ""
 
 Ui:render([
 	Ui:C:textInput({
-		label: "Your name"
+		label: "Seu nome"
 		onInput: @(v) { name = v }
 	})
 	Ui:C:button({
-		text: "Hello"
+		text: "Olá"
 		onClick: @() {
-			Mk:dialog(null, \`Hello, {name}!\`)
+			Mk:dialog(null, \`Olá, {name}!\`)
 		}
 	})
 ])
 `;
 
 const PRESET_OMIKUJI = `/// @ ${AISCRIPT_VERSION}
-// ユーザーごとに日替わりのおみくじのプリセット
+// Preset de sorteio diário por usuário
 
-// 選択肢
+// Opções
 let choices = [
-	"ｷﾞｶﾞ吉"
-	"大吉"
-	"吉"
-	"中吉"
-	"小吉"
-	"末吉"
-	"凶"
-	"大凶"
+	"Sorte grande"
+	"Excelente"
+	"Boa sorte"
+	"Sorte moderada"
+	"Sorte pequena"
+	"Sorte tardia"
+	"Azar"
+	"Muito azar"
 ]
 
-// シードが「PlayID+ユーザーID+今日の日付」である乱数生成器を用意
+// Prepara um gerador aleatório com a semente "ID do Play + ID do usuário + data de hoje"
 let random = Math:gen_rng(\`{THIS_ID}{USER_ID}{Date:year()}{Date:month()}{Date:day()}\`)
 
-// ランダムに選択肢を選ぶ
+// Escolhe uma opção aleatoriamente
 let chosen = choices[random(0, (choices.len - 1))]
 
-// 結果のテキスト
-let result = \`今日のあなたの運勢は **{chosen}** です。\`
+// Texto do resultado
+let result = \`Sua sorte de hoje é **{chosen}**.\`
 
-// UIを表示
+// Exibe a interface
 Ui:render([
 	Ui:C:container({
 		align: 'center'
 		children: [
 			Ui:C:mfm({ text: result })
 			Ui:C:postFormButton({
-				text: "投稿する"
+				text: "Publicar"
 				rounded: true
 				primary: true
 				form: {
@@ -115,15 +115,15 @@ Ui:render([
 `;
 
 const PRESET_SHUFFLE = `/// @ ${AISCRIPT_VERSION}
-// 巻き戻し可能な文字シャッフルのプリセット
+// Preset de embaralhamento de texto com possibilidade de voltar
 
-let string = "ペペロンチーノ"
+let string = "Pepperoni"
 let length = string.len
 
-// 過去の結果を保存しておくやつ
+// Armazena os resultados anteriores
 var results = []
 
-// どれだけ巻き戻しているか
+// Quantidade de etapas voltadas
 var cursor = 0
 
 @main() {
@@ -141,7 +141,7 @@ var cursor = 0
 
 	results.push(result)
 
-	// UIを表示
+	// Exibe a interface
 	render(result)
 }
 
@@ -173,12 +173,12 @@ var cursor = 0
 						disabled: !(results.len > 1 && cursor > 0)
 						onClick: forward
 					}, {
-						text: "引き直す"
+						text: "Sortear novamente"
 						onClick: main
 					}]
 				})
 				Ui:C:postFormButton({
-					text: "投稿する"
+					text: "Publicar"
 					rounded: true
 					primary: true
 					form: {
@@ -194,28 +194,28 @@ main()
 `;
 
 const PRESET_QUIZ = `/// @ ${AISCRIPT_VERSION}
-let title = '地理クイズ'
+let title = 'Quiz de geografia'
 
 let qas = [{
-	q: 'オーストラリアの首都は？'
-	choices: ['シドニー', 'キャンベラ', 'メルボルン']
-	a: 'キャンベラ'
-	aDescription: '最大の都市はシドニーですが首都はキャンベラです。'
+	q: 'Qual é a capital da Austrália?'
+	choices: ['Sydney', 'Canberra', 'Melbourne']
+	a: 'Canberra'
+	aDescription: 'Sydney é a maior cidade, mas Canberra é a capital.'
 }, {
-	q: '国土面積2番目の国は？'
-	choices: ['カナダ', 'アメリカ', '中国']
-	a: 'カナダ'
-	aDescription: '大きい順にロシア、カナダ、アメリカ、中国です。'
+	q: 'Qual é o segundo maior país em área?'
+	choices: ['Canadá', 'Estados Unidos', 'China']
+	a: 'Canadá'
+	aDescription: 'Em ordem de área: Rússia, Canadá, Estados Unidos e China.'
 }, {
-	q: '二重内陸国ではないのは？'
-	choices: ['リヒテンシュタイン', 'ウズベキスタン', 'レソト']
-	a: 'レソト'
-	aDescription: 'レソトは(一重)内陸国です。'
+	q: 'Qual não é um país duplamente sem litoral?'
+	choices: ['Liechtenstein', 'Uzbequistão', 'Lesoto']
+	a: 'Lesoto'
+	aDescription: 'O Lesoto é um país sem litoral, mas não duplamente sem litoral.'
 }, {
-	q: '閘門がない運河は？'
-	choices: ['キール運河', 'スエズ運河', 'パナマ運河']
-	a: 'スエズ運河'
-	aDescription: 'スエズ運河は高低差がないので閘門はありません。'
+	q: 'Qual canal não possui eclusas?'
+	choices: ['Canal de Kiel', 'Canal de Suez', 'Canal do Panamá']
+	a: 'Canal de Suez'
+	aDescription: 'O Canal de Suez não possui eclusas porque não há diferença de altitude.'
 }]
 
 let qaEls = [Ui:C:container({
@@ -267,7 +267,7 @@ each (let qa, qas) {
 					size: 1.2
 					bold: true
 					color: if (correct) '#f00' else '#00f'
-					text: if (correct) '🎉正解' else '不正解'
+					text: if (correct) '🎉Resposta correta' else 'Resposta incorreta'
 				})
 				Ui:C:text({
 					text: qa.aDescription
@@ -276,11 +276,11 @@ each (let qa, qas) {
 		})
 	}
 
-	let result = \`{title}の結果は{qas.len}問中{score}問正解でした。\`
+	let result = \`Resultado de {title}: {score} acertos em {qas.len} perguntas.\`
 	Ui:get('footer').update({
 		children: [
 			Ui:C:postFormButton({
-				text: '結果を共有'
+				text: 'Compartilhar resultado'
 				rounded: true
 				primary: true
 				form: {
@@ -295,7 +295,7 @@ qaEls.push(Ui:C:container({
 	align: 'center'
 	children: [
 		Ui:C:button({
-			text: '答え合わせ'
+			text: 'Conferir respostas'
 			primary: true
 			rounded: true
 			onClick: finish
@@ -307,28 +307,28 @@ Ui:render(qaEls)
 `;
 
 const PRESET_TIMELINE = `/// @ ${AISCRIPT_VERSION}
-// APIリクエストを行いローカルタイムラインを表示するプリセット
+// Preset que consulta a API e exibe a linha do tempo local
 
 @fetch() {
 	Ui:render([
 		Ui:C:container({
 			align: 'center'
 			children: [
-				Ui:C:text({ text: "読み込み中..." })
+				Ui:C:text({ text: "Carregando..." })
 			]
 		})
 	])
 
-	// タイムライン取得
+	// Busca a linha do tempo
 	let notes = Mk:api("notes/local-timeline", {})
 
-	// それぞれのノートごとにUI要素作成
+	// Cria um elemento de interface para cada publicação
 	let noteEls = []
 	each (let note, notes) {
-		// 表示名を設定していないアカウントはidを表示
+		// Exibe o ID quando a conta não possui nome de exibição
 		let userName = if Core:type(note.user.name) == "str" note.user.name else note.user.username
-		// リノートもしくはメディア・投票のみで本文が無いノートに代替表示文を設定
-		let noteText = if Core:type(note.text) == "str" note.text else "（リノートもしくはメディア・投票のみのノート）"
+		// Define um texto alternativo para republicações, mídias ou enquetes sem conteúdo
+		let noteText = if Core:type(note.text) == "str" note.text else "(republicação, mídia ou enquete sem texto)"
 
 		let el = Ui:C:container({
 			bgColor: "#444"
@@ -348,11 +348,11 @@ const PRESET_TIMELINE = `/// @ ${AISCRIPT_VERSION}
 		noteEls.push(el)
 	}
 
-	// UIを表示
+	// Exibe a interface
 	Ui:render([
-		Ui:C:text({ text: "ローカル タイムライン" })
+		Ui:C:text({ text: "Linha do tempo local" })
 		Ui:C:button({
-			text: "更新"
+			text: "Atualizar"
 			onClick: @() {
 				fetch()
 			}
