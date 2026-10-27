@@ -298,7 +298,9 @@ export async function createEmptyNotification(): Promise<void> {
 		await globalThis.registration.showNotification(
 			(new URL(origin)).host,
 			{
-				body: `Misskey v${_VERSION_}`,
+				// Notificação que o navegador obriga a exibir a cada push. No Android,
+				// pelo app, ela chegava à bandeja como "Misskey v...".
+				body: `Social Nite v${_VERSION_}`,
 				silent: true,
 				badge: iconUrl('null'),
 				tag: 'read_notification',
