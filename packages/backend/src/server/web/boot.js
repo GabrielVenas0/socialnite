@@ -13,6 +13,12 @@
 	};
 	window.onunhandledrejection = (e) => {
 		console.error(e);
+		// Operação cancelada não é falha de carregamento: o app segue funcionando.
+		// Sem isto, qualquer AbortError durante o boot -- por exemplo uma transição
+		// de tema abortada por outra no WebKit -- substitui a página inteira pela
+		// tela de erro. A correção na origem está em theme.ts; isto é a rede de
+		// segurança para outras fontes do mesmo tipo de erro.
+		if (e.reason && e.reason.name === "AbortError") return;
 		renderError("SOMETHING_HAPPENED_IN_PROMISE", e.reason || e);
 	};
 
