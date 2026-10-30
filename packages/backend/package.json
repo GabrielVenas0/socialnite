@@ -144,7 +144,6 @@
 		"misskey-reversi": "workspace:*",
 		"ms": "3.0.0-canary.202508261828",
 		"nanoid": "5.1.6",
-		"neo4j-driver": "6.2.0",
 		"nested-property": "4.0.0",
 		"node-fetch": "3.3.2",
 		"nodemailer": "7.0.9",
