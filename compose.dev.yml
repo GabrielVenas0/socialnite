@@ -106,3 +106,6 @@ networks:
   internal_network:
     internal: true
   external_network:
+
+volumes:
+  neo4j_data:
