@@ -22,6 +22,9 @@ const MODERATOR_INACTIVITY_LIMIT_DAYS = 7;
 const MODERATOR_INACTIVITY_WARNING_REMAINING_DAYS = 2;
 // 期限から6時間ごとに通知を行う
 const MODERATOR_INACTIVITY_WARNING_NOTIFY_INTERVAL_HOURS = 6;
+// Social Nite: o cadastro não fecha sozinho quando a moderação fica inativa,
+// então novos usuários entram sem código de convite. Para religar, troque para true.
+const FECHAR_CADASTRO_POR_INATIVIDADE: boolean = false;
 const ONE_HOUR_MILLI_SEC = 1000 * 60 * 60;
 const ONE_DAY_MILLI_SEC = ONE_HOUR_MILLI_SEC * 24;
 
@@ -120,6 +123,12 @@ export class CheckModeratorsActivityProcessorService {
 	@bindThis
 	public async process(): Promise<void> {
 		this.logger.info('start.');
+
+		if (!FECHAR_CADASTRO_POR_INATIVIDADE) {
+			this.logger.info('fechamento automático do cadastro desligado no Social Nite.');
+			this.logger.succ('finish.');
+			return;
+		}
 
 		const meta = await this.metaService.fetch(false);
 		if (!meta.disableRegistration) {
