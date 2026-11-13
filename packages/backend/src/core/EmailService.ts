@@ -60,7 +60,7 @@ export class EmailService {
 		} as any);
 
 		const htmlContent = `<!doctype html>
-<html>
+<html lang="pt-BR">
 	<head>
 		<meta charset="utf-8">
 		<title>${ subject }</title>
@@ -131,7 +131,7 @@ export class EmailService {
 				<div>${ html }</div>
 			</article>
 			<footer>
-				<a href="${ emailSettingUrl }">${ 'Email setting' }</a>
+				<a href="${ emailSettingUrl }">${ 'Configurações de e-mail' }</a>
 			</footer>
 		</main>
 		<nav>

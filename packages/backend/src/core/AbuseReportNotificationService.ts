@@ -116,7 +116,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 					// TODO: 送信処理はJobQueue化したい
 					return this.emailService.sendEmail(
 						mailAddress,
-						'New Abuse Report',
+						'Nova denúncia',
 						sanitizeHtml(it.comment),
 						sanitizeHtml(it.comment),
 					);

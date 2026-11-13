@@ -32,33 +32,33 @@ body
 	h1(data-i18n="title") Falha ao carregar o Social Nite
 
 	button.button-big(onclick="location.reload();")
-		span.button-label-big(data-i18n-reload) Reload
+		span.button-label-big(data-i18n-reload) Recarregar
 
-	p(data-i18n="serverError") If reloading after a period of time does not resolve the problem, contact the server administrator with the following ERROR ID.
+	p(data-i18n="serverError") Se o problema continuar depois de esperar um pouco e recarregar, fale com a administração do Social Nite e informe o ID do erro abaixo.
 
 	div#errors
 		code.
-			ERROR CODE: #{code}
-			ERROR ID: #{id}
+			CÓDIGO DO ERRO: #{code}
+			ID DO ERRO: #{id}
 
 	p
-		b(data-i18n="solution") The following actions may solve the problem.
+		b(data-i18n="solution") Estas ações podem resolver o problema:
 
-	p(data-i18n="solution1") Update your os and browser
-	p(data-i18n="solution2") Disable an adblocker
-	p(data-i18n="solution3") Clear your browser cache
-	p(data-i18n="solution4") (Tor Browser) Set dom.webaudio.enabled to true
+	p(data-i18n="solution1") Atualize o sistema e o navegador
+	p(data-i18n="solution2") Desative o bloqueador de anúncios
+	p(data-i18n="solution3") Limpe o cache do navegador
+	p(data-i18n="solution4") (Navegador Tor) Ative a opção dom.webaudio.enabled
 
 	details(style="color: #86b300;")
-		summary(data-i18n="otherOption") Other options
+		summary(data-i18n="otherOption") Outras opções
 		a(href="/flush")
 			button.button-small
-				span.button-label-small(data-i18n="otherOption1") Clear preferences and cache
+				span.button-label-small(data-i18n="otherOption1") Limpar preferências e cache
 		br
 		a(href="/cli")
 			button.button-small
-				span.button-label-small(data-i18n="otherOption2") Start the simple client
+				span.button-label-small(data-i18n="otherOption2") Abrir a versão simples
 		br
 		a(href="/bios")
 			button.button-small
-				span.button-label-small(data-i18n="otherOption3") Start the repair tool
+				span.button-label-small(data-i18n="otherOption3") Abrir a ferramenta de reparo
