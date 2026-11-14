@@ -7,7 +7,7 @@ import { assert, describe, test } from 'vitest';
 import { complementar, contido, diferenca, intersecao, regiaoDe, uniao } from '@/utility/circulo-social/conjuntos.js';
 import { conjuncao, disjuncao, linhaDe, tabelaVerdade } from '@/utility/circulo-social/logica.js';
 import type { Rede } from '@/utility/circulo-social/dados.js';
-import { redeFicticia, redeServe } from '@/utility/circulo-social/dados.js';
+import { montarRede, redeFicticia, redeServe } from '@/utility/circulo-social/dados.js';
 import type { RodadaEscolha, RodadaRegiao, RodadaTabela } from '@/utility/circulo-social/rodadas.js';
 import { MAXIMO_TOTAL, estrelas, montarFases, pontosDaRodada } from '@/utility/circulo-social/rodadas.js';
 
@@ -131,6 +131,20 @@ describe('Círculo Social: lógica', () => {
 	});
 });
 
+describe('Círculo Social: privacidade', () => {
+	test('silenciados e bloqueados ficam sem foto', () => {
+		const pessoas = new Map([
+			['seg', { id: 'seg', nome: '@seg', avatarUrl: 'https://exemplo/seg.png' }],
+			['sil', { id: 'sil', nome: '@sil', avatarUrl: 'https://exemplo/sil.png' }],
+			['blo', { id: 'blo', nome: '@blo', avatarUrl: 'https://exemplo/blo.png' }],
+		]);
+		const rede = montarRede(pessoas, new Set(['seg', 'sil']), new Set(['seg']), new Set(['sil']), new Set(['blo']), false);
+		assert.equal(rede.pessoas.get('seg')?.avatarUrl, 'https://exemplo/seg.png');
+		assert.isNull(rede.pessoas.get('sil')?.avatarUrl, 'silenciado que te segue também fica sem foto');
+		assert.isNull(rede.pessoas.get('blo')?.avatarUrl);
+	});
+});
+
 describe('Círculo Social: rodadas', () => {
 	test('pontuação e estrelas', () => {
 		assert.equal(pontosDaRodada(0), 10);
@@ -168,6 +182,18 @@ describe('Círculo Social: rodadas', () => {
 		for (const r of [f3.rodadas[2], f3.rodadas[3], f3.rodadas[4], f4.rodadas[2], f4.rodadas[4], f4.rodadas[5]]) {
 			assert.include(r.dica, 'S = {');
 			assert.include(r.dica, 'G = {');
+		}
+	});
+
+	test('todo símbolo do cartão tem exemplo, sem nomes da rede', () => {
+		// A documentação pede nome e exemplo; os exemplos usam @fulano para não entregar respostas.
+		for (const fase of montarFases(redeFicticia(), aleatorioComSemente(3))) {
+			for (const s of fase.simbolos) {
+				assert.isAbove(s.exemplo.length, 0, `símbolo ${s.simbolo} sem exemplo`);
+				for (const nome of ['ana', 'bia', 'caio', 'duda', 'edu', 'fabi']) {
+					assert.notInclude(s.exemplo, nome, `exemplo de ${s.simbolo} entrega um nome da turma`);
+				}
+			}
 		}
 	});
 

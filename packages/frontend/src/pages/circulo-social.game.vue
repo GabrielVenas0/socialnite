@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>
 					<div :class="$style.simboloNome">{{ s.nome }}</div>
 					<div :class="$style.simboloDescricao">{{ s.descricao }}</div>
+					<div :class="$style.simboloExemplo">Ex.: {{ s.exemplo }}</div>
 				</div>
 			</template>
 		</div>
@@ -123,6 +124,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div>
 						<div :class="$style.simboloNome">{{ s.nome }}</div>
 						<div :class="$style.simboloDescricao">{{ s.descricao }}</div>
+						<div :class="$style.simboloExemplo">Ex.: {{ s.exemplo }}</div>
 					</div>
 				</template>
 			</div>
@@ -155,11 +157,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton primary gradate rounded :class="$style.botao" @click="jogarDeNovo">Jogar de novo</MkButton>
 		<MkButton rounded :class="$style.botao" @click="sair">Voltar ao início</MkButton>
 	</div>
+
+	<!-- Ranking da semana: aparece no fim de cada fase e no resultado final (documentação, Parte I, seção 4) -->
+	<div v-if="etapa === 'fimFase' || (etapa === 'final' && rankingPronto)" class="_panel" :class="$style.tela">
+		<XRanking :key="`${etapa}-${fase}`"/>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import XRanking from './circulo-social.ranking.vue';
 import type { Rede, Pessoa } from '@/utility/circulo-social/dados.js';
 import type { Regiao } from '@/utility/circulo-social/conjuntos.js';
 import type { Fase, RodadaRegiao, RodadaTabela } from '@/utility/circulo-social/rodadas.js';
@@ -197,6 +205,8 @@ const resultados = ref<boolean[][]>([[], [], [], []]);
 // O registro no ranking exige o horário de início da partida como semente.
 const semente = ref(Date.now().toString());
 const mensagemRanking = ref('');
+// No resultado final, o ranking só aparece depois do envio, para já trazer a pontuação nova.
+const rankingPronto = ref(false);
 
 // Estado da rodada atual
 const respondida = ref(false);
@@ -386,6 +396,7 @@ async function encerrar() {
 	guardarRecorde(total.value);
 	if (props.rede.ficticia) {
 		mensagemRanking.value = 'No modo Turma fictícia a pontuação não vai para o ranking.';
+		rankingPronto.value = true;
 		return;
 	}
 	mensagemRanking.value = 'Enviando a pontuação para o ranking…';
@@ -401,6 +412,7 @@ async function encerrar() {
 	} catch {
 		mensagemRanking.value = 'Não deu para enviar a pontuação agora. Tente de novo em outra partida.';
 	}
+	rankingPronto.value = true;
 }
 
 function jogarDeNovo() {
@@ -410,6 +422,7 @@ function jogarDeNovo() {
 	resultados.value = [[], [], [], []];
 	semente.value = Date.now().toString();
 	mensagemRanking.value = '';
+	rankingPronto.value = false;
 	limparRodada();
 	etapa.value = 'cartao';
 }
@@ -476,6 +489,11 @@ function sair() {
 	opacity: 0.75;
 }
 
+.simboloExemplo {
+	font-size: 0.85em;
+	color: var(--MI_THEME-accent);
+}
+
 .dica {
 	background: var(--MI_THEME-accentedBg);
 	color: var(--MI_THEME-accent);
@@ -489,9 +507,20 @@ function sair() {
 	width: 100%;
 }
 
+// A documentação pede botões com pelo menos 48 px de altura, para o toque no
+// celular. Três classes para vencer o padding do MkButton (.root.large).
+.root .tela .botao {
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+
 .botaoDica {
 	align-self: center;
-	padding: 6px 12px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	min-height: 48px;
+	padding: 0 16px;
 	border-radius: 999px;
 	font-size: 0.9em;
 	color: var(--MI_THEME-accent);
@@ -642,8 +671,8 @@ function sair() {
 }
 
 .celula {
-	width: 56px;
-	height: 36px;
+	width: 64px;
+	height: 48px;
 	border: 2px solid var(--MI_THEME-divider);
 	border-radius: 8px;
 	background: var(--MI_THEME-buttonBg);

@@ -57,18 +57,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</ol>
 				</div>
 
-				<div class="_panel _gaps_s" :class="$style.bloco">
-					<b>Ranking da semana</b>
-					<div v-if="ranking == null" :class="$style.vazio">Carregando…</div>
-					<div v-else-if="ranking.length === 0" :class="$style.vazio">Ninguém jogou no modo Minha rede esta semana ainda.</div>
-					<template v-else>
-						<div v-for="(r, i) in ranking" :key="r.id" :class="$style.rankingLinha">
-							<span :class="$style.posicao">{{ i + 1 }}</span>
-							<MkAvatar v-if="r.user" :link="true" :class="$style.rankingAvatar" :user="r.user"/>
-							<MkUserName v-if="r.user" :class="$style.rankingNome" :user="r.user" :nowrap="true"/>
-							<b :class="$style.rankingPontos">{{ r.score }}</b>
-						</div>
-					</template>
+				<div class="_panel" :class="$style.bloco">
+					<XRanking/>
 				</div>
 			</div>
 		</div>
@@ -81,22 +71,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
-import * as Misskey from 'misskey-js';
 import XGame from './circulo-social.game.vue';
+import XRanking from './circulo-social.ranking.vue';
 import type { Rede } from '@/utility/circulo-social/dados.js';
 import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
-import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { lerMinhaRede, redeFicticia, redeServe } from '@/utility/circulo-social/dados.js';
-import { lerRecorde, MODO_DO_RANKING } from '@/utility/circulo-social/recorde.js';
+import { lerRecorde } from '@/utility/circulo-social/recorde.js';
 
 const modo = ref<'minha-rede' | 'ficticia'>('ficticia');
 const minhaRede = ref<Rede | null>(null);
 const carregando = ref(true);
 const falhou = ref(false);
 const rede = ref<Rede | null>(null);
-const ranking = ref<Misskey.entities.BubbleGameRankingResponse | null>(null);
 const recorde = ref(lerRecorde());
 
 const minhaRedeServe = computed(() => minhaRede.value != null && redeServe(minhaRede.value));
@@ -110,14 +98,7 @@ const textoMinhaRede = computed(() => {
 	return `Usa os seus ${minhaRede.value.S.size} seguidores e ${minhaRede.value.G.size} seguidos. Vale para o ranking.`;
 });
 
-function carregarRanking() {
-	misskeyApiGet('bubble-game/ranking', { gameMode: MODO_DO_RANKING })
-		.then(r => { ranking.value = r; })
-		.catch(() => { ranking.value = []; });
-}
-
 onMounted(async () => {
-	carregarRanking();
 	if ($i == null) {
 		carregando.value = false;
 		return;
@@ -139,7 +120,7 @@ function jogar() {
 function aoTerminar() {
 	rede.value = null;
 	recorde.value = lerRecorde();
-	carregarRanking();
+	// O ranking (XRanking) recarrega sozinho: a tela inicial é montada de novo ao voltar.
 }
 
 definePage(() => ({
@@ -225,6 +206,13 @@ definePage(() => ({
 	width: 100%;
 }
 
+// A documentação pede botões com pelo menos 48 px de altura, para o toque no
+// celular. Três classes para vencer o padding do MkButton (.root.large).
+.root .bloco .jogar {
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+
 .recorde {
 	text-align: center;
 	font-size: 0.9em;
@@ -235,41 +223,6 @@ definePage(() => ({
 	margin: 0;
 	padding-left: 1.2em;
 	line-height: 1.6;
-}
-
-.vazio {
-	opacity: 0.7;
-	font-size: 0.9em;
-}
-
-.rankingLinha {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	line-height: 28px;
-	white-space: nowrap;
-}
-
-.posicao {
-	width: 1.5em;
-	text-align: center;
-	font-weight: bold;
-	opacity: 0.6;
-}
-
-.rankingAvatar {
-	width: 28px;
-	height: 28px;
-}
-
-.rankingNome {
-	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.rankingPontos {
-	margin-left: auto;
 }
 
 @media (max-width: 480px) {

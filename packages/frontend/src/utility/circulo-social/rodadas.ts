@@ -48,7 +48,8 @@ export type RodadaTabela = {
 
 export type Rodada = RodadaEscolha | RodadaRegiao | RodadaTabela;
 
-export type Simbolo = { simbolo: string; nome: string; descricao: string };
+/** Linha do cartão de símbolos: símbolo, nome, como se lê e um exemplo no jogo (documentação, Parte II, seção 1). */
+export type Simbolo = { simbolo: string; nome: string; descricao: string; exemplo: string };
 
 export type Fase = {
 	titulo: string;
@@ -116,11 +117,13 @@ export function montarFases(rede: Rede, aleatorio: () => number = Math.random): 
 
 	const fase1: Fase = {
 		titulo: 'Pertence ou não?',
+		// Os exemplos usam @fulano e @ciclano, e não nomes da rede, para o cartão não
+		// entregar a resposta das rodadas.
 		simbolos: [
-			{ simbolo: '∈', nome: 'pertence', descricao: 'a pessoa está dentro do conjunto' },
-			{ simbolo: '∉', nome: 'não pertence', descricao: 'a pessoa está fora do conjunto' },
-			{ simbolo: '⊂', nome: 'está contido', descricao: 'o grupo todo está dentro do conjunto' },
-			{ simbolo: '⊄', nome: 'não está contido', descricao: 'alguém do grupo está fora' },
+			{ simbolo: '∈', nome: 'pertence', descricao: 'a pessoa está dentro do conjunto', exemplo: '@fulano ∈ S: o @fulano te segue' },
+			{ simbolo: '∉', nome: 'não pertence', descricao: 'a pessoa está fora do conjunto', exemplo: '@fulano ∉ S: o @fulano não te segue' },
+			{ simbolo: '⊂', nome: 'está contido', descricao: 'o grupo todo está dentro do conjunto', exemplo: '{fulano, ciclano} ⊂ S: os dois te seguem' },
+			{ simbolo: '⊄', nome: 'não está contido', descricao: 'alguém do grupo está fora', exemplo: '{fulano, ciclano} ⊄ S: pelo menos um não te segue' },
 		],
 		nota: '∈ e ∉ comparam uma pessoa com um conjunto. ⊂ e ⊄ comparam um grupo com um conjunto.',
 		rodadas: [
@@ -200,10 +203,10 @@ export function montarFases(rede: Rede, aleatorio: () => number = Math.random): 
 	const fase2: Fase = {
 		titulo: 'Círculos',
 		simbolos: [
-			{ simbolo: '∩', nome: 'interseção', descricao: 'está nos dois círculos ao mesmo tempo (e)' },
-			{ simbolo: '∪', nome: 'união', descricao: 'está em pelo menos um dos círculos (ou)' },
-			{ simbolo: '−', nome: 'diferença', descricao: 'está no primeiro e não está no segundo' },
-			{ simbolo: 'S\'', nome: 'complementar de S', descricao: 'está no jogo, mas fora de S' },
+			{ simbolo: '∩', nome: 'interseção', descricao: 'está nos dois círculos ao mesmo tempo (e)', exemplo: 'S ∩ G = amigos mútuos' },
+			{ simbolo: '∪', nome: 'união', descricao: 'está em pelo menos um dos círculos (ou)', exemplo: 'S ∪ G = todos dos dois círculos' },
+			{ simbolo: '−', nome: 'diferença', descricao: 'está no primeiro e não está no segundo', exemplo: 'S − G = te segue, mas você não segue' },
+			{ simbolo: 'S\'', nome: 'complementar de S', descricao: 'está no jogo, mas fora de S', exemplo: 'S\' = está no jogo e não te segue' },
 		],
 		nota: 'U é o retângulo: todas as pessoas do jogo (quem te segue, quem você segue, silenciados e bloqueados).',
 		rodadas: [
@@ -256,10 +259,10 @@ export function montarFases(rede: Rede, aleatorio: () => number = Math.random): 
 	const fase3: Fase = {
 		titulo: 'Verdadeiro ou falso?',
 		simbolos: [
-			{ simbolo: 'V F', nome: 'proposição', descricao: 'frase que pode ser verdadeira ou falsa' },
-			{ simbolo: '¬', nome: 'não', descricao: 'troca o valor: V vira F e F vira V' },
-			{ simbolo: '∧', nome: 'e', descricao: 'só é V se as duas partes forem V' },
-			{ simbolo: '∨', nome: 'ou', descricao: 'é V se pelo menos uma parte for V' },
+			{ simbolo: 'V F', nome: 'proposição', descricao: 'frase que pode ser verdadeira ou falsa', exemplo: '“O @fulano te segue.” é proposição; “Siga o @fulano!” não é' },
+			{ simbolo: '¬', nome: 'não', descricao: 'troca o valor: V vira F e F vira V', exemplo: 'p = “o @fulano te segue”, então ¬p = “o @fulano não te segue”' },
+			{ simbolo: '∧', nome: 'e', descricao: 'só é V se as duas partes forem V', exemplo: 'V ∧ V = V, mas V ∧ F = F' },
+			{ simbolo: '∨', nome: 'ou', descricao: 'é V se pelo menos uma parte for V', exemplo: 'V ∨ F = V, mas F ∨ F = F' },
 		],
 		nota: 'V = verdadeiro, F = falso. p e q são nomes curtos para proposições.',
 		rodadas: [
@@ -312,9 +315,9 @@ export function montarFases(rede: Rede, aleatorio: () => number = Math.random): 
 	const fase4: Fase = {
 		titulo: 'Todos ou algum?',
 		simbolos: [
-			{ simbolo: 'x', nome: 'sentença aberta', descricao: 'frase com um espaço vazio: “x te segue”' },
-			{ simbolo: '∀', nome: 'para todo', descricao: 'todas as pessoas, sem exceção' },
-			{ simbolo: '∃', nome: 'existe', descricao: 'pelo menos uma pessoa' },
+			{ simbolo: 'x', nome: 'sentença aberta', descricao: 'frase com um espaço vazio: “x te segue”', exemplo: 'com x = @fulano, vira “@fulano te segue”' },
+			{ simbolo: '∀', nome: 'para todo', descricao: 'todas as pessoas, sem exceção', exemplo: '“∀ pessoa em M te segue” quer dizer: todos os silenciados (M) te seguem' },
+			{ simbolo: '∃', nome: 'existe', descricao: 'pelo menos uma pessoa', exemplo: '“∃ pessoa em M que te segue” quer dizer: pelo menos um silenciado (M) te segue' },
 		],
 		nota: 'Os quantificadores dizem para quantas pessoas a frase vale: todas ou pelo menos uma.',
 		rodadas: [

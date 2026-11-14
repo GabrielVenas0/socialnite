@@ -29,7 +29,13 @@ export type Rede = {
 
 type Usuario = { id: string; username: string; host: string | null; avatarUrl: string | null };
 
-function montarRede(pessoas: Map<string, Pessoa>, S: Set<string>, G: Set<string>, M: Set<string>, B: Set<string>, ficticia: boolean): Rede {
+export function montarRede(pessoas: Map<string, Pessoa>, S: Set<string>, G: Set<string>, M: Set<string>, B: Set<string>, ficticia: boolean): Rede {
+	// Silenciados e bloqueados aparecem só pelo @, sem foto: ninguém precisa rever
+	// o perfil de quem escolheu não ver (documentação, Parte I, seção 9).
+	for (const id of [...M, ...B]) {
+		const pessoa = pessoas.get(id);
+		if (pessoa) pessoas.set(id, { ...pessoa, avatarUrl: null });
+	}
 	return { pessoas, S, G, M, B, U: new Set([...S, ...G, ...M, ...B]), ficticia };
 }
 
