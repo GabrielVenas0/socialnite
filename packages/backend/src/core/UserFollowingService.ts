@@ -372,7 +372,7 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		if (following === null || !following.follower || !following.followee) {
-			logger.warn('フォロー解除がリクエストされましたがフォローしていませんでした');
+			logger.warn('Pediram para deixar de seguir, mas não havia seguimento');
 			return;
 		}
 

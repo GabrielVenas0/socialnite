@@ -137,11 +137,11 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				// keyIdからLD-Signatureのユーザーを取得
 				authUser = await this.apDbResolverService.getAuthUserFromKeyId(ldSignature.creator);
 				if (authUser == null) {
-					throw new Bull.UnrecoverableError('skip: LD-Signatureのユーザーが取得できませんでした');
+					throw new Bull.UnrecoverableError('skip: não foi possível obter o usuário da LD-Signature');
 				}
 
 				if (authUser.key == null) {
-					throw new Bull.UnrecoverableError('skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした');
+					throw new Bull.UnrecoverableError('skip: o usuário da LD-Signature não tem publicKey');
 				}
 
 				const jsonLd = this.jsonLdService.use();
@@ -149,7 +149,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				// LD-Signature検証
 				const verified = await jsonLd.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
 				if (!verified) {
-					throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
+					throw new Bull.UnrecoverableError('skip: a verificação da LD-Signature falhou');
 				}
 
 				// アクティビティを正規化
