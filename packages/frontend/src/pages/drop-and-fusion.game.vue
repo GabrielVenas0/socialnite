@@ -882,7 +882,7 @@ function getGameImageDriveFile() {
 		if (!ctx || !canvasEl.value) return res(null);
 		Promise.all([
 			loadImage('/client-assets/drop-and-fusion/frame-light.svg'),
-			loadImage('/client-assets/drop-and-fusion/logo.png'),
+			loadImage('/client-assets/drop-and-fusion/logo.png?v=2'),
 		]).then((images) => {
 			const [frame, logo] = images;
 			ctx.fillStyle = '#fff';

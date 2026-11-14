@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps">
 				<div class="_woodenFrame" style="text-align: center;">
 					<div class="_woodenFrameInner">
-						<img src="/client-assets/drop-and-fusion/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
+						<img src="/client-assets/drop-and-fusion/logo.png?v=2" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
 					</div>
 				</div>
 				<div class="_woodenFrame" style="text-align: center;">
