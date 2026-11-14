@@ -191,6 +191,8 @@ export const PREF_DEF = definePreferences({
 			'chat',
 			'-',
 			'explore',
+			// Social Nite: "Pesquisar usuário" logo abaixo de "Explorar".
+			'search',
 			'announcements',
 		],
 	},

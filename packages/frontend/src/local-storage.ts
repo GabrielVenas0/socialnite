@@ -35,6 +35,7 @@ export type Keys = (
 	'hidePreferencesRestoreSuggestion' |
 	'isSafeMode' |
 	'circuloSocialRecorde' |
+	'socialniteMenuPesquisa' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` | // DEPRECATED

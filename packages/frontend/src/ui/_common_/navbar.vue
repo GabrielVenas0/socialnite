@@ -25,9 +25,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<i class="ti-fw" :class="[$style.itemIcon, basicTimelineIconClass(tl)]"></i><span :class="$style.itemText">{{ i18n.ts._timelines[tl] }}</span>
 			</button>
-			<MkA v-tooltip.noDelay.right="'Participantes do NITE'" class="_button" :class="$style.item" :activeClass="$style.active" to="/participants">
-				<i class="ti ti-users-group ti-fw" :class="$style.itemIcon"></i><span :class="$style.itemText">Participantes do NITE</span>
-			</MkA>
 			<button v-if="$i != null" v-tooltip.noDelay.right="i18n.ts.lists" class="_button" :class="$style.item" @click="chooseList">
 				<i :class="$style.itemIcon" class="ti ti-list ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.lists }}</span>
 			</button>

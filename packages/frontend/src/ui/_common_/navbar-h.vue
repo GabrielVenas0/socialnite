@@ -13,9 +13,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-click-anime v-tooltip="i18n.ts.timeline" class="item index" activeClass="active" to="/" exact>
 				<i class="ti ti-home ti-fw"></i>
 			</MkA>
-			<MkA v-click-anime v-tooltip="'Participantes do NITE'" class="item" activeClass="active" to="/participants">
-				<i class="ti ti-users-group ti-fw"></i>
-			</MkA>
 			<template v-for="item in menu">
 				<div v-if="item === '-'" class="divider"></div>
 				<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime v-tooltip="navbarItemDef[item].title" class="item _button" :class="item" activeClass="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
