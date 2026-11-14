@@ -613,6 +613,10 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/drop-and-fusion.vue')),
 	loginRequired: true,
 }, {
+	path: '/circulo-social',
+	component: page(() => import('@/pages/circulo-social.vue')),
+	loginRequired: true,
+}, {
 	path: '/reversi',
 	component: page(() => import('@/pages/reversi/index.vue')),
 	loginRequired: false,

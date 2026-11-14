@@ -13,6 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkA>
 			</div>
 			<div class="_panel" :class="$style.link">
+				<MkA to="/circulo-social">
+					<img src="/client-assets/circulo-social/logo.png" alt="Círculo Social" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
+				</MkA>
+			</div>
+			<div class="_panel" :class="$style.link">
 				<MkA to="/reversi">
 					<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
 				</MkA>
