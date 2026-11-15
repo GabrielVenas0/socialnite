@@ -602,6 +602,10 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/games.vue')),
 	loginRequired: false,
 }, {
+	path: '/logic-sets',
+	component: page(() => import('@/pages/logic-sets.vue')),
+	loginRequired: false,
+}, {
 	path: '/ranking',
 	component: page(() => import('@/pages/ranking.vue')),
 	loginRequired: true,

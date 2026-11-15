@@ -10,26 +10,28 @@ packages:
   - packages/misskey-js/generator
   - packages/misskey-reversi
   - packages/misskey-bubble-game
-onlyBuiltDependencies:
-  - '@nestjs/core'
-  - '@parcel/watcher'
-  - '@sentry/profiling-node'
-  - '@swc/core'
-  - '@tensorflow/tfjs-node'
-  - bufferutil
-  - canvas
-  - core-js
-  - cypress
-  - esbuild
-  - msgpackr-extract
-  - msw
-  - nice-napi
-  - re2
-  - sharp
-  - utf-8-validate
-  - v-code-diff
-  - vue-demi
-ignorePatchFailures: false
+allowBuilds:
+  '@nestjs/core': true
+  '@parcel/watcher': true
+  '@sentry-internal/node-cpu-profiler': false
+  '@sentry/profiling-node': true
+  '@swc/core': true
+  '@tensorflow/tfjs-node': true
+  bufferutil: true
+  canvas: true
+  core-js: true
+  cypress: true
+  esbuild: true
+  msgpackr-extract: true
+  msw: true
+  nice-napi: true
+  re2: true
+  sharp: true
+  utf-8-validate: true
+  v-code-diff: true
+  vue-demi: true
+overrides:
+  '@aiscript-dev/aiscript-languageserver': '-'
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - happy-dom # セキュリティ修正のため一時的に。そのうち消すこと

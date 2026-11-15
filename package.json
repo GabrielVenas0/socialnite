@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.18.2",
+	"packageManager": "pnpm@12.18.0+sha512.9d7882d5dc82147ecfc4e062aa34834e0ad0296710a1837a1115ae012127d36b7109e321ac1598a1dd0a65597681b1e99917e12ed0d749eae91187943363beb3",
 	"workspaces": [
 		"packages/frontend-shared",
 		"packages/frontend",
@@ -81,13 +81,5 @@
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.22.0"
-	},
-	"pnpm": {
-		"overrides": {
-			"@aiscript-dev/aiscript-languageserver": "-"
-		},
-		"ignoredBuiltDependencies": [
-			"@sentry-internal/node-cpu-profiler"
-		]
 	}
 }
