@@ -32,6 +32,9 @@ export const ROUTE_DEF = [{
 	path: '/',
 	component: $i ? PageTimeline : page(() => import('@/pages/welcome.vue')),
 }, {
+	path: '/participants',
+	component: page(() => import('@/pages/participants.vue')),
+}, {
 	path: '/timeline',
 	component: PageTimeline,
 }, {
@@ -612,6 +615,10 @@ export const ROUTE_DEF = [{
 }, {
 	path: '/bubble-game',
 	component: page(() => import('@/pages/drop-and-fusion.vue')),
+	loginRequired: true,
+}, {
+	path: '/circulo-social',
+	component: page(() => import('@/pages/circulo-social.vue')),
 	loginRequired: true,
 }, {
 	path: '/reversi',

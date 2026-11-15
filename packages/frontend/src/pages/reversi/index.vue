@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="!matchingAny && !matchingUser" class="_spacer" style="--MI_SPACER-w: 600px;">
 	<div class="_gaps">
 		<div>
-			<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
+			<img src="/client-assets/reversi/logo.png?v=2" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
 		</div>
 
 		<div class="_panel _gaps" style="padding: 16px;">

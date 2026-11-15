@@ -83,9 +83,14 @@ export function build() {
 				// pt-PT é o idioma padrão do Social Nite. Se uma chave faltar,
 				// use inglês como fallback para nunca exibir japonês na interface.
 				case 'pt-PT': return merge(locales['en-US'], v);
+				// Nos demais idiomas a reserva também é o português. O japonês vem
+				// primeiro porque é o único arquivo completo: ele só aparece se a
+				// chave faltar em todos os outros. Antes o japonês vinha DEPOIS do
+				// português e o sobrescrevia -- o português não tinha efeito, e
+				// quem usava inglês ou espanhol via textos em japonês.
 				default: return merge(
-					locales['pt-PT'],
 					locales['ja-JP'],
+					locales['pt-PT'],
 					locales[`${lang}-${primaries[lang]}`] ?? {},
 					v
 				);

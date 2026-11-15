@@ -7,15 +7,8 @@ block loadClientEntry
 doctype html
 
 //
-	-
-	  _____ _         _
-	 |     |_|___ ___| |_ ___ _ _
-	 | | | | |_ -|_ -| '_| -_| | |
-	 |_|_|_|_|___|___|_,_|___|_  |
-	                         |___|
-	 Thank you for using Misskey!
-	 If you are reading this message... how about joining the development?
-	 https://github.com/misskey-dev/misskey
+	 Social Nite
+	 Software livre sob a licença AGPL-3.0, construído sobre o Misskey.
 
 
 html
@@ -38,9 +31,16 @@ html
 		link(rel='apple-touch-icon' href= appleTouchIcon || '/apple-touch-icon.png')
 		link(rel='manifest' href='/manifest.json')
 		link(rel='search' type='application/opensearchdescription+xml' title=(title || "Social Nite") href=`${baseUrl}/opensearch.xml`)
-		link(rel='prefetch' href=serverErrorImageUrl)
-		link(rel='prefetch' href=infoImageUrl)
-		link(rel='prefetch' href=notFoundImageUrl)
+		//- Só pré-carrega imagens que a administração configurou. Antes havia um
+		//- padrão externo (xn--931a.moe, a mascote do Misskey): todo visitante
+		//- baixava três imagens de um site de terceiros a cada página, sem que
+		//- elas aparecessem em lugar nenhum.
+		if serverErrorImageUrl
+			link(rel='prefetch' href=serverErrorImageUrl)
+		if infoImageUrl
+			link(rel='prefetch' href=infoImageUrl)
+		if notFoundImageUrl
+			link(rel='prefetch' href=notFoundImageUrl)
 
 		if !config.frontendManifestExists
 				script(type="module" src="/vite/@vite/client")
@@ -56,15 +56,19 @@ html
 		if noindex
 			meta(name='robots' content='noindex')
 
+		//- Texto e imagem da prévia do link (WhatsApp, Telegram, redes sociais).
+		//- Sem descrição configurada, aparecia o slogan do Misskey em inglês; sem
+		//- imagem, a prévia saía vazia. O ícone vai com endereço absoluto porque
+		//- os robôs de prévia não resolvem caminho relativo.
 		block desc
-			meta(name='description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
+			meta(name='description' content= desc || 'Social Nite — Rede Social Interativa')
 
 		block meta
 
 		block og
 			meta(property='og:title'       content= title || 'Social Nite')
-			meta(property='og:description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
-			meta(property='og:image'       content= img)
+			meta(property='og:description' content= desc || 'Social Nite — Rede Social Interativa')
+			meta(property='og:image'       content= img || icon || `${instanceUrl}/static-assets/icons/512.png`)
 			meta(property='twitter:card'   content='summary')
 
 		style

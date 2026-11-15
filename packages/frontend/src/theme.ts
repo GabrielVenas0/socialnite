@@ -148,14 +148,29 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	if (window.document.startViewTransition != null) {
 		window.document.documentElement.classList.add('_themeChanging_');
-		window.document.startViewTransition(async () => {
+		const transition = window.document.startViewTransition(async () => {
 			applyThemeInternal(theme, persist);
 			await nextTick();
-		}).finished.then(() => {
+		});
+
+		// Uma transição nova aborta a anterior, e a anterior rejeita `ready` com
+		// AbortError ("Old view transition aborted by new view transition"). O
+		// Chrome marca essa rejeição como tratada; o WebKit -- todo navegador de
+		// iOS -- não, e o boot.js a converte na tela "Falha ao carregar".
+		// Acontece na primeira visita com o aparelho em modo escuro: o tema é
+		// aplicado uma vez com o padrão do código e outra quando chega o
+		// defaultDarkTheme da instância. Ver misskey-dev/misskey#16562.
+		transition.ready.catch(() => {});
+		transition.updateCallbackDone.catch((err) => console.error(err));
+
+		const concluir = () => {
 			window.document.documentElement.classList.remove('_themeChanging_');
 			// 色計算など再度行えるようにクライアント全体に通知
 			globalEvents.emit('themeChanged');
-		});
+		};
+		// `finished` também rejeita se a atualização falhar: tratar os dois
+		// desfechos garante que a classe seja removida e nada fique órfão.
+		transition.finished.then(concluir, concluir);
 	} else {
 		applyThemeInternal(theme, persist);
 		// 色計算など再度行えるようにクライアント全体に通知

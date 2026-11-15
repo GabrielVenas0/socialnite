@@ -78,6 +78,20 @@ export async function mainBoot() {
 		}
 	}
 
+	// Social Nite: "Pesquisar usuário" passou a ficar no menu de todos, logo abaixo de
+	// "Explorar". O menu de quem já usava o site está salvo com o padrão antigo, então o
+	// item entra uma vez por aparelho; se a pessoa tirar depois, ele não volta.
+	if ($i && miLocalStorage.getItem('socialniteMenuPesquisa') == null) {
+		const menu = prefer.s.menu;
+		if (!menu.includes('search')) {
+			const explorar = menu.indexOf('explore');
+			const novo = [...menu];
+			novo.splice(explorar === -1 ? novo.length : explorar + 1, 0, 'search');
+			prefer.commit('menu', novo);
+		}
+		miLocalStorage.setItem('socialniteMenuPesquisa', '1');
+	}
+
 	try {
 		if (prefer.s.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;

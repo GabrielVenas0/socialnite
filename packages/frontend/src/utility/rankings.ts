@@ -28,3 +28,15 @@ export function fetchAchievementRanking(): Promise<AchievementRankingRow[]> {
 export function fetchReversiRanking(): Promise<ReversiRankingRow[]> {
 	return call<ReversiRankingRow[]>('reversi/ranking', { limit: 20 });
 }
+
+export type CirculoSocialRankingRow = {
+	id: string;
+	score: number;
+	user: Misskey.entities.UserLite;
+};
+
+// O Círculo Social guarda as pontuações no registro do jogo das bolhas, com modo de jogo próprio.
+export async function fetchCirculoSocialRanking(): Promise<CirculoSocialRankingRow[]> {
+	const rows = await misskeyApi('bubble-game/ranking', { gameMode: 'circulo-social' });
+	return rows.filter((r): r is CirculoSocialRankingRow => r.user != null);
+}

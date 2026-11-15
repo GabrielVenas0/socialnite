@@ -22,6 +22,9 @@ const MODERATOR_INACTIVITY_LIMIT_DAYS = 7;
 const MODERATOR_INACTIVITY_WARNING_REMAINING_DAYS = 2;
 // 期限から6時間ごとに通知を行う
 const MODERATOR_INACTIVITY_WARNING_NOTIFY_INTERVAL_HOURS = 6;
+// Social Nite: o cadastro não fecha sozinho quando a moderação fica inativa,
+// então novos usuários entram sem código de convite. Para religar, troque para true.
+const FECHAR_CADASTRO_POR_INATIVIDADE: boolean = false;
 const ONE_HOUR_MILLI_SEC = 1000 * 60 * 60;
 const ONE_DAY_MILLI_SEC = ONE_HOUR_MILLI_SEC * 24;
 
@@ -37,23 +40,28 @@ export type ModeratorInactivityRemainingTime = {
 	asDays: number;
 };
 
+// Os dois avisos abaixo vinham só em inglês e japonês, com assunto bilíngue e
+// pedindo para "entrar no Misskey". Para a administração do Social Nite isso
+// passava por spam, ninguém reagia, e o cadastro fechava sozinho -- os usuários
+// novos passavam a ver o campo "Código de convite" sem entender por quê.
+// O português vem primeiro; o inglês fica para quem administrar em outro idioma.
 function generateModeratorInactivityMail(remainingTime: ModeratorInactivityRemainingTime) {
-	const subject = 'Moderator Inactivity Warning / モデレーター不在の通知';
+	const subject = 'Social Nite: o cadastro de novos usuários vai fechar por inatividade da moderação';
 
 	const timeVariant = remainingTime.asDays === 0 ? `${remainingTime.asHours} hours` : `${remainingTime.asDays} days`;
-	const timeVariantJa = remainingTime.asDays === 0 ? `${remainingTime.asHours} 時間` : `${remainingTime.asDays} 日間`;
+	const timeVariantPt = remainingTime.asDays === 0 ? `${remainingTime.asHours} horas` : `${remainingTime.asDays} dias`;
 	const message = [
-		'To Moderators,',
+		'Para a moderação do Social Nite,',
 		'',
-		`A moderator has been inactive for a period of time. If there are ${timeVariant} of inactivity left, it will switch to invitation only.`,
-		'If you do not wish to move to invitation only, you must log into Misskey and update your last active date and time.',
+		`Nenhum moderador ou administrador usou o Social Nite nos últimos dias. Se a inatividade continuar por mais ${timeVariantPt}, o cadastro de novos usuários passará a ser só por convite, automaticamente.`,
+		'Para evitar, basta entrar no Social Nite com uma conta de moderação: isso atualiza a data da última atividade.',
 		'',
 		'---------------',
 		'',
-		'To モデレーター各位',
+		'To Moderators,',
 		'',
-		`モデレーターが一定期間活動していないようです。あと${timeVariantJa}活動していない状態が続くと招待制に切り替わります。`,
-		'招待制に切り替わることを望まない場合は、Misskeyにログインして最終アクティブ日時を更新してください。',
+		`A moderator has been inactive for a period of time. If there are ${timeVariant} of inactivity left, it will switch to invitation only.`,
+		'If you do not wish to move to invitation only, you must log in and update your last active date and time.',
 		'',
 	];
 
@@ -68,20 +76,20 @@ function generateModeratorInactivityMail(remainingTime: ModeratorInactivityRemai
 }
 
 function generateInvitationOnlyChangedMail() {
-	const subject = 'Change to Invitation-Only / 招待制に変更されました';
+	const subject = 'Social Nite: o cadastro de novos usuários foi fechado (só por convite)';
 
 	const message = [
+		'Para a moderação do Social Nite,',
+		'',
+		`Nenhuma atividade de moderação foi detectada em ${MODERATOR_INACTIVITY_LIMIT_DAYS} dias, e o cadastro de novos usuários passou a ser só por convite. Quem tentar se cadastrar agora verá o campo "Código de convite".`,
+		'Para reabrir: Painel de controle > Moderação > ative "Abrir a criação de contas".',
+		'',
+		'---------------',
+		'',
 		'To Moderators,',
 		'',
 		`Changed to invitation only because no moderator activity was detected for ${MODERATOR_INACTIVITY_LIMIT_DAYS} days.`,
 		'To cancel the invitation only, you need to access the control panel.',
-		'',
-		'---------------',
-		'',
-		'To モデレーター各位',
-		'',
-		`モデレーターの活動が${MODERATOR_INACTIVITY_LIMIT_DAYS}日間検出されなかったため、招待制に変更されました。`,
-		'招待制を解除するには、コントロールパネルにアクセスする必要があります。',
 		'',
 	];
 
@@ -115,6 +123,12 @@ export class CheckModeratorsActivityProcessorService {
 	@bindThis
 	public async process(): Promise<void> {
 		this.logger.info('start.');
+
+		if (!FECHAR_CADASTRO_POR_INATIVIDADE) {
+			this.logger.info('fechamento automático do cadastro desligado no Social Nite.');
+			this.logger.succ('finish.');
+			return;
+		}
 
 		const meta = await this.metaService.fetch(false);
 		if (!meta.disableRegistration) {

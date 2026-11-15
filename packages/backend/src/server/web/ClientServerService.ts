@@ -213,9 +213,11 @@ export class ClientServerService {
 			icon: meta.iconUrl,
 			appleTouchIcon: meta.app512IconUrl,
 			themeColor: meta.themeColor,
-			serverErrorImageUrl: meta.serverErrorImageUrl ?? 'https://xn--931a.moe/assets/error.jpg',
-			infoImageUrl: meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',
-			notFoundImageUrl: meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
+			// Sem padrão externo: o Misskey usava imagens da mascote dele, hospedadas
+			// em xn--931a.moe. Vazio aqui, o base.pug simplesmente não as pré-carrega.
+			serverErrorImageUrl: meta.serverErrorImageUrl,
+			infoImageUrl: meta.infoImageUrl,
+			notFoundImageUrl: meta.notFoundImageUrl,
 			instanceUrl: this.config.url,
 			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(meta)),
 			now: Date.now(),

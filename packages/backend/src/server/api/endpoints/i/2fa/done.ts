@@ -53,7 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			if (profile.twoFactorTempSecret == null) {
-				throw new Error('二段階認証の設定が開始されていません');
+				throw new Error('A configuração da autenticação em duas etapas não foi iniciada.');
 			}
 
 			const delta = OTPAuth.TOTP.validate({

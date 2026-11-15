@@ -135,7 +135,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<MkA v-if="game.isEnded" :to="`/reversi`">
-			<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; width: 200px; margin: auto;"/>
+			<img src="/client-assets/reversi/logo.png?v=2" style="display: block; max-width: 100%; width: 200px; margin: auto;"/>
 		</MkA>
 	</div>
 </div>

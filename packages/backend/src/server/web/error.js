@@ -11,18 +11,18 @@
 
 		const messages = Object.assign({
 			title: 'Falha ao carregar o Social Nite',
-			serverError: 'If reloading after a period of time does not resolve the problem, contact the server administrator with the following ERROR ID.',
-			solution: 'The following actions may solve the problem.',
-			solution1: 'Update your os and browser',
-			solution2: 'Disable an adblocker',
-			solution3: 'Clear the browser cache',
-			solution4: '(Tor Browser) Set dom.webaudio.enabled to true',
-			otherOption: 'Other options',
-			otherOption1: 'Clear preferences and cache',
-			otherOption2: 'Start the simple client',
-			otherOption3: 'Start the repair tool',
+			serverError: 'Se o problema continuar depois de esperar um pouco e recarregar, fale com a administração do Social Nite e informe o ID do erro abaixo.',
+			solution: 'Estas ações podem resolver o problema:',
+			solution1: 'Atualize o sistema e o navegador',
+			solution2: 'Desative o bloqueador de anúncios',
+			solution3: 'Limpe o cache do navegador',
+			solution4: '(Navegador Tor) Ative a opção dom.webaudio.enabled',
+			otherOption: 'Outras opções',
+			otherOption1: 'Limpar preferências e cache',
+			otherOption2: 'Abrir a versão simples',
+			otherOption3: 'Abrir a ferramenta de reparo',
 		}, locale?._bootErrors || {});
-		const reload = locale?.reload || 'Reload';
+		const reload = locale?.reload || 'Recarregar';
 
 		const reloadEls = document.querySelectorAll('[data-i18n-reload]');
 		for (const el of reloadEls) {

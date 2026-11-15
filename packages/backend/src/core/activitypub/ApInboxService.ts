@@ -185,7 +185,7 @@ export class ApInboxService {
 		}
 
 		if (followee.host != null) {
-			return 'skip: フォローしようとしているユーザーはローカルユーザーではありません';
+			return 'skip: o usuário que se tentou seguir não é um usuário local';
 		}
 
 		// don't queue because the sender may attempt again when timeout
@@ -372,7 +372,7 @@ export class ApInboxService {
 		}
 
 		if (blockee.host != null) {
-			return 'skip: ブロックしようとしているユーザーはローカルユーザーではありません';
+			return 'skip: o usuário que se tentou bloquear não é um usuário local';
 		}
 
 		await this.userBlockingService.block(await this.usersRepository.findOneByOrFail({ id: actor.id }), await this.usersRepository.findOneByOrFail({ id: blockee.id }));
@@ -532,7 +532,7 @@ export class ApInboxService {
 			}
 
 			if (note.userId !== actor.id) {
-				return '投稿を削除しようとしているユーザーは投稿の作成者ではありません';
+				return 'o usuário que tentou apagar a publicação não é o autor dela';
 			}
 
 			await this.noteDeleteService.delete(actor, note);
@@ -678,7 +678,7 @@ export class ApInboxService {
 			return 'ok: unfollowed';
 		}
 
-		return 'skip: フォローされていない';
+		return 'skip: não está sendo seguido';
 	}
 
 	@bindThis
@@ -705,7 +705,7 @@ export class ApInboxService {
 		}
 
 		if (blockee.host != null) {
-			return 'skip: ブロック解除しようとしているユーザーはローカルユーザーではありません';
+			return 'skip: o usuário que se tentou desbloquear não é um usuário local';
 		}
 
 		await this.userBlockingService.unblock(await this.usersRepository.findOneByOrFail({ id: actor.id }), blockee);
@@ -720,7 +720,7 @@ export class ApInboxService {
 		}
 
 		if (followee.host != null) {
-			return 'skip: フォロー解除しようとしているユーザーはローカルユーザーではありません';
+			return 'skip: o usuário que se tentou deixar de seguir não é um usuário local';
 		}
 
 		const requestExist = await this.followRequestsRepository.exists({
@@ -747,7 +747,7 @@ export class ApInboxService {
 			return 'ok: unfollowed';
 		}
 
-		return 'skip: リクエストもフォローもされていない';
+		return 'skip: não há pedido para seguir nem seguimento';
 	}
 
 	@bindThis

@@ -157,7 +157,7 @@ export class UserBlockingService implements OnModuleInit {
 		});
 
 		if (blocking == null) {
-			this.logger.warn('ブロック解除がリクエストされましたがブロックしていませんでした');
+			this.logger.warn('Pediram para desbloquear, mas não havia bloqueio');
 			return;
 		}
 

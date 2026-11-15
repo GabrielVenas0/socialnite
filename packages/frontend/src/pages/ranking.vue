@@ -54,6 +54,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFoldableSection>
 
 			<MkFoldableSection>
+				<template #header>Círculo Social</template>
+
+				<MkLoading v-if="circuloFetching"/>
+				<div v-else-if="circulo.length === 0" :class="$style.empty">
+					Ninguém jogou o Círculo Social esta semana. Jogue uma partida em Nite Games.
+				</div>
+				<div v-else class="_gaps_s">
+					<MkA
+						v-for="(row, i) in circulo"
+						:key="row.id"
+						:to="`/@${row.user.username}`"
+						class="_panel"
+						:class="$style.row"
+					>
+						<div :class="[$style.position, positionClass(i)]">{{ i + 1 }}</div>
+						<MkAvatar :class="$style.avatar" :user="row.user" :link="false" :preview="false"/>
+						<div :class="$style.name"><MkUserName :user="row.user"/></div>
+						<div :class="$style.value">{{ row.score }}</div>
+					</MkA>
+				</div>
+			</MkFoldableSection>
+
+			<MkFoldableSection>
 				<template #header>Jogo das bolhas</template>
 				<div :class="$style.empty">
 					A pontuação do jogo das bolhas tem ranking próprio, dentro do jogo.
@@ -69,14 +92,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, ref } from 'vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkButton from '@/components/MkButton.vue';
-import type { AchievementRankingRow, ReversiRankingRow } from '@/utility/rankings.js';
-import { fetchAchievementRanking, fetchReversiRanking } from '@/utility/rankings.js';
+import type { AchievementRankingRow, CirculoSocialRankingRow, ReversiRankingRow } from '@/utility/rankings.js';
+import { fetchAchievementRanking, fetchCirculoSocialRanking, fetchReversiRanking } from '@/utility/rankings.js';
 import { definePage } from '@/page.js';
 
 const achievements = ref<AchievementRankingRow[]>([]);
 const reversi = ref<ReversiRankingRow[]>([]);
 const achievementsFetching = ref(true);
 const reversiFetching = ref(true);
+const circulo = ref<CirculoSocialRankingRow[]>([]);
+const circuloFetching = ref(true);
 
 function positionClass(i: number) {
 	return i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : null;
@@ -90,6 +115,10 @@ onMounted(async () => {
 	fetchReversiRanking()
 		.then(rows => { reversi.value = rows; })
 		.finally(() => { reversiFetching.value = false; });
+
+	fetchCirculoSocialRanking()
+		.then(rows => { circulo.value = rows; })
+		.finally(() => { circuloFetching.value = false; });
 });
 
 definePage(() => ({

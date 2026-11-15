@@ -48,16 +48,16 @@ export const navbarItemDef = reactive({
 		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
+	// Social Nite: "Pesquisar usuário" é para todo mundo — é por ele que se acha um
+	// amigo. Abre direto na aba "Usuários"; a aba "Notas" continua na mesma página.
+	search: {
+		title: i18n.ts.searchUser,
+		icon: 'ti ti-user-search',
+		to: '/search?type=user',
+	},
 	// Social Nite: estes saíram do menu do usuário comum — 'lookup' depende de federação,
 	// 'favorites' sobrepõe Notas Salvas e as ferramentas são de uso interno. Seguem
 	// visíveis para a administração, marcadas com o selo "só admin" em 'Mais'.
-	search: {
-		title: i18n.ts.search,
-		icon: 'ti ti-search',
-		show: computed(() => $i != null && ($i.isAdmin || $i.isModerator)),
-		adminOnly: true,
-		to: '/search',
-	},
 	lookup: {
 		title: i18n.ts.lookup,
 		icon: 'ti ti-world-search',
@@ -138,6 +138,13 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-trophy',
 		show: computed(() => $i != null),
 		to: '/ranking',
+	},
+	// Social Nite: página dos participantes do NITE. Fica no quadro "Mais" (não entra
+	// no menu padrão), em vez de um link fixo na barra lateral.
+	participants: {
+		title: 'Participantes do NITE',
+		icon: 'ti ti-users-group',
+		to: '/participants',
 	},
 	// Social Nite: "ui" (Alternar UI) removido — o modo Deck é outra interface,
 	// que não passou pelo mesmo ajuste visual.
