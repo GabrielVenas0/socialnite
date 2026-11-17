@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="300" viewBox="0 0 960 300" role="img" aria-labelledby="title description">
+	<title id="title">Elo Rating e Simulação Matemática</title>
+	<desc id="description">Marca do jogo Logic and Sets Challenge: um gráfico vetorial ascendente com um mostrador de rating Elo.</desc>
+	<defs>
+		<linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0" stop-color="#17133d"/>
+			<stop offset="1" stop-color="#29215f"/>
+		</linearGradient>
+		<linearGradient id="line" x1="0" y1="1" x2="1" y2="0">
+			<stop offset="0" stop-color="#54e1c1"/>
+			<stop offset="1" stop-color="#8eb8ff"/>
+		</linearGradient>
+	</defs>
+	<rect width="960" height="300" rx="32" fill="url(#background)"/>
+	<g fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="2">
+		<path d="M56 70h350M56 120h350M56 170h350M56 220h350"/>
+		<path d="M106 48v196M206 48v196M306 48v196"/>
+	</g>
+	<path d="m66 208 92-47 75 20 85-91 74 28" fill="none" stroke="url(#line)" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+	<g fill="#54e1c1" stroke="#17133d" stroke-width="6">
+		<circle cx="66" cy="208" r="10"/>
+		<circle cx="158" cy="161" r="10"/>
+		<circle cx="233" cy="181" r="10"/>
+		<circle cx="318" cy="90" r="10"/>
+		<circle cx="392" cy="118" r="10"/>
+	</g>
+	<circle cx="466" cy="150" r="74" fill="#211c52" stroke="#8eb8ff" stroke-opacity=".35" stroke-width="3"/>
+	<path d="M414 177a58 58 0 1 1 105 0" fill="none" stroke="#54e1c1" stroke-linecap="round" stroke-width="10"/>
+	<path d="m459 150 28-29" fill="none" stroke="#ffe17a" stroke-linecap="round" stroke-width="7"/>
+	<circle cx="459" cy="150" r="7" fill="#ffe17a"/>
+	<g font-family="Segoe UI, Arial, sans-serif" fill="#fff">
+		<text x="570" y="106" font-size="31" font-weight="600" letter-spacing="3">LOGIC &amp; SETS</text>
+		<text x="566" y="164" font-size="46" font-weight="800" letter-spacing="1">ELO RATING</text>
+		<text x="570" y="207" font-size="22" font-weight="600" fill="#9feada" letter-spacing="2">SIMULAÇÃO MATEMÁTICA</text>
+		<text x="570" y="245" font-size="17" fill="#d2d0eb">APRENDER • EXPERIMENTAR • DESCOBRIR</text>
+	</g>
+</svg>

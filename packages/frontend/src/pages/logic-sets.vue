@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<div v-if="activeTab === 'feed'" class="_panel _gaps" style="padding: 20px;">
+			<div v-show="activeTab === 'feed'" class="_panel _gaps" style="padding: 20px;">
 				<h3 style="margin: 0;">Feed de demonstração</h3>
 				<div :class="$style.post">
 					<p style="margin: 0 0 12px;">{{ post.content }}</p>
@@ -48,56 +48,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkButton>
 					</div>
 					<p :class="$style.note">
-						Cada reação adiciona 32 pontos ao rating local. {{ lastReaction ? `Última reação: ${lastReaction}` : '' }}
+						Cada reação simula um resultado favorável contra o rating de referência 1200.
+						{{ lastReaction ? `Última reação: ${lastReaction} — ${lastEloDelta >= 0 ? '+' : ''}${lastEloDelta} pontos Elo.` : '' }}
 					</p>
+				</div>
+
+				<div :class="$style.eloExplanation">
+					<strong>O que aconteceu com o Elo?</strong>
+					<p>
+						A fórmula compara a expectativa de resultado com o resultado simulado:
+						<code>R novo = R + K × (S − E)</code>. Neste exemplo, K = 16 e cada reação vale como
+						um resultado favorável. Contra o rating fictício de 1200, a expectativa atual é
+						{{ (lastExpectedScore * 100).toFixed(1) }}%.
+					</p>
+					<p>
+						Com rating igual ao de referência, uma vitória simulada aumenta 8 pontos.
+						A mudança depende da diferença entre os ratings; os dados são fictícios e locais.
+					</p>
+					<div :class="$style.bonusSummary">
+						<span>Rating Elo de demonstração</span><strong>{{ post.eloRating }}</strong>
+						<span>Bônus educativo por partidas concluídas</span><strong>+{{ gameBonusPoints }}</strong>
+					</div>
 				</div>
 			</div>
 
-			<div v-else class="_panel _gaps" style="padding: 20px;">
-				<h3 style="margin: 0;">Desafio de Lógica e Conjuntos</h3>
-
-				<section v-if="gameStep === 1" class="_gaps_s">
-					<strong>Fase 1: Teoria dos conjuntos</strong>
-					<p style="margin: 0;">
-						Seja U o conjunto de utilizadores ativos e V o conjunto de utilizadores que visualizaram a publicação post-01.
-						Qual operação representa os utilizadores ativos que visualizaram essa publicação?
-					</p>
-					<div :class="$style.choices">
-						<MkButton @click="checkSetChallenge('union')">A) União (U ∪ V)</MkButton>
-						<MkButton @click="checkSetChallenge('intersection')">B) Intersecção (U ∩ V)</MkButton>
-						<MkButton @click="checkSetChallenge('difference')">C) Diferença (U \ V)</MkButton>
-					</div>
-				</section>
-
-				<section v-else-if="gameStep === 2" class="_gaps_s">
-					<strong>Fase 2: Lógica matemática (condicional)</strong>
-					<p style="margin: 0;">
-						Na proposição p → q, qual é o valor lógico quando p = Verdadeiro (autenticado) e
-						q = Falso (não conectado)? Selecione o valor da condicional.
-					</p>
-					<div :class="$style.choices" role="radiogroup" aria-label="Valor da condicional">
-						<label :class="$style.answer">
-							<input v-model="logicAnswer" type="radio" name="logic-answer" :value="true"/>
-							Verdadeiro (V)
-						</label>
-						<label :class="$style.answer">
-							<input v-model="logicAnswer" type="radio" name="logic-answer" :value="false"/>
-							Falso (F)
-						</label>
-					</div>
-					<MkButton primary :disabled="logicAnswer === null" @click="checkLogicChallenge">Validar resposta</MkButton>
-				</section>
-
-				<section v-else class="_gaps_s">
-					<strong>Desafio concluído!</strong>
-					<p style="margin: 0;">Respondeste corretamente às duas fases. O rating de demonstração recebeu +50 pontos.</p>
-					<MkButton @click="resetGame">Jogar novamente</MkButton>
-				</section>
-
-				<div v-if="gameFeedback" :class="$style.feedback" role="status" aria-live="polite">
-					{{ gameFeedback }}
-				</div>
-			</div>
+			<LogicSetsChallenge v-show="activeTab === 'minigame'" :eloRating="post.eloRating" @completed="gameBonusPoints += $event"/>
 		</div>
 	</div>
 </PageWithHeader>
@@ -106,7 +81,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import LogicSetsChallenge from '@/components/LogicSetsChallenge.vue';
 import { definePage } from '@/page.js';
+import { calculateElo } from '@/utility/logic-sets-game.js';
 
 type Vector5D = [number, number, number, number, number];
 type GameTab = 'feed' | 'minigame';
@@ -138,7 +115,7 @@ const user: UserModel = {
 	preferenceVector: [0.8, 0.2, 0.6, 0.5, 0.4],
 };
 
-const activeTab = ref<GameTab>('feed');
+const activeTab = ref<GameTab>('minigame');
 const post = ref<PostModel>({
 	id: 'post-01',
 	content: 'Arquitetura de microsserviços e algoritmos em TypeScript',
@@ -146,9 +123,9 @@ const post = ref<PostModel>({
 	vector: [0.85, 0.1, 0.4, 0.7, 0.5],
 });
 const lastReaction = ref<string | null>(null);
-const gameStep = ref(1);
-const logicAnswer = ref<boolean | null>(null);
-const gameFeedback = ref('');
+const lastEloDelta = ref(0);
+const lastExpectedScore = ref(0.5);
+const gameBonusPoints = ref(0);
 
 function dotProduct(v1: Vector5D, v2: Vector5D): number {
 	return v1.reduce((sum, value, index) => sum + value * v2[index], 0);
@@ -168,34 +145,11 @@ function calculateEmojiScores(currentUser: UserModel, currentPost: PostModel, em
 const recommendations = computed(() => calculateEmojiScores(user, post.value, availableEmojis));
 
 function handleReact(symbol: string) {
+	const result = calculateElo(post.value.eloRating, 1200, 1);
 	lastReaction.value = symbol;
-	post.value = { ...post.value, eloRating: post.value.eloRating + 32 };
-}
-
-function checkSetChallenge(choice: string) {
-	if (choice === 'intersection') {
-		gameFeedback.value = 'Correto! A intersecção U ∩ V contém os utilizadores que pertencem aos dois conjuntos.';
-		gameStep.value = 2;
-		logicAnswer.value = null;
-	} else {
-		gameFeedback.value = 'Ainda não. Procura os utilizadores que estão simultaneamente em U e em V.';
-	}
-}
-
-function checkLogicChallenge() {
-	if (logicAnswer.value === false) {
-		gameFeedback.value = 'Correto! V → F é falso. Recebeste +50 pontos no rating de demonstração.';
-		post.value = { ...post.value, eloRating: post.value.eloRating + 50 };
-		gameStep.value = 3;
-	} else {
-		gameFeedback.value = 'Incorreto. Uma condicional só é falsa quando o antecedente é verdadeiro e o consequente é falso.';
-	}
-}
-
-function resetGame() {
-	gameStep.value = 1;
-	logicAnswer.value = null;
-	gameFeedback.value = '';
+	lastEloDelta.value = result.delta;
+	lastExpectedScore.value = result.expectedScore;
+	post.value = { ...post.value, eloRating: result.newRating };
 }
 
 definePage(() => ({
@@ -212,8 +166,7 @@ definePage(() => ({
 }
 
 .tabs,
-.reactions,
-.choices {
+.reactions {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px;
@@ -260,24 +213,34 @@ definePage(() => ({
 	text-align: center;
 }
 
-.choices {
-	flex-direction: column;
-	align-items: flex-start;
+.eloExplanation {
+	padding: 16px;
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: 10px;
+	line-height: 1.55;
+
+	p {
+		margin: 8px 0;
+		opacity: 0.8;
+	}
+
+	code {
+		font-weight: 700;
+		color: var(--MI_THEME-accent);
+	}
 }
 
-.answer {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 6px 0;
-	cursor: pointer;
-}
+.bonusSummary {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 8px 14px;
+	padding-top: 10px;
+	border-top: 1px solid var(--MI_THEME-divider);
 
-.feedback {
-	padding: 12px;
-	border-radius: 6px;
-	background: var(--MI_THEME-infoBg);
-	color: var(--MI_THEME-infoFg);
+	strong {
+		text-align: right;
+		color: var(--MI_THEME-accent);
+	}
 }
 
 @media (max-width: 500px) {
