@@ -7,11 +7,19 @@ on:
       - prod
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: socialnite-production
+  cancel-in-progress: false
+
 jobs:
   build-and-push:
+    if: github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout do código
+      - name: Checkout do codigo
         uses: actions/checkout@v4
 
       - name: Configurar o Docker Buildx
@@ -34,6 +42,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
+    if: github.ref == 'refs/heads/prod'
     needs: build-and-push
     runs-on: self-hosted
     steps:
@@ -49,7 +58,8 @@ jobs:
           import json
           import sys
 
-          web = json.load(sys.stdin)["services"]["web"]
+          services = json.load(sys.stdin)["services"]
+          web = services["web"]
 
           expected = {
               "command": [
@@ -64,6 +74,10 @@ jobs:
 
           for key, value in expected.items():
               actual = web.get(key)
+
+              if key in ("mem_limit", "memswap_limit") and actual is not None:
+                  actual = int(actual)
+
               if actual != value:
                   raise SystemExit(
                       f"ERRO: {key} = {actual!r}; esperado = {value!r}"
@@ -74,11 +88,14 @@ jobs:
 
       - name: Login no Docker Hub e subir containers
         shell: bash
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           set -euo pipefail
 
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login \
-            -u "${{ secrets.DOCKERHUB_USERNAME }}" \
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login \
+            -u "$DOCKERHUB_USERNAME" \
             --password-stdin
 
           cd /opt/nite
