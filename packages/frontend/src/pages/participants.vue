@@ -1,3 +1,7 @@
+<!--
+  SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <PageWithHeader>
 	<div class="participants-page">

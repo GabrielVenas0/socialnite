@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export interface ParticipanteInterface {
 	id: string;
 	nome: string;
