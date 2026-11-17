@@ -1,4 +1,3 @@
-
 name: SocialNite Prod
 
 on:
@@ -45,61 +44,107 @@ jobs:
     if: github.ref == 'refs/heads/prod'
     needs: build-and-push
     runs-on: self-hosted
+    timeout-minutes: 20
     steps:
       - name: Validar configuracao de producao
         shell: bash
         run: |
           set -euo pipefail
           cd /opt/nite
-
           docker compose -f docker-compose.prod.yml config --quiet
 
           docker compose -f docker-compose.prod.yml config --format json | python3 -c '
           import json
           import sys
 
-          services = json.load(sys.stdin)["services"]
-          web = services["web"]
-
+          web = json.load(sys.stdin)["services"]["web"]
           expected = {
-              "command": [
-                  "node",
-                  "/misskey/packages/backend/built/boot/entry.js"
-              ],
+              "command": ["node", "/misskey/packages/backend/built/boot/entry.js"],
               "mem_limit": 1610612736,
               "memswap_limit": 1610612736,
               "pids_limit": 128,
-              "restart": "unless-stopped"
+              "restart": "unless-stopped",
           }
 
           for key, value in expected.items():
               actual = web.get(key)
-
               if key in ("mem_limit", "memswap_limit") and actual is not None:
                   actual = int(actual)
-
               if actual != value:
-                  raise SystemExit(
-                      f"ERRO: {key} = {actual!r}; esperado = {value!r}"
-                  )
+                  raise SystemExit(f"ERRO: {key} = {actual!r}; esperado = {value!r}")
 
           print("Configuracao de producao validada.")
           '
 
-      - name: Login no Docker Hub e subir containers
+      - name: Backup do PostgreSQL antes do deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          cd /opt/nite
+          mkdir -p /opt/nite/backups
+          chmod 700 /opt/nite/backups
+          BACKUP_FILE="$(mktemp /opt/nite/backups/misskey_$(date -u +%Y%m%d_%H%M%S)_XXXXXX.dump)"
+
+          docker compose -f docker-compose.prod.yml exec -T db sh -ec '
+            DB_USER="${POSTGRES_USER:-postgres}"
+            DB_NAME="${POSTGRES_DB:-$DB_USER}"
+            exec pg_dump -U "$DB_USER" -d "$DB_NAME" -F c -Z 6
+          ' > "$BACKUP_FILE"
+
+          test -s "$BACKUP_FILE"
+          docker compose -f docker-compose.prod.yml exec -T db pg_restore -f /dev/null < "$BACKUP_FILE"
+          sha256sum "$BACKUP_FILE"
+          echo "Backup validado: $BACKUP_FILE"
+
+      - name: Login no Docker Hub e baixar nova imagem
         shell: bash
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           set -euo pipefail
-
           printf '%s' "$DOCKERHUB_TOKEN" | docker login \
-            -u "$DOCKERHUB_USERNAME" \
-            --password-stdin
-
+            -u "$DOCKERHUB_USERNAME" --password-stdin
           cd /opt/nite
+          docker compose -f docker-compose.prod.yml pull web
 
-          docker compose -f docker-compose.prod.yml pull
-          docker compose -f docker-compose.prod.yml up -d
-          docker image prune -f
+      - name: Executar migracoes em container temporario
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /opt/nite
+          docker compose -f docker-compose.prod.yml run \
+            --rm --no-deps --pull never -T \
+            --entrypoint /bin/sh web \
+            -ec 'cd /misskey/packages/backend && ./node_modules/.bin/typeorm migration:run -d ormconfig.js'
+
+      - name: Atualizar somente a aplicacao
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /opt/nite
+          docker compose -f docker-compose.prod.yml up -d --no-deps web
+
+      - name: Validar saude apos deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /opt/nite
+          CID="$(docker compose -f docker-compose.prod.yml ps -q web)"
+          test -n "$CID"
+          for attempt in $(seq 1 30); do
+            STATUS="$(docker inspect -f '{{.State.Health.Status}}' "$CID")"
+            if [ "$STATUS" = healthy ]; then
+              break
+            fi
+            if [ "$STATUS" = unhealthy ]; then
+              echo "ERRO: o container esta unhealthy"
+              exit 1
+            fi
+            sleep 5
+          done
+          test "$(docker inspect -f '{{.State.Health.Status}}' "$CID")" = healthy
+          curl --fail --silent --show-error --max-time 20 \
+            -o /dev/null https://social.nite.tec.br/
+          echo 'Aplicacao saudavel e HTTPS respondendo.'
