@@ -1,3 +1,4 @@
+
 name: SocialNite Prod
 
 on:
@@ -36,10 +37,52 @@ jobs:
     needs: build-and-push
     runs-on: self-hosted
     steps:
-      - name: Login no Docker Hub e subir containers
+      - name: Validar configuracao de producao
+        shell: bash
         run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          set -euo pipefail
           cd /opt/nite
+
+          docker compose -f docker-compose.prod.yml config --quiet
+
+          docker compose -f docker-compose.prod.yml config --format json | python3 -c '
+          import json
+          import sys
+
+          web = json.load(sys.stdin)["services"]["web"]
+
+          expected = {
+              "command": [
+                  "node",
+                  "/misskey/packages/backend/built/boot/entry.js"
+              ],
+              "mem_limit": 1610612736,
+              "memswap_limit": 1610612736,
+              "pids_limit": 128,
+              "restart": "unless-stopped"
+          }
+
+          for key, value in expected.items():
+              actual = web.get(key)
+              if actual != value:
+                  raise SystemExit(
+                      f"ERRO: {key} = {actual!r}; esperado = {value!r}"
+                  )
+
+          print("Configuracao de producao validada.")
+          '
+
+      - name: Login no Docker Hub e subir containers
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login \
+            -u "${{ secrets.DOCKERHUB_USERNAME }}" \
+            --password-stdin
+
+          cd /opt/nite
+
           docker compose -f docker-compose.prod.yml pull
           docker compose -f docker-compose.prod.yml up -d
           docker image prune -f
