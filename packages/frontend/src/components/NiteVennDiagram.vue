@@ -1,3 +1,7 @@
+<!--
+  SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <section class="venn" aria-label="Diagrama de Venn dos participantes">
 	<div class="project-label project-label-a">Conjunto A · {{ projetoA }}</div>

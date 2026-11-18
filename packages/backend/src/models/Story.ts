@@ -13,7 +13,7 @@ export class MiStory {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Index()
+	@Index('IDX_story_userId')
 	@Column({
 		...id(),
 		comment: 'The ID of author.',
@@ -23,7 +23,7 @@ export class MiStory {
 	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
-	@JoinColumn()
+	@JoinColumn({ foreignKeyConstraintName: 'FK_story_userId' })
 	public user: MiUser | null;
 
 	@Column({
@@ -36,7 +36,7 @@ export class MiStory {
 	@ManyToOne(type => MiDriveFile, {
 		onDelete: 'CASCADE',
 	})
-	@JoinColumn()
+	@JoinColumn({ foreignKeyConstraintName: 'FK_story_fileId' })
 	public file: MiDriveFile | null;
 
 	@Column('varchar', {
@@ -50,7 +50,7 @@ export class MiStory {
 	})
 	public keepFile: boolean;
 
-	@Index()
+	@Index('IDX_story_expiresAt')
 	@Column('timestamp with time zone')
 	public expiresAt: Date;
 

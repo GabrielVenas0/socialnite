@@ -109,7 +109,7 @@ describe('ユーザー', () => {
 	};
 
 	// MeDetailedのキーが過不足なく入っている？
-	const meDetailed = (user: misskey.entities.SignupResponse, security = false): Partial<misskey.entities.MeDetailed> => {
+	const meDetailed = (user: misskey.entities.SignupResponse, security = false, includePhone = false): Partial<misskey.entities.MeDetailed> => {
 		return stripUndefined({
 			...userDetailedNotMe(user),
 			avatarId: user.avatarId,
@@ -152,6 +152,7 @@ describe('ユーザー', () => {
 			twoFactorEnabled: user.twoFactorEnabled,
 			usePasswordLessLogin: user.usePasswordLessLogin,
 			securityKeys: user.securityKeys,
+			...(includePhone ? { phone: user.phone } : {}),
 			...(security ? {
 				email: user.email,
 				emailVerified: user.emailVerified,
@@ -405,7 +406,7 @@ describe('ユーザー', () => {
 			parameters: {},
 			user: userNoNote,
 		});
-		const expected = meDetailed(userNoNote, true);
+		const expected = meDetailed(userNoNote, true, true);
 		expected.loggedInDays = 1; // iはloggedInDaysを更新する
 		assert.deepStrictEqual(response, expected);
 	});
@@ -478,7 +479,7 @@ describe('ユーザー', () => {
 		{ parameters: () => ({ emailNotificationTypes: [] }) },
 	] as const)('を書き換えることができる($#)', async ({ parameters }) => {
 		const response = await successfulApiCall({ endpoint: 'i/update', parameters: parameters(), user: alice });
-		const expected = { ...meDetailed(alice, true), ...parameters() };
+		const expected = { ...meDetailed(alice, true, true), ...parameters() };
 		assert.deepStrictEqual(response, expected, inspect(parameters()));
 	});
 
@@ -489,7 +490,7 @@ describe('ユーザー', () => {
 		assert.match(response.avatarUrl ?? '.', /^[-a-zA-Z0-9@:%._\+~#&?=\/]+$/);
 		assert.match(response.avatarBlurhash ?? '.', /[ -~]{54}/);
 		const expected = {
-			...meDetailed(alice, true),
+			...meDetailed(alice, true, true),
 			avatarId: aliceFile!.id,
 			avatarBlurhash: response.avatarBlurhash,
 			avatarUrl: response.avatarUrl,
@@ -499,7 +500,7 @@ describe('ユーザー', () => {
 		const parameters2 = { avatarId: null };
 		const response2 = await successfulApiCall({ endpoint: 'i/update', parameters: parameters2, user: alice });
 		const expected2 = {
-			...meDetailed(alice, true),
+			...meDetailed(alice, true, true),
 			avatarId: null,
 			avatarBlurhash: null,
 			avatarUrl: alice.avatarUrl, // 解除した場合、identiconになる
@@ -514,7 +515,7 @@ describe('ユーザー', () => {
 		assert.match(response.bannerUrl ?? '.', /^[-a-zA-Z0-9@:%._\+~#&?=\/]+$/);
 		assert.match(response.bannerBlurhash ?? '.', /[ -~]{54}/);
 		const expected = {
-			...meDetailed(alice, true),
+			...meDetailed(alice, true, true),
 			bannerId: aliceFile!.id,
 			bannerBlurhash: response.bannerBlurhash,
 			bannerUrl: response.bannerUrl,
@@ -524,7 +525,7 @@ describe('ユーザー', () => {
 		const parameters2 = { bannerId: null };
 		const response2 = await successfulApiCall({ endpoint: 'i/update', parameters: parameters2, user: alice });
 		const expected2 = {
-			...meDetailed(alice, true),
+			...meDetailed(alice, true, true),
 			bannerId: null,
 			bannerBlurhash: null,
 			bannerUrl: null,

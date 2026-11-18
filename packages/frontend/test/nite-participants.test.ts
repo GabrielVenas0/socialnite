@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { describe, expect, it } from 'vitest';
 import { GerenciadoraDeConjuntos, OperacoesDeConjuntos, Participante, Projeto } from '@/domain/nite-participants.js';
 import { construirProjetos, FonteParticipantesNite, normalizarRegistros } from '@/services/nite-participants.js';

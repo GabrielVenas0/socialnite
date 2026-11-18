@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Participante, Projeto } from '@/domain/nite-participants.js';
 import participantesCsv from '@/data/nite-participants.csv?raw';
 

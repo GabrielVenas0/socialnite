@@ -9,7 +9,7 @@ import { MiUser } from './User.js';
 import { MiStory } from './Story.js';
 
 @Entity('story_view')
-@Index(['storyId', 'userId'], { unique: true })
+@Index('IDX_story_view_storyId_userId', ['storyId', 'userId'], { unique: true })
 export class MiStoryView {
 	@PrimaryColumn(id())
 	public id: string;
@@ -20,17 +20,17 @@ export class MiStoryView {
 	@ManyToOne(type => MiStory, {
 		onDelete: 'CASCADE',
 	})
-	@JoinColumn()
+	@JoinColumn({ foreignKeyConstraintName: 'FK_story_view_storyId' })
 	public story: MiStory | null;
 
-	@Index()
+	@Index('IDX_story_view_userId')
 	@Column(id())
 	public userId: MiUser['id'];
 
 	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
-	@JoinColumn()
+	@JoinColumn({ foreignKeyConstraintName: 'FK_story_view_userId' })
 	public user: MiUser | null;
 
 	constructor(data: Partial<MiStoryView>) {

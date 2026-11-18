@@ -262,7 +262,7 @@ const sensitiveMediaDetectionForm = useForm({
 	fetchInstance(true);
 });
 
-const googleSigninRedirectUri = `${location.origin}/sign-in-with-google/callback`;
+const googleSigninRedirectUri = `${window.location.origin}/sign-in-with-google/callback`;
 
 const googleSigninForm = useForm({
 	enableGoogleSignin: meta.enableGoogleSignin,

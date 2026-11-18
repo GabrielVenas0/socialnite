@@ -84,7 +84,7 @@ const emit = defineEmits<{
 }>();
 
 function onGoogleClick(): void {
-	location.href = '/sign-in-with-google';
+	window.location.href = '/sign-in-with-google';
 }
 
 const host = toUnicode(configHost);

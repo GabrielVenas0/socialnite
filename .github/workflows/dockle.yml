@@ -1,32 +1,50 @@
----
+
 name: Dockle
 
 on:
+  pull_request:
   push:
     branches:
-      - master
-      - develop
-  pull_request:
+      - prod
+
+permissions:
+  contents: read
 
 jobs:
   dockle:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_CONTENT_TRUST: 1
-      DOCKLE_VERSION: 0.4.14
+    timeout-minutes: 45
+
     steps:
-      - uses: actions/checkout@v4.3.0
-      - name: Download and install dockle v${{ env.DOCKLE_VERSION }}
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Construir imagem para auditoria
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          load: true
+          tags: socialnite-ci:pr
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Instalar Dockle
+        env:
+          DOCKLE_VERSION: 0.4.14
         run: |
-          curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v${DOCKLE_VERSION}/dockle_${DOCKLE_VERSION}_Linux-64bit.deb"
+          set -euo pipefail
+          curl -fsSL \
+            "https://github.com/goodwithtech/dockle/releases/download/v${DOCKLE_VERSION}/dockle_${DOCKLE_VERSION}_Linux-64bit.deb" \
+            -o dockle.deb
           sudo dpkg -i dockle.deb
-      - run: |
-          cp .config/docker_example.env .config/docker.env
-          cp ./compose_example.yml ./compose.yml
-      - run: |
-          docker compose up -d web
-          docker tag "$(docker compose images --format json web | jq -r '.[] | .ID')" misskey-web:latest
-      - run: |
-          cmd="dockle --exit-code 1 misskey-web:latest ${image_name}"
-          echo "> ${cmd}"
-          eval "${cmd}"
+
+      - name: Auditar imagem Docker
+        run: |
+          dockle --exit-code 1 socialnite-ci:pr
