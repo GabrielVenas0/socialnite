@@ -16,7 +16,7 @@ import { definePage } from '@/page.js';
 import MkLoading from '@/pages/_loading_.vue';
 
 onMounted(async () => {
-	const params = new URLSearchParams(location.hash.replace(/^#/, ''));
+	const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
 	const token = params.get('token');
 	const error = params.get('error');
 
@@ -35,7 +35,7 @@ onMounted(async () => {
 		text: message,
 	});
 
-	location.href = '/';
+	window.location.href = '/';
 });
 
 definePage(() => ({

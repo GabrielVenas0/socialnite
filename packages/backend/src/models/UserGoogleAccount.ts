@@ -12,17 +12,17 @@ export class MiUserGoogleAccount {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Index({ unique: true })
+	@Index('IDX_user_google_account_userId', { unique: true })
 	@Column(id())
 	public userId: MiUser['id'];
 
 	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
-	@JoinColumn()
+	@JoinColumn({ foreignKeyConstraintName: 'FK_user_google_account_userId' })
 	public user: MiUser | null;
 
-	@Index({ unique: true })
+	@Index('IDX_user_google_account_googleId', { unique: true })
 	@Column('varchar', {
 		length: 128,
 		comment: 'The "sub" (subject) claim from the Google ID token. Stable per Google account.',
