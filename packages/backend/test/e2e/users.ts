@@ -479,7 +479,7 @@ describe('ユーザー', () => {
 		{ parameters: () => ({ emailNotificationTypes: [] }) },
 	] as const)('を書き換えることができる($#)', async ({ parameters }) => {
 		const response = await successfulApiCall({ endpoint: 'i/update', parameters: parameters(), user: alice });
-		const expected = { ...meDetailed(alice, true), ...parameters() };
+		const expected = { ...meDetailed(alice, true, true), ...parameters() };
 		assert.deepStrictEqual(response, expected, inspect(parameters()));
 	});
 
