@@ -10,6 +10,57 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchText>{{ i18n.ts._settings.preferencesBanner }}</SearchText>
 		</MkFeatureBanner>
 
+		<!-- Social Nite: o que a maioria das pessoas procura fica à vista; o resto, em "Avançado". -->
+		<div class="_panel" :class="$style.basico">
+			<div :class="$style.basicoTitulo"><i class="ti ti-star"></i> Básico</div>
+			<div class="_gaps_m">
+				<MkRadios v-model="fontSize">
+					<template #label>{{ i18n.ts.fontSize }}</template>
+					<option :value="null"><span style="font-size: 14px;">Aa</span></option>
+					<option value="1"><span style="font-size: 15px;">Aa</span></option>
+					<option value="2"><span style="font-size: 16px;">Aa</span></option>
+					<option value="3"><span style="font-size: 17px;">Aa</span></option>
+				</MkRadios>
+				<MkSwitch v-model="reduceAnimation">
+					<template #label>{{ i18n.ts.reduceUiAnimation }}</template>
+				</MkSwitch>
+				<MkSelect
+					v-model="nsfw"
+					:items="[
+						{ label: i18n.ts._displayOfSensitiveMedia.respect, value: 'respect' },
+						{ label: i18n.ts._displayOfSensitiveMedia.ignore, value: 'ignore' },
+						{ label: i18n.ts._displayOfSensitiveMedia.force, value: 'force' },
+					]"
+				>
+					<template #label>{{ i18n.ts.displayOfSensitiveMedia }}</template>
+				</MkSelect>
+				<MkRadios v-model="reactionsDisplaySize">
+					<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
+					<option value="small">{{ i18n.ts.small }}</option>
+					<option value="medium">{{ i18n.ts.medium }}</option>
+					<option value="large">{{ i18n.ts.large }}</option>
+				</MkRadios>
+				<MkSwitch v-model="confirmOnReact">
+					<template #label>{{ i18n.ts.confirmOnReact }}</template>
+				</MkSwitch>
+				<MkSwitch v-model="alwaysConfirmFollow">
+					<template #label>{{ i18n.ts.alwaysConfirmFollow }}</template>
+				</MkSwitch>
+				<MkSwitch v-model="chatSendOnEnter">
+					<template #label>Enter envia mensagem também no celular</template>
+					<template #caption>No computador o Enter já envia, e Shift+Enter pula a linha.</template>
+				</MkSwitch>
+				<MkSwitch v-model="keepScreenOn">
+					<template #label>{{ i18n.ts.keepScreenOn }}</template>
+				</MkSwitch>
+			</div>
+		</div>
+
+		<div :class="$style.avancadoTitulo">
+			<div><i class="ti ti-adjustments"></i> Avançado</div>
+			<div :class="$style.avancadoDica">Ajustes finos. O padrão já funciona bem para quase todo mundo.</div>
+		</div>
+
 		<div class="_gaps_s">
 			<SearchMarker v-slot="slotProps" :keywords="['general']">
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
@@ -28,16 +79,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</I18n>
 								</template>
 							</MkSelect>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['device', 'type', 'kind', 'smartphone', 'tablet', 'desktop']">
-							<MkRadios v-model="overridedDeviceKind">
-								<template #label><SearchLabel>{{ i18n.ts.overridedDeviceKind }}</SearchLabel></template>
-								<option :value="null">{{ i18n.ts.auto }}</option>
-								<option value="smartphone"><i class="ti ti-device-mobile"/> {{ i18n.ts.smartphone }}</option>
-								<option value="tablet"><i class="ti ti-device-tablet"/> {{ i18n.ts.tablet }}</option>
-								<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
-							</MkRadios>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['realtimemode']">
@@ -266,22 +307,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 										<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
 										<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
 									</MkRadios>
-								</MkPreferenceContainer>
-							</SearchMarker>
-
-							<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
-								<MkPreferenceContainer k="instanceTicker">
-									<MkSelect
-										v-if="instance.federation !== 'none'"
-										v-model="instanceTicker"
-										:items="[
-											{ label: i18n.ts._instanceTicker.none, value: 'none' },
-											{ label: i18n.ts._instanceTicker.remote, value: 'remote' },
-											{ label: i18n.ts._instanceTicker.always, value: 'always' },
-										]"
-									>
-										<template #label><SearchLabel>{{ i18n.ts.instanceTicker }}</SearchLabel></template>
-									</MkSelect>
 								</MkPreferenceContainer>
 							</SearchMarker>
 
@@ -713,14 +738,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-							<SearchMarker :keywords="['effect', 'show']">
-								<MkPreferenceContainer k="enableSeasonalScreenEffect">
-									<MkSwitch v-model="enableSeasonalScreenEffect">
-										<template #label><SearchLabel>{{ i18n.ts.seasonalScreenEffect }}</SearchLabel></template>
-									</MkSwitch>
-								</MkPreferenceContainer>
-							</SearchMarker>
-
 							<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab']">
 								<MkPreferenceContainer k="imageNewTab">
 									<MkSwitch v-model="imageNewTab">
@@ -753,45 +770,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkPreferenceContainer>
 						</SearchMarker>
 
-						<SearchMarker :keywords="['cache', 'page']">
-							<MkPreferenceContainer k="numberOfPageCache">
-								<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
-									<template #label><SearchLabel>{{ i18n.ts.numberOfPageCache }}</SearchLabel></template>
-									<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
-								</MkRange>
-							</MkPreferenceContainer>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['ad', 'show']">
-							<MkPreferenceContainer k="forceShowAds">
-								<MkSwitch v-model="forceShowAds">
-									<template #label><SearchLabel>{{ i18n.ts.forceShowAds }}</SearchLabel></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
-
-						<SearchMarker>
-							<MkPreferenceContainer k="hemisphere">
-								<MkRadios v-model="hemisphere">
-									<template #label><SearchLabel>{{ i18n.ts.hemisphere }}</SearchLabel></template>
-									<option value="N">{{ i18n.ts._hemisphere.N }}</option>
-									<option value="S">{{ i18n.ts._hemisphere.S }}</option>
-									<template #caption>{{ i18n.ts._hemisphere.caption }}</template>
-								</MkRadios>
-							</MkPreferenceContainer>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['emoji', 'dictionary', 'additional', 'extra']">
-							<MkFolder>
-								<template #label><SearchLabel>{{ i18n.ts.additionalEmojiDictionary }}</SearchLabel></template>
-								<div class="_buttons">
-									<template v-for="lang in emojiIndexLangs" :key="lang">
-										<MkButton v-if="store.r.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
-										<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ store.r.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
-									</template>
-								</div>
-							</MkFolder>
-						</SearchMarker>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -1088,3 +1066,25 @@ definePage(() => ({
 	icon: 'ti ti-adjustments',
 }));
 </script>
+
+<style lang="scss" module>
+.basico {
+	padding: 16px;
+}
+
+.basicoTitulo {
+	font-weight: bold;
+	margin-bottom: 12px;
+}
+
+.avancadoTitulo {
+	margin-top: 8px;
+	font-weight: bold;
+}
+
+.avancadoDica {
+	font-weight: normal;
+	font-size: 0.85em;
+	opacity: 0.7;
+}
+</style>

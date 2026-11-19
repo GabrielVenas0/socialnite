@@ -81,7 +81,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['experimental', 'feature', 'flags']">
+			<!-- Social Nite: recursos experimentais e modo desenvolvedor só para a administração -->
+			<SearchMarker v-if="$i.isAdmin" :keywords="['experimental', 'feature', 'flags']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-flask"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.experimentalFeatures }}</SearchLabel></template>
@@ -109,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['developer', 'mode', 'debug']">
+			<SearchMarker v-if="$i.isAdmin" :keywords="['developer', 'mode', 'debug']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-code"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.developer }}</SearchLabel></template>
@@ -125,29 +126,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<hr>
 
-		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
-
-		<hr>
-
 		<MkButton @click="resetAllTips"><i class="ti ti-bulb"></i> {{ i18n.ts.redisplayAllTips }}</MkButton>
 		<MkButton @click="hideAllTips"><i class="ti ti-bulb-off"></i> {{ i18n.ts.hideAllTips }}</MkButton>
 
-		<hr>
-
-		<MkButton @click="forceCloudBackup">Force cloud backup</MkButton>
-
-		<hr>
-
 		<template v-if="$i.policies.chatAvailability !== 'unavailable'">
-			<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
-
 			<hr>
+
+			<MkButton @click="readAllChatMessages"><i class="ti ti-checks"></i> Marcar todas as conversas como lidas</MkButton>
 		</template>
 
-		<FormSlot>
-			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
-			<template #caption>{{ i18n.ts.migrateOldSettings_description }}</template>
-		</FormSlot>
+		<!-- Social Nite: ferramentas técnicas só para a administração -->
+		<template v-if="$i.isAdmin">
+			<hr>
+
+			<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
+
+			<MkButton @click="forceCloudBackup">Forçar backup das preferências na nuvem</MkButton>
+
+			<FormSlot>
+				<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
+				<template #caption>{{ i18n.ts.migrateOldSettings_description }}</template>
+			</FormSlot>
+		</template>
 	</div>
 </SearchMarker>
 </template>

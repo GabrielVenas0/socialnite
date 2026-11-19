@@ -88,9 +88,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</SearchMarker>
 
-		<SearchMarker :keywords="['lockdown']">
-			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.lockdown }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+		<!-- Social Nite: o bloco "Lockdown" (restringir notas antigas em massa) fica fechado em "Avançado" -->
+		<SearchMarker v-slot="slotProps" :keywords="['lockdown']">
+			<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+				<template #icon><i class="ti ti-adjustments"></i></template>
+				<template #label>Avançado: <SearchLabel>{{ i18n.ts.lockdown }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+				<template #caption>Restringir quem vê o seu conteúdo e as suas notas antigas</template>
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['login', 'signin']">
@@ -205,7 +208,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkInfo warn>{{ i18n.ts._accountSettings.mayNotEffectSomeSituations }}</MkInfo>
 				</div>
-			</FormSection>
+			</MkFolder>
 		</SearchMarker>
 	</div>
 </SearchMarker>
@@ -217,6 +220,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';

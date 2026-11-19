@@ -44,6 +44,7 @@ import * as os from '@/os.js';
 import { useRouter } from '@/router.js';
 import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utility.js';
 import { store } from '@/store.js';
+import { miLocalStorage } from '@/local-storage.js';
 import { signout } from '@/signout.js';
 import { genSearchIndexes } from '@/utility/inapp-search.js';
 
@@ -74,7 +75,17 @@ function skipAutoBackup() {
 	store.set('showPreferencesAutoCloudBackupSuggestion', false);
 }
 
+// Social Nite: o menu de Configurações tinha 15 itens soltos. Agora são grupos com nome,
+// e o que é técnico fica em "Avançado", que só abre quando a pessoa pede.
+const mostrarAvancado = ref(miLocalStorage.getItem('socialniteConfigAvancado') === '1');
+
+function alternarAvancado() {
+	mostrarAvancado.value = !mostrarAvancado.value;
+	miLocalStorage.setItem('socialniteConfigAvancado', mostrarAvancado.value ? '1' : '0');
+}
+
 const menuDef = computed<SuperMenuDef[]>(() => [{
+	title: 'Conta',
 	items: [{
 		icon: 'ti ti-user',
 		text: i18n.ts.profile,
@@ -102,70 +113,80 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		active: currentPage.value?.route.name === 'security',
 	}],
 }, {
+	title: 'Aparência',
+	items: [{
+		icon: 'ti ti-palette',
+		text: i18n.ts.theme,
+		to: '/settings/theme',
+		active: currentPage.value?.route.name === 'theme',
+	}, {
+		icon: 'ti ti-music',
+		text: i18n.ts.sounds,
+		to: '/settings/sounds',
+		active: currentPage.value?.route.name === 'sounds',
+	}, {
+		icon: 'ti ti-mood-happy',
+		text: i18n.ts.emojiPalette,
+		to: '/settings/emoji-palette',
+		active: currentPage.value?.route.name === 'emoji-palette',
+	}],
+}, {
+	title: 'Geral',
 	items: [{
 		icon: 'ti ti-adjustments',
 		text: i18n.ts.preferences,
 		to: '/settings/preferences',
 		active: currentPage.value?.route.name === 'preferences',
 	}, {
-		icon: 'ti ti-palette',
-		text: i18n.ts.theme,
-		to: '/settings/theme',
-		active: currentPage.value?.route.name === 'theme',
-	}, {
-		icon: 'ti ti-mood-happy',
-		text: i18n.ts.emojiPalette,
-		to: '/settings/emoji-palette',
-		active: currentPage.value?.route.name === 'emoji-palette',
-	}, {
-		icon: 'ti ti-music',
-		text: i18n.ts.sounds,
-		to: '/settings/sounds',
-		active: currentPage.value?.route.name === 'sounds',
-	}, ...($i?.isAdmin ? [{
-		// Social Nite: Plugins roda código de terceiros no cliente — administração apenas.
-		icon: 'ti ti-plug',
-		text: i18n.ts.plugins,
-		to: '/settings/plugin',
-		active: currentPage.value?.route.name === 'plugin',
-	}] : [])],
-}, {
-	items: [{
-		icon: 'ti ti-cloud',
-		text: i18n.ts.drive,
-		to: '/settings/drive',
-		active: currentPage.value?.route.name === 'drive',
-	}, {
 		icon: 'ti ti-ban',
 		text: i18n.ts.muteAndBlock,
 		to: '/settings/mute-block',
 		active: currentPage.value?.route.name === 'mute-block',
-	}, ...($i?.isAdmin ? [{
-		// Social Nite: Integração de serviço expõe o Console de API — administração apenas.
-		icon: 'ti ti-link',
-		text: i18n.ts._settings.serviceConnection,
-		to: '/settings/connect',
-		active: currentPage.value?.route.name === 'connect',
-	}] : []), {
+	}, {
+		icon: 'ti ti-cloud',
+		text: i18n.ts.drive,
+		to: '/settings/drive',
+		active: currentPage.value?.route.name === 'drive',
+	}],
+}, {
+	title: 'Avançado',
+	items: [{
+		type: 'button',
+		icon: mostrarAvancado.value ? 'ti ti-chevron-up' : 'ti ti-chevron-down',
+		text: mostrarAvancado.value ? 'Esconder opções' : 'Mostrar opções',
+		action: alternarAvancado,
+	}, ...(mostrarAvancado.value ? [{
 		icon: 'ti ti-package',
 		text: i18n.ts._settings.accountData,
 		to: '/settings/account-data',
 		active: currentPage.value?.route.name === 'account-data',
 	}, {
-		icon: 'ti ti-dots',
-		text: i18n.ts.other,
-		to: '/settings/other',
-		active: currentPage.value?.route.name === 'other',
-	}],
-}, {
-	items: [{
-		type: 'button',
+		type: 'button' as const,
 		icon: 'ti ti-settings-2',
 		text: i18n.ts.preferencesProfile,
 		action: async (ev: MouseEvent) => {
 			os.popupMenu(getPreferencesProfileMenu(), ev.currentTarget ?? ev.target);
 		},
+	}, ...($i?.isAdmin ? [{
+		// Plugins roda código de terceiros no cliente — administração apenas.
+		icon: 'ti ti-plug',
+		text: i18n.ts.plugins,
+		to: '/settings/plugin',
+		active: currentPage.value?.route.name === 'plugin',
 	}, {
+		// Integração de serviço expõe o Console de API — administração apenas.
+		icon: 'ti ti-link',
+		text: i18n.ts._settings.serviceConnection,
+		to: '/settings/connect',
+		active: currentPage.value?.route.name === 'connect',
+	}] : []), {
+		icon: 'ti ti-dots',
+		text: i18n.ts.other,
+		to: '/settings/other',
+		active: currentPage.value?.route.name === 'other',
+	}] : [])],
+}, {
+	items: [{
 		type: 'button',
 		icon: 'ti ti-trash',
 		text: i18n.ts.clearCache,
