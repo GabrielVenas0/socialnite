@@ -228,7 +228,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, markRaw, onMounted, provide, ref, useTemplateRef } from 'vue';
+import { computed, inject, markRaw, onMounted, provide, ref, useTemplateRef, watch } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -595,6 +595,14 @@ function loadReplies() {
 		replies.value = res;
 	});
 }
+
+// Social Nite: as respostas carregam sozinhas, sem precisar clicar em "Mostrar respostas".
+onMounted(() => {
+	if (tab.value === 'replies' && !repliesLoaded.value) loadReplies();
+});
+watch(tab, t => {
+	if (t === 'replies' && !repliesLoaded.value) loadReplies();
+});
 
 const conversationLoaded = ref(false);
 

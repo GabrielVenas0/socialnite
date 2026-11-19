@@ -48,8 +48,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<ul>
 			<li>publicar <strong>Notas</strong> (as publicações da plataforma) e interagir com as de outras pessoas;</li>
 			<li>participar de <strong>Canais</strong>, que são fóruns organizados por tema;</li>
-			<li>organizar pessoas em <strong>Redes de Pessoas</strong> (conjuntos de contas que você acompanha de perto);</li>
-			<li>criar <strong>Redes de Palavras</strong>, que filtram e reúnem Notas por palavra-chave;</li>
+			<li>organizar pessoas em <strong>Listas</strong> (conjuntos de contas que você acompanha de perto);</li>
+			<li>criar <strong>Assuntos</strong>, que filtram e reúnem Notas por palavra-chave;</li>
 			<li>guardar conteúdo em <strong>Notas Salvas</strong> (suas coleções pessoais);</li>
 			<li>trocar mensagens em <strong>Conversas</strong> (chat entre duas pessoas);</li>
 			<li>montar páginas próprias no <strong>Portfólio</strong>.</li>
@@ -116,7 +116,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<li>usar o Social Nite para atividade ilegal ou para violar as normas internas da instituição.</li>
 		</ul>
 
-		<p>Isso vale para <strong>Notas, Canais, Conversas, Portfólio</strong>, nomes de usuário, biografia, imagens de perfil, enquetes, arquivos enviados e nomes de <strong>Redes de Pessoas</strong>, <strong>Redes de Palavras</strong> e <strong>Notas Salvas</strong> que sejam visíveis a outras pessoas.</p>
+		<p>Isso vale para <strong>Notas, Canais, Conversas, Portfólio</strong>, nomes de usuário, biografia, imagens de perfil, enquetes, arquivos enviados e nomes de <strong>Listas</strong>, <strong>Assuntos</strong> e <strong>Notas Salvas</strong> que sejam visíveis a outras pessoas.</p>
 
 		<p>As <strong>Conversas</strong> são privadas entre os participantes, mas não são anônimas nem imunes às regras: conteúdo ilegal ou assédio em Conversas também é passível de sanção quando denunciado.</p>
 
@@ -124,7 +124,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<p><strong>O conteúdo é seu.</strong> Você mantém todos os direitos sobre as Notas, imagens, arquivos, páginas do Portfólio e demais materiais que publicar.</p>
 
-		<p>Para que a plataforma funcione, você concede ao Social Nite uma <strong>licença não exclusiva, gratuita e limitada</strong> para armazenar, copiar, exibir, redimensionar, gerar miniaturas e distribuir esse conteúdo <strong>dentro do Social Nite</strong>, apenas na medida necessária para operar o serviço (mostrar sua Nota para quem te segue, gerar pré-visualização, incluir seu conteúdo em Canais, Redes de Palavras e backups técnicos).</p>
+		<p>Para que a plataforma funcione, você concede ao Social Nite uma <strong>licença não exclusiva, gratuita e limitada</strong> para armazenar, copiar, exibir, redimensionar, gerar miniaturas e distribuir esse conteúdo <strong>dentro do Social Nite</strong>, apenas na medida necessária para operar o serviço (mostrar sua Nota para quem te segue, gerar pré-visualização, incluir seu conteúdo em Canais, Assuntos e backups técnicos).</p>
 
 		<p>Essa licença:</p>
 
@@ -205,7 +205,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<p>Ao encerrar:</p>
 
 		<ul>
-			<li>suas Notas, Notas Salvas, Redes de Pessoas, Redes de Palavras e páginas do Portfólio são removidos ou anonimizados conforme a Política de Privacidade;</li>
+			<li>suas Notas, Notas Salvas, Listas, Assuntos e páginas do Portfólio são removidos ou anonimizados conforme a Política de Privacidade;</li>
 			<li>mensagens já enviadas em <strong>Conversas</strong> permanecem visíveis para o outro participante, porque também são conteúdo dele;</li>
 			<li>alguns registros podem ser mantidos pelo prazo exigido por lei ou para apuração de incidentes.</li>
 		</ul>

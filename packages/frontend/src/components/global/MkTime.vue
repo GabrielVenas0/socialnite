@@ -53,14 +53,20 @@ const now = computed(() => (props.origin ? props.origin.getTime() : actualNow.va
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const ago = computed(() => (now.value - _time) / 1000/*ms*/);
 
+// Social Nite: singular em português — "1 semana atrás", "1 mês atrás", "1 ano atrás".
+function singular(texto: string, n: number): string {
+	if (n !== 1) return texto;
+	return texto.replace('semanas', 'semana').replace('meses', 'mês').replace('anos', 'ano');
+}
+
 const relative = computed<string>(() => {
 	if (props.mode === 'absolute') return ''; // absoluteではrelativeを使わないので計算しない
 	if (invalid) return i18n.ts._ago.invalid;
 
 	return (
-		ago.value >= 31536000 ? i18n.tsx._ago.yearsAgo({ n: Math.round(ago.value / 31536000).toString() }) :
-		ago.value >= 2592000 ? i18n.tsx._ago.monthsAgo({ n: Math.round(ago.value / 2592000).toString() }) :
-		ago.value >= 604800 ? i18n.tsx._ago.weeksAgo({ n: Math.round(ago.value / 604800).toString() }) :
+		ago.value >= 31536000 ? singular(i18n.tsx._ago.yearsAgo({ n: Math.round(ago.value / 31536000).toString() }), Math.round(ago.value / 31536000)) :
+		ago.value >= 2592000 ? singular(i18n.tsx._ago.monthsAgo({ n: Math.round(ago.value / 2592000).toString() }), Math.round(ago.value / 2592000)) :
+		ago.value >= 604800 ? singular(i18n.tsx._ago.weeksAgo({ n: Math.round(ago.value / 604800).toString() }), Math.round(ago.value / 604800)) :
 		ago.value >= 86400 ? i18n.tsx._ago.daysAgo({ n: Math.round(ago.value / 86400).toString() }) :
 		ago.value >= 3600 ? i18n.tsx._ago.hoursAgo({ n: Math.round(ago.value / 3600).toString() }) :
 		ago.value >= 60 ? i18n.tsx._ago.minutesAgo({ n: (~~(ago.value / 60)).toString() }) :

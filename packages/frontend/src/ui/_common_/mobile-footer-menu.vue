@@ -23,9 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<button :class="$style.item" class="_button" @click="widgetsShowing = true">
+	<!-- Social Nite: notificações de volta no rodapé (no lugar de Widgets, pouco usado no celular) -->
+	<button :class="$style.item" class="_button" aria-label="Notificações" @click="mainRouter.push('/my/notifications')">
 		<div :class="$style.itemInner">
-			<i :class="$style.itemIcon" class="ti ti-apps"></i>
+			<i :class="$style.itemIcon" class="ti ti-bell"></i><span v-if="navbarItemDef.notifications.indicated" :class="$style.itemIndicator" class="_blink"><i class="_indicatorCircle"></i></span>
 		</div>
 	</button>
 

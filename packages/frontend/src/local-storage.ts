@@ -36,6 +36,8 @@ export type Keys = (
 	'isSafeMode' |
 	'circuloSocialRecorde' |
 	'socialniteMenuPesquisa' |
+	'socialniteMenuSemPesquisa' |
+	'socialniteConfigAvancado' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` | // DEPRECATED

@@ -190,9 +190,8 @@ export const PREF_DEF = definePreferences({
 			'drive',
 			'chat',
 			'-',
+			// Social Nite: a busca de pessoas fica dentro do "Explorar".
 			'explore',
-			// Social Nite: "Pesquisar usuário" logo abaixo de "Explorar".
-			'search',
 			'announcements',
 		],
 	},

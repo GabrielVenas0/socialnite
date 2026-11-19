@@ -7,6 +7,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="channelId == null || channel != null" class="_gaps_m">
+			<!-- Social Nite: imagem de capa no topo, com prévia de como o cartão do canal fica -->
+			<div class="_gaps_s">
+				<div :class="$style.capaRotulo">Imagem de capa</div>
+				<div :class="$style.capa" :style="{ backgroundImage: bannerUrl ? `url(${bannerUrl})` : capaAutomatica(color) }">
+					<span v-if="!bannerUrl" :class="$style.capaVazia">Sem imagem: o canal usa uma capa automática com a cor dele</span>
+				</div>
+				<div class="_buttons">
+					<MkButton primary rounded @click="setBannerImage"><i class="ti ti-photo-plus"></i> {{ bannerUrl ? 'Trocar imagem' : 'Escolher imagem' }}</MkButton>
+					<MkButton v-if="bannerUrl" rounded danger @click="removeBannerImage()"><i class="ti ti-trash"></i> {{ i18n.ts._channel.removeBanner }}</MkButton>
+				</div>
+				<div :class="$style.capaDica">Use uma imagem deitada, de preferência 1500 × 500, com o assunto no centro.</div>
+			</div>
+
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
@@ -26,14 +39,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="allowRenoteToExternal">
 				<template #label>{{ i18n.ts._channel.allowRenoteToExternal }}</template>
 			</MkSwitch>
-
-			<div>
-				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
-				<div v-else-if="bannerUrl">
-					<img :src="bannerUrl" style="width: 100%;"/>
-					<MkButton @click="removeBannerImage()"><i class="ti ti-trash"></i> {{ i18n.ts._channel.removeBanner }}</MkButton>
-				</div>
-			</div>
 
 			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.pinnedNotes }}</template>
@@ -82,6 +87,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { useRouter } from '@/router.js';
+import { capaAutomatica } from '@/utility/channel-cover.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -95,13 +101,15 @@ const channel = ref<Misskey.entities.Channel | null>(null);
 const name = ref<string>('');
 const description = ref<string | null>(null);
 const bannerUrl = ref<string | null>(null);
-const bannerId = ref<string | null>(null);
+// undefined = capa não mexida; null = remover; string = nova imagem do Drive.
+const bannerId = ref<string | null | undefined>(undefined);
 const color = ref('#000');
 const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
 const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
 
 watch(() => bannerId.value, async () => {
+	if (bannerId.value === undefined) return;
 	if (bannerId.value == null) {
 		bannerUrl.value = null;
 	} else {
@@ -120,7 +128,8 @@ async function fetchChannel() {
 
 	name.value = result.name;
 	description.value = result.description;
-	bannerId.value = result.bannerId;
+	// Social Nite: a API não devolve bannerId; mostra a capa atual pela URL e só mexe
+	// nela se a pessoa trocar ou remover (antes a capa existente sumia da tela de edição).
 	bannerUrl.value = result.bannerUrl;
 	isSensitive.value = result.isSensitive;
 	pinnedNotes.value = result.pinnedNoteIds.map(id => ({
@@ -221,6 +230,34 @@ definePage(() => ({
 </script>
 
 <style lang="scss" module>
+.capaRotulo {
+	font-size: 0.85em;
+	font-weight: bold;
+}
+
+.capa {
+	display: grid;
+	place-items: center;
+	aspect-ratio: 3 / 1;
+	border-radius: var(--MI-radius);
+	background-size: cover;
+	background-position: center;
+	overflow: hidden;
+}
+
+.capaVazia {
+	padding: 0 16px;
+	text-align: center;
+	color: #fff;
+	font-size: 0.9em;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.capaDica {
+	font-size: 0.8em;
+	opacity: 0.7;
+}
+
 .pinnedNote {
 	position: relative;
 	display: block;

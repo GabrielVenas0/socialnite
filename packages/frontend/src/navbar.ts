@@ -48,12 +48,13 @@ export const navbarItemDef = reactive({
 		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
-	// Social Nite: "Pesquisar usuário" é para todo mundo — é por ele que se acha um
-	// amigo. Abre direto na aba "Usuários"; a aba "Notas" continua na mesma página.
+	// Social Nite: a busca de pessoas agora fica no topo do "Explorar". O item continua
+	// definido só para não quebrar menus salvos antigos, mas não aparece mais.
 	search: {
 		title: i18n.ts.searchUser,
 		icon: 'ti ti-user-search',
-		to: '/search?type=user',
+		to: '/explore',
+		show: false,
 	},
 	// Social Nite: estes saíram do menu do usuário comum — 'lookup' depende de federação,
 	// 'favorites' sobrepõe Notas Salvas e as ferramentas são de uso interno. Seguem
@@ -97,15 +98,19 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-news',
 		to: '/pages',
 	},
+	// Social Nite: Play e Galeria saíram do "Mais" do usuário comum (pouco usados e a
+	// Galeria repete o que posts com foto e Stories já fazem). Seguem para a administração.
 	play: {
 		title: 'Dê o Play',
 		icon: 'ti ti-player-play',
 		to: '/play',
+		show: computed(() => $i != null && $i.isAdmin),
 	},
 	gallery: {
 		title: i18n.ts.gallery,
 		icon: 'ti ti-icons',
 		to: '/gallery',
+		show: computed(() => $i != null && $i.isAdmin),
 	},
 	clips: {
 		title: i18n.ts.clip,
@@ -155,9 +160,11 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-info-circle',
 		to: '/about',
 	},
+	// Social Nite: fora do "Mais" (recarregar a página faz o mesmo).
 	reload: {
 		title: i18n.ts.reload,
 		icon: 'ti ti-refresh',
+		show: false,
 		action: (ev) => {
 			window.location.reload();
 		},

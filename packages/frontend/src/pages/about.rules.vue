@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</li>
 		<li :class="$style.rule">
 			<strong :class="$style.ruleTitle">Use cada Canal para o tema dele.</strong>
-			<p :class="$style.ruleText">Poste no Canal certo e mantenha as Redes de Palavras e as Redes de Pessoas livres de uso abusivo para inundar a linha do tempo.</p>
+			<p :class="$style.ruleText">Poste no Canal certo e mantenha os Assuntos e as Listas livres de uso abusivo para inundar a linha do tempo.</p>
 		</li>
 		<li :class="$style.rule">
 			<strong :class="$style.ruleTitle">O descumprimento tem consequências.</strong>

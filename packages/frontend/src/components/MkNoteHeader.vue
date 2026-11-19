@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 			<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 		</span>
-		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+		<span v-if="note.localOnly && instance.federation !== 'none'" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 	</div>
 </header>
@@ -41,6 +41,7 @@ import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import { DI } from '@/di.js';
+import { instance } from '@/instance.js';
 
 defineProps<{
 	note: Misskey.entities.Note;

@@ -11,15 +11,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.antennasAboutTip }}
 			</MkTip>
 
-			<MkResult v-if="antennas.length === 0" type="empty"/>
-
-			<MkButton :link="true" to="/my/antennas/create" primary :class="$style.add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-
-			<div v-if="antennas.length > 0" class="_gaps">
-				<MkA v-for="antenna in antennas" :key="antenna.id" :class="$style.antenna" :to="`/my/antennas/${antenna.id}`">
-					<div class="name">{{ antenna.name }}</div>
-				</MkA>
+			<!-- Social Nite: a lista vem primeiro; tocar abre o feed, a engrenagem abre a edição -->
+			<div v-if="antennas.length > 0" class="_gaps_s">
+				<div v-for="antenna in antennas" :key="antenna.id" :class="$style.antenna">
+					<MkA :class="$style.antennaMain" :to="`/timeline/antenna/${antenna.id}`">
+						<i class="ti ti-antenna"></i> {{ antenna.name }}
+						<span v-if="antenna.hasUnreadNote" :class="$style.novo">novas notas</span>
+					</MkA>
+					<MkA v-tooltip="'Editar assunto'" :class="$style.antennaEdit" :to="`/my/antennas/${antenna.id}`" aria-label="Editar assunto"><i class="ti ti-settings"></i></MkA>
+				</div>
 			</div>
+			<MkResult v-else type="empty" :text="'Você ainda não segue nenhum assunto. Escolha palavras e toda nota nova que tiver alguma delas aparece aqui.'"/>
+
+			<MkButton :link="true" to="/my/antennas/create" primary rounded :class="$style.add"><i class="ti ti-plus"></i> {{ i18n.ts.createAntenna }}</MkButton>
 		</div>
 	</div>
 </PageWithHeader>
@@ -31,6 +35,9 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { antennasCache } from '@/cache.js';
+import { useRouter } from '@/router.js';
+
+const router = useRouter();
 
 const antennas = computed(() => antennasCache.value.value ?? []);
 
@@ -41,7 +48,10 @@ function _fetch_() {
 _fetch_();
 
 const headerActions = computed(() => [{
-	asFullButton: true,
+	icon: 'ti ti-plus',
+	text: i18n.ts.createAntenna,
+	handler: () => { router.push('/my/antennas/create'); },
+}, {
 	icon: 'ti ti-refresh',
 	text: i18n.ts.reload,
 	handler: () => {
@@ -53,7 +63,7 @@ const headerActions = computed(() => [{
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.manageAntennas,
+	title: i18n.ts.antennas,
 	icon: 'ti ti-antenna',
 }));
 
@@ -64,12 +74,12 @@ onActivated(() => {
 
 <style lang="scss" module>
 .add {
-	margin: 0 auto 16px auto;
+	margin: 0 auto;
 }
 
 .antenna {
-	display: block;
-	padding: 16px;
+	display: flex;
+	align-items: center;
 	border: solid 1px var(--MI_THEME-divider);
 	border-radius: 6px;
 
@@ -81,5 +91,30 @@ onActivated(() => {
 
 .name {
 	font-weight: bold;
+}
+.antennaMain {
+	flex: 1;
+	min-width: 0;
+	padding: 16px;
+
+	&:hover {
+		text-decoration: none;
+	}
+}
+
+.antennaEdit {
+	flex-shrink: 0;
+	padding: 16px;
+	opacity: 0.7;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.novo {
+	margin-left: 8px;
+	font-size: 0.8em;
+	color: var(--MI_THEME-accent);
 }
 </style>

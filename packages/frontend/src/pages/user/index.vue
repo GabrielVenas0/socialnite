@@ -125,7 +125,8 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'pages',
 	title: i18n.ts.pages,
 	icon: 'ti ti-news',
-}, {
+}, ...($i?.isAdmin ? [{
+	// Social Nite: Play, Galeria e Raw (o JSON cru da conta) só aparecem para a administração.
 	key: 'flashs',
 	title: 'Play',
 	icon: 'ti ti-player-play',
@@ -137,7 +138,7 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'raw',
 	title: 'Raw',
 	icon: 'ti ti-code',
-}] : []);
+}] : [])] : []);
 
 definePage(() => ({
 	title: i18n.ts.user,

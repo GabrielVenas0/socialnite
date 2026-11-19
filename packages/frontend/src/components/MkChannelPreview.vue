@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div style="position: relative;">
 	<MkA :to="`/channels/${channel.id}`" class="eftoefju _panel" @click="updateLastReadedAt">
 		<div class="banner" :style="bannerStyle">
+			<span v-if="!channel.bannerUrl" class="capaLetra" aria-hidden="true">{{ channel.name.trim().charAt(0).toUpperCase() }}</span>
 			<div class="fade"></div>
 			<div class="name"><i class="ti ti-device-tv"></i> {{ channel.name }}</div>
 			<div v-if="channel.isSensitive" class="sensitiveIndicator">{{ i18n.ts.sensitive }}</div>
@@ -50,6 +51,7 @@ import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { capaAutomatica } from '@/utility/channel-cover.js';
 
 const props = defineProps<{
 	channel: Misskey.entities.Channel;
@@ -69,11 +71,12 @@ const updateLastReadedAt = () => {
 	lastReadedAt.value = props.channel.lastNotedAt ? Date.parse(props.channel.lastNotedAt) : Date.now();
 };
 
+// Social Nite: canal sem capa ganha uma capa automática com a cor do canal, em vez do cinza liso.
 const bannerStyle = computed(() => {
 	if (props.channel.bannerUrl) {
 		return { backgroundImage: `url(${props.channel.bannerUrl})` };
 	} else {
-		return { backgroundColor: '#4c5e6d' };
+		return { backgroundImage: capaAutomatica(props.channel.color) };
 	}
 });
 </script>
@@ -106,6 +109,19 @@ const bannerStyle = computed(() => {
 	}
 
 	> .banner {
+		overflow: hidden;
+
+		> .capaLetra {
+			position: absolute;
+			right: 12px;
+			bottom: -28px;
+			font-size: 120px;
+			font-weight: 800;
+			line-height: 1;
+			color: rgba(255, 255, 255, 0.18);
+			pointer-events: none;
+		}
+
 		position: relative;
 		width: 100%;
 		height: 200px;

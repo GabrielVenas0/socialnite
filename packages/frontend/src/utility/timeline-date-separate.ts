@@ -9,7 +9,8 @@ import type { Ref, ShallowRef } from 'vue';
 export function getDateText(dateInstance: Date) {
 	const date = dateInstance.getDate();
 	const month = dateInstance.getMonth() + 1;
-	return `${month.toString()}/${date.toString()}`;
+	// Social Nite: dia/mês, como no Brasil (o original era mês/dia, "11/17").
+	return `${date.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}`;
 }
 
 // TODO: いちいちDateインスタンス作成するのは無駄感あるから文字列のまま解析したい

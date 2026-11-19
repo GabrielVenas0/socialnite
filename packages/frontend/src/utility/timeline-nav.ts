@@ -7,14 +7,9 @@
 // Movemos os controles para a navbar lateral, então a lógica vive aqui para ser
 // compartilhada entre as navbars (vertical e horizontal).
 
-import type { MenuItem } from '@/types/menu.js';
 import type { BasicTimelineType } from '@/timelines.js';
-import * as os from '@/os.js';
 import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
 import { deepMerge } from '@/utility/merge.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
 import { mainRouter } from '@/router.js';
 
 export function switchBasicTimeline(src: BasicTimelineType): void {
@@ -26,66 +21,20 @@ export function switchBasicTimeline(src: BasicTimelineType): void {
 	}
 }
 
-export async function chooseList(ev: MouseEvent): Promise<void> {
-	const lists = await userListsCache.fetch();
-	const items: (MenuItem | undefined)[] = [
-		...lists.map(list => ({
-			type: 'link' as const,
-			text: list.name,
-			to: `/timeline/list/${list.id}`,
-		})),
-		(lists.length === 0 ? undefined : { type: 'divider' as const }),
-		{
-			type: 'link' as const,
-			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
-			to: '/my/lists',
-		},
-	];
-	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
+// Social Nite: o botão do menu leva direto para a página (antes abria um popup que,
+// para quem ainda não tinha nada, só mostrava "Criar novo").
+export async function chooseList(_ev?: MouseEvent): Promise<void> {
+	mainRouter.push('/my/lists');
 }
 
-export async function chooseAntenna(ev: MouseEvent): Promise<void> {
-	const antennas = await antennasCache.fetch();
-	const items: (MenuItem | undefined)[] = [
-		...antennas.map(antenna => ({
-			type: 'link' as const,
-			text: antenna.name,
-			indicate: antenna.hasUnreadNote,
-			to: `/timeline/antenna/${antenna.id}`,
-		})),
-		(antennas.length === 0 ? undefined : { type: 'divider' as const }),
-		{
-			type: 'link' as const,
-			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
-			to: '/my/antennas',
-		},
-	];
-	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
+// Social Nite: o botão do menu leva direto para a página (antes abria um popup que,
+// para quem ainda não tinha nada, só mostrava "Criar novo").
+export async function chooseAntenna(_ev?: MouseEvent): Promise<void> {
+	mainRouter.push('/my/antennas');
 }
 
-export async function chooseChannel(ev: MouseEvent): Promise<void> {
-	const channels = await favoritedChannelsCache.fetch();
-	const items: (MenuItem | undefined)[] = [
-		...channels.map(channel => {
-			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
-			const hasUnreadNote = (lastReadedAt && channel.lastNotedAt) ? Date.parse(channel.lastNotedAt) > lastReadedAt : !!(!lastReadedAt && channel.lastNotedAt);
-
-			return {
-				type: 'link' as const,
-				text: channel.name,
-				indicate: hasUnreadNote,
-				to: `/channels/${channel.id}`,
-			};
-		}),
-		(channels.length === 0 ? undefined : { type: 'divider' as const }),
-		{
-			type: 'link' as const,
-			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
-			to: '/channels',
-		},
-	];
-	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
+// Social Nite: o botão do menu leva direto para a página (antes abria um popup que,
+// para quem ainda não tinha nada, só mostrava "Criar novo").
+export async function chooseChannel(_ev?: MouseEvent): Promise<void> {
+	mainRouter.push('/channels');
 }

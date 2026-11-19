@@ -373,12 +373,8 @@ export function getNoteMenu(props: {
 					window.open(link, '_blank', 'noopener');
 				},
 			});
-		} else {
-			const embedMenu = getNoteEmbedCodeMenu(appearNote, i18n.ts.embed);
-			if (embedMenu != null) {
-				menuItems.push(embedMenu);
-			}
 		}
+		// Social Nite: "Embed" (código para colar o post em outro site) saiu do menu.
 
 		if (isSupportShare()) {
 			menuItems.push({
@@ -398,15 +394,8 @@ export function getNoteMenu(props: {
 
 		menuItems.push({ type: 'divider' });
 
-		menuItems.push(statePromise.then(state => state.isFavorited ? {
-			icon: 'ti ti-star-off',
-			text: i18n.ts.unfavorite,
-			action: () => toggleFavorite(false),
-		} : {
-			icon: 'ti ti-star',
-			text: i18n.ts.favorite,
-			action: () => toggleFavorite(true),
-		}));
+		// Social Nite: "Favoritos" saiu do menu — usuário comum não tem página para ver os
+		// favoritos; para guardar um post, use "Notas Salvas".
 
 		menuItems.push({
 			type: 'parent',
@@ -534,12 +523,8 @@ export function getNoteMenu(props: {
 					window.open(link, '_blank', 'noopener');
 				},
 			});
-		} else {
-			const embedMenu = getNoteEmbedCodeMenu(appearNote, i18n.ts.embed);
-			if (embedMenu != null) {
-				menuItems.push(embedMenu);
-			}
 		}
+		// Social Nite: "Embed" (código para colar o post em outro site) saiu do menu.
 	}
 
 	const noteActions = getPluginHandlers('note_action');

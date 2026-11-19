@@ -9,24 +9,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkTip k="channels" style="margin-bottom: var(--MI-margin);">
 			{{ i18n.ts.channelsAboutTip }}
 		</MkTip>
-		<div v-if="tab === 'search'" :class="$style.searchRoot">
-			<div class="_gaps">
-				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
+		<!-- Social Nite: aba "Todos" — lista todos os canais e filtra enquanto você digita -->
+		<div v-if="tab === 'search'" class="_gaps">
+			<div :class="$style.searchRoot" class="_gaps_s">
+				<MkInput v-model="searchQuery" :large="true" type="search" placeholder="Filtrar canais pelo nome ou descrição">
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
-				<MkRadios v-model="searchType" @update:modelValue="search()">
+				<MkRadios v-model="searchType">
 					<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
 					<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
 				</MkRadios>
-				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
 			</div>
-
-			<MkFoldableSection v-if="channelPaginator">
-				<template #header>{{ i18n.ts.searchResult }}</template>
-				<MkChannelList :key="key" :paginator="channelPaginator"/>
-			</MkFoldableSection>
+			<MkPagination v-slot="{items}" :paginator="allPaginator">
+				<div :class="$style.root">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+				</div>
+			</MkPagination>
 		</div>
-		<div v-if="tab === 'featured'">
+		<div v-else-if="tab === 'featured'">
 			<MkPagination v-slot="{items}" :paginator="featuredPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
@@ -60,14 +60,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, onMounted, ref, shallowRef } from 'vue';
+import { computed, markRaw, onMounted, ref, watch } from 'vue';
+import { debounce } from 'throttle-debounce';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
-import MkChannelList from '@/components/MkChannelList.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
@@ -80,16 +79,30 @@ const props = defineProps<{
 	type?: string;
 }>();
 
-const key = ref('');
-const tab = ref('featured');
+const tab = ref('search');
 const searchQuery = ref('');
-const searchType = ref('nameAndDescription');
-const channelPaginator = shallowRef();
+const searchType = ref<'nameAndDescription' | 'nameOnly'>('nameAndDescription');
+// O filtro só é aplicado 300 ms depois da última tecla, para não buscar a cada letra.
+const filtro = ref('');
+const aplicarFiltro = debounce(300, (q: string) => { filtro.value = q.trim(); });
+watch(searchQuery, q => aplicarFiltro(q));
 
 onMounted(() => {
 	searchQuery.value = props.query ?? '';
-	searchType.value = props.type ?? 'nameAndDescription';
+	filtro.value = searchQuery.value.trim();
+	searchType.value = props.type === 'nameOnly' ? 'nameOnly' : 'nameAndDescription';
 });
+
+// Com o filtro vazio, channels/search devolve todos os canais não arquivados, os mais novos primeiro.
+const allPaginator = markRaw(new Paginator('channels/search', {
+	// 15 por página e "Carregar mais" só quando a página veio cheia.
+	limit: 15,
+	canFetchDetection: 'limit',
+	computedParams: computed(() => ({
+		query: filtro.value,
+		type: searchType.value,
+	})),
+}));
 
 const featuredPaginator = markRaw(new Paginator('channels/featured', {
 	limit: 10,
@@ -106,29 +119,6 @@ const ownedPaginator = markRaw(new Paginator('channels/owned', {
 	limit: 10,
 }));
 
-async function search() {
-	const query = searchQuery.value.toString().trim();
-
-	if (query == null) return;
-
-	const type = searchType.value.toString().trim();
-
-	if (type !== 'nameAndDescription' && type !== 'nameOnly') {
-		console.error(`Unrecognized search type: ${type}`);
-		return;
-	}
-
-	channelPaginator.value = markRaw(new Paginator('channels/search', {
-		limit: 10,
-		params: {
-			query: searchQuery.value,
-			type: type,
-		},
-	}));
-
-	key.value = query + type;
-}
-
 function create() {
 	router.push('/channels/new');
 }
@@ -141,8 +131,8 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => [{
 	key: 'search',
-	title: i18n.ts.search,
-	icon: 'ti ti-search',
+	title: 'Todos',
+	icon: 'ti ti-list-search',
 }, {
 	key: 'featured',
 	title: i18n.ts._channel.featured,
