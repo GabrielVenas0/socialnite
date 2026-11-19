@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@timeupdate="onVideoTime"
 				@ended="next"
 			></video>
-			<img v-else-if="current.file != null" :key="current.id" :src="current.file.url" :alt="current.text ?? ''" :class="$style.media"/>
+			<img v-else-if="current.file != null" :key="current.id" :src="current.file.url" :alt="current.text ?? ''" :class="[$style.media, { [$style.mediaCover]: fotoEmPe }]" @load="onFotoCarregada"/>
 			<div v-else :key="current.id" :class="$style.textCard">{{ current.text }}</div>
 			<div v-if="current.text && current.file != null" :class="$style.caption">{{ current.text }}</div>
 		</div>
@@ -73,6 +73,18 @@ const index = ref(Math.max(0, props.group.stories.findIndex(s => !s.isViewed)));
 const progress = ref(0);
 const current = computed(() => props.group.stories[index.value]);
 const isVideo = computed(() => current.value.file?.type.startsWith('video/') ?? false);
+
+// Social Nite: foto em pé perto de 9:16 (as do editor de story saem em 1080×1920) ocupa a
+// tela inteira, como no Instagram; as outras continuam inteiras, com faixas.
+const fotoEmPe = ref(false);
+
+function onFotoCarregada(ev: Event) {
+	const img = ev.target as HTMLImageElement;
+	const proporcao = img.naturalWidth / img.naturalHeight;
+	fotoEmPe.value = proporcao > 0.5 && proporcao < 0.62;
+}
+
+watch(index, () => { fotoEmPe.value = false; });
 
 let timer: number | null = null;
 
@@ -240,6 +252,10 @@ onBeforeUnmount(stop);
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
+}
+
+.mediaCover {
+	object-fit: cover;
 }
 
 .textCard {
