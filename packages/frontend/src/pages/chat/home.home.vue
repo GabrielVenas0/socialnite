@@ -35,6 +35,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFoldableSection>
 
+	<MkFoldableSection v-if="$i.policies.chatAvailability === 'available'">
+		<template #header>{{ showingNetwork ? 'Pessoas da rede' : 'Começar uma conversa' }}</template>
+
+		<MkLoading v-if="peopleFetching"/>
+		<div v-else-if="people.length === 0" :class="$style.noFollowing">
+			{{ i18n.ts._chat.noFollowingToChatWith }}
+		</div>
+		<div v-else class="_gaps_s">
+			<MkA
+				v-for="person in (mostrarTodos ? people : people.slice(0, 6))"
+				:key="person.id"
+				class="_panel"
+				:class="$style.person"
+				:to="`/chat/user/${person.id}`"
+			>
+				<MkAvatar :class="$style.personAvatar" :user="person" indicator :preview="false"/>
+				<div :class="$style.personBody">
+					<MkUserName :class="$style.personName" :user="person"/>
+					<MkAcct :class="$style.personAcct" :user="person"/>
+				</div>
+				<span v-if="person.relacao" :class="$style.personRelacao">{{ person.relacao }}</span>
+				<i class="ti ti-message" :class="$style.personIcon"></i>
+			</MkA>
+			<MkButton v-if="!mostrarTodos && people.length > 6" rounded :class="$style.start" @click="mostrarTodos = true">Mostrar todos ({{ people.length }})</MkButton>
+		</div>
+	</MkFoldableSection>
+
 	<MkFoldableSection>
 		<template #header>{{ i18n.ts._chat.history }}</template>
 
@@ -58,30 +85,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFoldableSection>
 
-	<MkFoldableSection v-if="$i.policies.chatAvailability === 'available'">
-		<template #header>{{ showingNetwork ? 'Pessoas da rede' : i18n.ts._chat.startWithSomeoneYouFollow }}</template>
-
-		<MkLoading v-if="peopleFetching"/>
-		<div v-else-if="people.length === 0" :class="$style.noFollowing">
-			{{ i18n.ts._chat.noFollowingToChatWith }}
-		</div>
-		<div v-else class="_gaps_s">
-			<MkA
-				v-for="person in people"
-				:key="person.id"
-				class="_panel"
-				:class="$style.person"
-				:to="`/chat/user/${person.id}`"
-			>
-				<MkAvatar :class="$style.personAvatar" :user="person" indicator :preview="false"/>
-				<div :class="$style.personBody">
-					<MkUserName :class="$style.personName" :user="person"/>
-					<MkAcct :class="$style.personAcct" :user="person"/>
-				</div>
-				<i class="ti ti-message" :class="$style.personIcon"></i>
-			</MkA>
-		</div>
-	</MkFoldableSection>
 </div>
 </template>
 
@@ -115,15 +118,28 @@ const searchResults = ref<Misskey.entities.ChatMessage[]>([]);
 // Social Nite: lista quem você segue direto aqui, para dar de onde começar uma
 // conversa sem ter que adivinhar o nome de alguém no seletor. Em servidor novo
 // ninguém segue ninguém ainda, então cai para as pessoas da própria rede.
-const people = ref<Misskey.entities.UserLite[]>([]);
+const people = ref<(Misskey.entities.UserLite & { relacao?: string })[]>([]);
 const peopleFetching = ref(true);
 const showingNetwork = ref(false);
+const mostrarTodos = ref(false);
 
-misskeyApi('users/following', { userId: $i.id, limit: 30 }).then(async res => {
-	const followees = res.map(f => f.followee).filter(u => u != null);
+// Social Nite: quem você segue e quem segue você (qualquer um pode receber mensagem),
+// com os mútuos primeiro.
+Promise.all([
+	misskeyApi('users/following', { userId: $i.id, limit: 50 }),
+	misskeyApi('users/followers', { userId: $i.id, limit: 50 }),
+]).then(async ([seguindo, seguidores]) => {
+	const sigo = seguindo.map(f => f.followee).filter(u => u != null);
+	const meSeguem = seguidores.map(f => f.follower).filter(u => u != null);
+	const idsQueMeSeguem = new Set(meSeguem.map(u => u.id));
+	const idsQueSigo = new Set(sigo.map(u => u.id));
+	const mutuos = sigo.filter(u => idsQueMeSeguem.has(u.id)).map(u => ({ ...u, relacao: 'Vocês se seguem' }));
+	const soSigo = sigo.filter(u => !idsQueMeSeguem.has(u.id)).map(u => ({ ...u, relacao: 'Você segue' }));
+	const soMeSeguem = meSeguem.filter(u => !idsQueSigo.has(u.id)).map(u => ({ ...u, relacao: 'Segue você' }));
+	const todos = [...mutuos, ...soSigo, ...soMeSeguem];
 
-	if (followees.length > 0) {
-		people.value = followees;
+	if (todos.length > 0) {
+		people.value = todos;
 		return;
 	}
 
@@ -221,6 +237,13 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
+.personRelacao {
+	flex-shrink: 0;
+	font-size: 0.75em;
+	opacity: 0.7;
+	margin-right: 8px;
+}
+
 .start {
 	margin: 0 auto;
 }

@@ -44,6 +44,7 @@ import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
@@ -153,18 +154,26 @@ function onDrop(ev: DragEvent): void {
 	//#endregion
 }
 
+// Social Nite: no computador, Enter envia e Shift+Enter pula a linha (como no WhatsApp Web).
+// No celular e no tablet, Enter pula a linha e o envio é pelo botão, a não ser que a pessoa
+// ligue "Pressionar Enter para enviar". Ctrl/⌘+Enter sempre envia.
 function onKeydown(ev: KeyboardEvent) {
-	if (ev.key === 'Enter') {
-		if (prefer.s['chat.sendOnEnter']) {
-			if (!(ev.ctrlKey || ev.metaKey || ev.shiftKey)) {
-				send();
-			}
-		} else {
-			if ((ev.ctrlKey || ev.metaKey)) {
-				send();
-			}
-		}
+	if (ev.key !== 'Enter' || ev.isComposing) return;
+	const enterEnvia = deviceKind === 'desktop' || prefer.s['chat.sendOnEnter'];
+	if (ev.ctrlKey || ev.metaKey || (enterEnvia && !ev.shiftKey)) {
+		ev.preventDefault();
+		if (canSend.value && !sending.value) send();
 	}
+}
+
+// Social Nite: antes o erro de envio ia só para o console e a mensagem simplesmente não saía.
+function avisarFalhaNoEnvio(err: unknown) {
+	console.error(err);
+	const id = (err as { id?: string } | null)?.id;
+	const text = id === 'c15a5199-7422-4968-941a-2a462c478f7d'
+		? 'Você não pode mandar mensagem para esta pessoa porque ela bloqueou você.'
+		: 'A mensagem não foi enviada. Esta pessoa pode não estar aceitando conversas. Tente de novo mais tarde.';
+	os.alert({ type: 'error', title: 'Mensagem não enviada', text });
 }
 
 function chooseFile(ev: MouseEvent) {
@@ -200,7 +209,7 @@ function send() {
 		}).then(message => {
 			clear();
 		}).catch(err => {
-			console.error(err);
+			avisarFalhaNoEnvio(err);
 		}).then(() => {
 			sending.value = false;
 		});
@@ -212,7 +221,7 @@ function send() {
 		}).then(message => {
 			clear();
 		}).catch(err => {
-			console.error(err);
+			avisarFalhaNoEnvio(err);
 		}).then(() => {
 			sending.value = false;
 		});

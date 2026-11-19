@@ -235,8 +235,9 @@ export class MiUser {
 	// following: フォローしているユーザーのみ
 	// mutual: 相互フォローのみ
 	// none: 誰からも受け付けない
+	// Social Nite: padrão 'everyone' (migração 1794962000000-conversas-abertas-para-todos).
 	@Column('varchar', {
-		length: 128, default: 'mutual',
+		length: 128, default: 'everyone',
 	})
 	public chatScope: 'everyone' | 'followers' | 'following' | 'mutual' | 'none';
 

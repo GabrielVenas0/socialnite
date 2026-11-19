@@ -80,6 +80,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</button>
 					</div>
 				</Transition>
+				<!-- Social Nite: aviso de remetente desconhecido, como no WhatsApp e no Instagram -->
+				<div v-if="mostrarAvisoDesconhecido && user" :class="$style.desconhecido">
+					<div :class="$style.desconhecidoTexto">
+						<i class="ti ti-user-question"></i>
+						<span><b>Você não segue {{ user.name ?? user.username }}.</b> Se não conhece essa pessoa, você pode ignorar, bloquear ou denunciar.</span>
+					</div>
+					<div :class="$style.desconhecidoBotoes">
+						<MkButton small primary rounded @click="seguirDesconhecido"><i class="ti ti-user-plus"></i> Seguir</MkButton>
+						<MkButton small rounded @click="ignorarDesconhecido"><i class="ti ti-eye-off"></i> Ignorar</MkButton>
+						<MkButton small rounded danger @click="bloquearDesconhecido"><i class="ti ti-ban"></i> Bloquear</MkButton>
+						<MkButton small rounded @click="denunciarDesconhecido"><i class="ti ti-flag"></i> Denunciar</MkButton>
+					</div>
+				</div>
 				<XForm v-if="initialized" :user="user" :room="room" :class="$style.form"/>
 			</div>
 		</div>
@@ -167,6 +180,64 @@ function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.en
 			user: record.user ?? (message.fromUserId === $i.id ? user.value! : $i),
 		})),
 	};
+}
+
+// Social Nite: qualquer pessoa pode mandar mensagem. Quando chega mensagem de alguém que
+// você não segue, aparece um aviso com Seguir / Ignorar / Bloquear / Denunciar.
+const avisoFechado = ref(false);
+const mostrarAvisoDesconhecido = computed(() => {
+	const u = user.value;
+	if (u == null || avisoFechado.value) return false;
+	if (u.isFollowing || u.isBlocking || u.isMuted) return false;
+	return messages.value.some(m => m.fromUserId === u.id);
+});
+
+async function seguirDesconhecido() {
+	const u = user.value;
+	if (u == null) return;
+	await os.apiWithDialog('following/create', { userId: u.id });
+	user.value = { ...u, isFollowing: true };
+}
+
+async function ignorarDesconhecido() {
+	const u = user.value;
+	if (u == null) return;
+	const { canceled } = await os.confirm({
+		type: 'question',
+		title: 'Ignorar esta conversa?',
+		text: 'A conversa some da sua lista e as publicações dessa pessoa ficam ocultas para você. Dá para desfazer em Configurações › Silenciar e bloquear.',
+		okText: 'Ignorar',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('mute/create', { userId: u.id });
+	avisoFechado.value = true;
+	router.push('/chat');
+}
+
+async function bloquearDesconhecido() {
+	const u = user.value;
+	if (u == null) return;
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: 'Bloquear esta pessoa?',
+		text: 'Ela não poderá mais mandar mensagens para você nem ver suas publicações. Dá para desbloquear depois no perfil dela.',
+		okText: 'Bloquear',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('blocking/create', { userId: u.id });
+	user.value = { ...u, isBlocking: true };
+	avisoFechado.value = true;
+}
+
+async function denunciarDesconhecido() {
+	const u = user.value;
+	if (u == null) return;
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
+		user: u,
+		initialComment: 'Mensagens nas Conversas',
+	}, {
+		closed: () => dispose(),
+	});
 }
 
 async function initialize() {
@@ -478,6 +549,35 @@ definePage(computed(() => {
 </script>
 
 <style lang="scss" module>
+.desconhecido {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 12px 14px;
+	border-radius: var(--MI-radius);
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-divider);
+	font-size: 0.9em;
+}
+
+.desconhecidoTexto {
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+	line-height: 1.5;
+
+	> i {
+		margin-top: 3px;
+		color: var(--MI_THEME-accent);
+	}
+}
+
+.desconhecidoBotoes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
 .transition_x_move,
 .transition_x_enterActive,
 .transition_x_leaveActive {
