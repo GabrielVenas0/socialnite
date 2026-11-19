@@ -43,6 +43,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						.orWhere('user.isLocked = FALSE')
 						.orWhere('story.userId IN (SELECT "followeeId" FROM "following" WHERE "followerId" = :meId)', { meId: me.id });
 				}))
+				// Bloqueio vale nos dois sentidos: quem você bloqueou e quem bloqueou você somem
+				// dos stories. Quem você silenciou também some.
+				.andWhere('story.userId NOT IN (SELECT "blockeeId" FROM "blocking" WHERE "blockerId" = :meId)', { meId: me.id })
+				.andWhere('story.userId NOT IN (SELECT "blockerId" FROM "blocking" WHERE "blockeeId" = :meId)', { meId: me.id })
+				.andWhere('story.userId NOT IN (SELECT "muteeId" FROM "muting" WHERE "muterId" = :meId)', { meId: me.id })
 				.orderBy('story.id', 'ASC')
 				.take(500)
 				.getMany();

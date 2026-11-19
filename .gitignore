@@ -91,3 +91,14 @@ k8s/secrets.yaml
 /credenciais/
 client_secret*.json
 
+
+# Social Nite: segredos e chaves que nunca devem ir para o GitHub (o repositório é público)
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pem
+!k8s/public-key.pem
+credenciais/
