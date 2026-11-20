@@ -38,6 +38,7 @@ export type Keys = (
 	'socialniteMenuPesquisa' |
 	'socialniteMenuSemPesquisa' |
 	'socialniteConfigAvancado' |
+	'socialniteMenuJogos' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` | // DEPRECATED

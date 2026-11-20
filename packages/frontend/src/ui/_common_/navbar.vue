@@ -25,12 +25,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<i class="ti-fw" :class="[$style.itemIcon, basicTimelineIconClass(tl)]"></i><span :class="$style.itemText">{{ i18n.ts._timelines[tl] }}</span>
 			</button>
-			<button v-if="$i != null" v-tooltip.noDelay.right="i18n.ts.lists" class="_button" :class="$style.item" @click="chooseList">
-				<i :class="$style.itemIcon" class="ti ti-list ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.lists }}</span>
-			</button>
-			<button v-if="$i != null" v-tooltip.noDelay.right="i18n.ts.antennas" class="_button" :class="$style.item" @click="chooseAntenna">
-				<i :class="$style.itemIcon" class="ti ti-antenna ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.antennas }}</span>
-			</button>
 			<button v-if="$i != null" v-tooltip.noDelay.right="i18n.ts.channel" class="_button" :class="$style.item" @click="chooseChannel">
 				<i :class="$style.itemIcon" class="ti ti-device-tv ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.channel }}</span>
 			</button>
@@ -129,7 +123,7 @@ import { prefer } from '@/preferences.js';
 import { getAccountMenu } from '@/accounts.js';
 import { $i } from '@/i.js';
 import { availableBasicTimelines, basicTimelineIconClass } from '@/timelines.js';
-import { switchBasicTimeline, chooseList, chooseAntenna, chooseChannel } from '@/utility/timeline-nav.js';
+import { switchBasicTimeline, chooseChannel } from '@/utility/timeline-nav.js';
 
 const router = useRouter();
 

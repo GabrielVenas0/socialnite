@@ -133,6 +133,19 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: '/my/achievements',
 	},
+	// Social Nite: Listas e Assuntos saíram da barra lateral e ficam no "Mais".
+	lists: {
+		title: i18n.ts.lists,
+		icon: 'ti ti-list',
+		show: computed(() => $i != null),
+		to: '/my/lists',
+	},
+	antennas: {
+		title: i18n.ts.antennas,
+		icon: 'ti ti-antenna',
+		show: computed(() => $i != null),
+		to: '/my/antennas',
+	},
 	games: {
 		title: 'Nite Games',
 		icon: 'ti ti-device-gamepad',

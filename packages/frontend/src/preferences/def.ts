@@ -192,6 +192,10 @@ export const PREF_DEF = definePreferences({
 			'-',
 			// Social Nite: a busca de pessoas fica dentro do "Explorar".
 			'explore',
+			// Social Nite: os jogos, o ranking e as conquistas ficam à vista na barra lateral.
+			'games',
+			'ranking',
+			'achievements',
 			'announcements',
 		],
 	},

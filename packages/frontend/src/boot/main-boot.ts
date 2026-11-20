@@ -88,6 +88,17 @@ export async function mainBoot() {
 		miLocalStorage.setItem('socialniteMenuSemPesquisa', '1');
 	}
 
+	// Social Nite: Nite Games, Ranking e Conquistas passam a ficar na barra lateral (uma vez
+	// por aparelho; se a pessoa tirar depois, não voltam). Listas e Assuntos vão para o "Mais".
+	if ($i && miLocalStorage.getItem('socialniteMenuJogos') == null) {
+		const menu = prefer.s.menu.filter(item => item !== 'lists' && item !== 'antennas');
+		const novos = ['games', 'ranking', 'achievements'].filter(item => !menu.includes(item));
+		const explorar = menu.indexOf('explore');
+		menu.splice(explorar === -1 ? menu.length : explorar + 1, 0, ...novos);
+		prefer.commit('menu', menu);
+		miLocalStorage.setItem('socialniteMenuJogos', '1');
+	}
+
 	try {
 		if (prefer.s.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;
