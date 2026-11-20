@@ -10,6 +10,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="body">
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 					<div class="_gaps_s">
+						<!-- Social Nite: a página de Perfil reúne o perfil e as configurações -->
+						<div v-if="$i" class="_panel cartaoPerfil">
+							<MkAvatar :user="$i" class="cartaoAvatar" :preview="false"/>
+							<div class="cartaoInfo">
+								<MkUserName :user="$i" class="cartaoNome" :nowrap="true"/>
+								<div class="cartaoAcct">@{{ $i.username }}</div>
+								<div class="cartaoSub">Seu perfil e as configurações da conta</div>
+							</div>
+						</div>
+						<div v-if="$i" class="_buttons cartaoBotoes">
+							<MkButton primary rounded small link to="/settings/profile"><i class="ti ti-pencil"></i> Editar perfil</MkButton>
+							<MkButton rounded small link :to="`/@${$i.username}`"><i class="ti ti-user"></i> Ver meu perfil</MkButton>
+						</div>
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 						<MkInfo v-if="!store.r.enablePreferencesAutoCloudBackup.value && store.r.showPreferencesAutoCloudBackupSuggestion.value" class="info">
 							<div>{{ i18n.ts._preferencesBackup.autoPreferencesBackupIsNotEnabledForThisDevice }}</div>
@@ -35,6 +48,7 @@ import type { PageMetadata } from '@/page.js';
 import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
 import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { $i } from '@/i.js';
 import { clearCache } from '@/utility/clear-cache.js';
@@ -51,8 +65,8 @@ import { genSearchIndexes } from '@/utility/inapp-search.js';
 const searchIndex = await import('search-index:settings').then(({ searchIndexes }) => genSearchIndexes(searchIndexes));
 
 const indexInfo = {
-	title: i18n.ts.settings,
-	icon: 'ti ti-settings',
+	title: 'Perfil e configurações',
+	icon: 'ti ti-user',
 	hideHeader: true,
 };
 const INFO = ref<PageMetadata>(indexInfo);
@@ -265,6 +279,43 @@ definePage(() => INFO.value);
 </script>
 
 <style lang="scss" scoped>
+.cartaoPerfil {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px;
+}
+
+.cartaoAvatar {
+	width: 52px;
+	height: 52px;
+	flex-shrink: 0;
+}
+
+.cartaoInfo {
+	min-width: 0;
+}
+
+.cartaoNome {
+	display: block;
+	font-weight: bold;
+}
+
+.cartaoAcct {
+	font-size: 0.85em;
+	opacity: 0.7;
+}
+
+.cartaoSub {
+	margin-top: 2px;
+	font-size: 0.8em;
+	opacity: 0.6;
+}
+
+.cartaoBotoes {
+	margin-bottom: 4px;
+}
+
 .vvcocwet {
 	&.wide {
 		> .body {

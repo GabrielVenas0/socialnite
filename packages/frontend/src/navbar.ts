@@ -182,10 +182,11 @@ export const navbarItemDef = reactive({
 			window.location.reload();
 		},
 	},
+	// Social Nite: o perfil agora é o item "Perfil" da barra lateral (perfil + configurações).
 	profile: {
 		title: i18n.ts.profile,
 		icon: 'ti ti-user',
-		show: computed(() => $i != null),
+		show: false,
 		to: `/@${$i?.username}`,
 	},
 	cacheClear: {

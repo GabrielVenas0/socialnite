@@ -56,8 +56,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw" style="viewTransitionName: navbar-more;"></i><span :class="$style.itemText">{{ i18n.ts.more }}</span>
 				<span v-if="otherMenuItemIndicated" :class="$style.itemIndicator" class="_blink"><i class="_indicatorCircle"></i></span>
 			</button>
-			<MkA v-tooltip.noDelay.right="i18n.ts.settings" :class="$style.item" :activeClass="$style.active" to="/settings">
-				<i :class="$style.itemIcon" class="ti ti-settings ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">{{ i18n.ts.settings }}</span>
+			<!-- Social Nite: "Configurações" virou "Perfil": a página reúne o perfil e as configurações -->
+			<MkA v-tooltip.noDelay.right="'Perfil e configurações'" :class="$style.item" :activeClass="$style.active" to="/settings">
+				<span v-if="$i" :class="[$style.itemIcon, $style.itemAvatarWrap]"><MkAvatar :user="$i" :class="$style.itemAvatar" :preview="false"/></span>
+				<i v-else :class="$style.itemIcon" class="ti ti-settings ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">{{ i18n.ts.profile }}</span>
 			</MkA>
 		</div>
 		<div :class="$style.bottom">
@@ -217,6 +219,17 @@ function menuEdit() {
 </script>
 
 <style lang="scss" module>
+.itemAvatarWrap {
+	display: inline-flex;
+	justify-content: center;
+	vertical-align: middle;
+}
+
+.itemAvatar {
+	width: 24px;
+	height: 24px;
+}
+
 .root {
 	--nav-width: 250px;
 	--nav-icon-only-width: 80px;

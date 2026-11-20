@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 		<div class="right">
-			<MkA v-click-anime v-tooltip="i18n.ts.settings" class="item" activeClass="active" to="/settings" :behavior="settingsWindowed ? 'window' : null">
+			<MkA v-click-anime v-tooltip="'Perfil e configurações'" class="item" activeClass="active" to="/settings" :behavior="settingsWindowed ? 'window' : null">
 				<i class="ti ti-settings ti-fw"></i>
 			</MkA>
 			<button v-if="$i" v-click-anime class="item _button account" @click="openAccountMenu">
