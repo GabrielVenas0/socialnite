@@ -61,12 +61,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-if="mode === 'move'">
 				<div :class="$style.toolRow">
 					<button class="_button" :class="$style.chip" title="Diminuir zoom" aria-label="Diminuir zoom" :disabled="!ready" @click="zoomBy(1 / 1.25)"><i class="ti ti-zoom-out"></i></button>
-					<input v-model.number="zoomModel" type="range" :class="$style.range" :min="1" :max="MAX_ZOOM" step="0.01" aria-label="Zoom" :disabled="!ready"/>
+					<input v-model.number="zoomModel" type="range" :class="$style.range" :min="minZoom" :max="MAX_ZOOM" step="0.01" aria-label="Zoom" :disabled="!ready"/>
 					<button class="_button" :class="$style.chip" title="Aumentar zoom" aria-label="Aumentar zoom" :disabled="!ready" @click="zoomBy(1.25)"><i class="ti ti-zoom-in"></i></button>
 				</div>
 				<div :class="$style.toolRow">
-					<span :class="$style.hint">Arraste para mover · pinça ou roda do mouse para zoom</span>
-					<button class="_button" :class="$style.chip" :disabled="!ready" @click="resetView(); requestRender()"><i class="ti ti-focus-centered"></i> Centralizar</button>
+					<span :class="$style.hint">Arraste para mover · pinça ou roda do mouse para o zoom</span>
+					<button class="_button" :class="$style.chip" :disabled="!ready" @click="fotoInteira"><i class="ti ti-arrows-minimize"></i> Foto inteira</button>
+					<button class="_button" :class="$style.chip" :disabled="!ready" @click="resetView(); requestRender()"><i class="ti ti-focus-centered"></i> Preencher</button>
 				</div>
 			</template>
 
@@ -280,6 +281,11 @@ let cy = 0.5;
 let source: HTMLCanvasElement | null = null;
 let imgW = 1;
 let imgH = 1;
+// Fundo das sobras quando a foto inteira não cobre o quadro: a própria foto reduzida a
+// poucos pixels e esticada fica desfocada (funciona em qualquer navegador, sem filter).
+let fundo: HTMLCanvasElement | null = null;
+// Zoom 1 = foto cobrindo o quadro. O mínimo deixa a foto inteira caber, como no Instagram.
+const minZoom = ref(1);
 
 let ctx: CanvasRenderingContext2D | null = null;
 let dpr = 1;
@@ -454,8 +460,38 @@ function getLayout(text: string, size: number): TextLayout {
 //#endregion
 
 //#region drawing
+function drawFundo(c: CanvasRenderingContext2D, f: Rect) {
+	if (fundo == null) return;
+	c.save();
+	c.beginPath();
+	c.rect(f.x, f.y, f.w, f.h);
+	c.clip();
+	c.imageSmoothingEnabled = true;
+	c.imageSmoothingQuality = 'high';
+	c.drawImage(fundo, f.x, f.y, f.w, f.h);
+	c.fillStyle = 'rgba(0, 0, 0, 0.25)';
+	c.fillRect(f.x, f.y, f.w, f.h);
+	c.restore();
+}
+
+function criarFundo(img: HTMLCanvasElement) {
+	const w = 18;
+	const h = 32;
+	const fc = window.document.createElement('canvas');
+	fc.width = w;
+	fc.height = h;
+	const c = fc.getContext('2d');
+	if (c == null) return null;
+	const s = Math.max(w / img.width, h / img.height);
+	c.imageSmoothingEnabled = true;
+	c.imageSmoothingQuality = 'high';
+	c.drawImage(img, (w - img.width * s) / 2, (h - img.height * s) / 2, img.width * s, img.height * s);
+	return fc;
+}
+
 function drawPhoto(c: CanvasRenderingContext2D, f: Rect) {
 	if (source == null) return;
+	if (zoom.value < 1) drawFundo(c, f);
 	const s = zoom.value * Math.max(f.w / imgW, f.h / imgH);
 	const w = imgW * s;
 	const h = imgH * s;
@@ -615,11 +651,19 @@ function relativeSize() {
 	return { w: zoom.value, h: zoom.value * FRAME_ASPECT / a };
 }
 
-// A foto sempre cobre o quadro inteiro.
+// Maior que o quadro: a foto não deixa buraco. Menor (foto inteira): não sai do quadro.
 function clampView() {
 	const rel = relativeSize();
-	cx = clamp(cx, 1 - rel.w / 2, rel.w / 2);
-	cy = clamp(cy, 1 - rel.h / 2, rel.h / 2);
+	cx = clamp(cx, Math.min(1 - rel.w / 2, rel.w / 2), Math.max(1 - rel.w / 2, rel.w / 2));
+	cy = clamp(cy, Math.min(1 - rel.h / 2, rel.h / 2), Math.max(1 - rel.h / 2, rel.h / 2));
+}
+
+// Mostra a foto inteira dentro do quadro (as sobras ficam com o fundo desfocado).
+function fotoInteira() {
+	zoom.value = minZoom.value;
+	cx = 0.5;
+	cy = 0.5;
+	requestRender();
 }
 
 function resetView() {
@@ -640,7 +684,7 @@ function panBy(dx: number, dy: number) {
 function zoomAt(next: number, px: number, py: number) {
 	const f = frame.value;
 	const z0 = zoom.value;
-	const z1 = clamp(next, 1, MAX_ZOOM);
+	const z1 = clamp(next, minZoom.value, MAX_ZOOM);
 	if (f.w === 0 || f.h === 0 || !Number.isFinite(z1)) return;
 	if (z1 !== z0) {
 		const ax = (px - f.x) / f.w;
@@ -1163,6 +1207,9 @@ onMounted(() => {
 		source = canvas;
 		imgW = canvas.width;
 		imgH = canvas.height;
+		const a = imgW / imgH;
+		minZoom.value = Math.min(FRAME_ASPECT / a, a / FRAME_ASPECT);
+		fundo = criarFundo(canvas);
 		resetView();
 		ready.value = true;
 		requestRender();
@@ -1192,6 +1239,11 @@ onBeforeUnmount(() => {
 		source.width = 0;
 		source.height = 0;
 		source = null;
+	}
+	if (fundo != null) {
+		fundo.width = 0;
+		fundo.height = 0;
+		fundo = null;
 	}
 	const canvas = canvasEl.value;
 	if (canvas != null) {
