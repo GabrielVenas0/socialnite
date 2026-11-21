@@ -18,6 +18,7 @@ import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { instance } from '@/instance.js';
 import { WatermarkRenderer } from '@/utility/watermark.js';
+import { tamanhoReduzido } from '@/utility/video-social-nite.js';
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;
@@ -671,11 +672,16 @@ export function useUploader(options: {
 				format: new mediabunny.Mp4OutputFormat(),
 			});
 
+			// Social Nite: além da taxa de bits, limita o lado maior a 1280 px (720p); vídeo de
+			// celular em 4K ficava pesado mesmo na qualidade média.
+			const faixa = await input.getPrimaryVideoTrack().catch(() => null);
+			const tamanho = faixa ? tamanhoReduzido(faixa.displayWidth, faixa.displayHeight) : null;
+
 			const currentConversion = await mediabunny.Conversion.init({
 				input,
 				output,
 				video: {
-					//width: 320, // Height will be deduced automatically to retain aspect ratio
+					...(tamanho?.reduziu ? { width: tamanho.width, height: tamanho.height, fit: 'contain' as const } : {}),
 					bitrate: item.compressionLevel === 1 ? mediabunny.QUALITY_VERY_HIGH : item.compressionLevel === 2 ? mediabunny.QUALITY_MEDIUM : mediabunny.QUALITY_VERY_LOW,
 				},
 				audio: {
