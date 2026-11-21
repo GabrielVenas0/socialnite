@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="reveal">
+	<div v-if="!hide && !prefer.s.dataSaver.media" :class="$style.fundo" :style="{ backgroundImage: `url('${image.thumbnailUrl ?? url}')` }" aria-hidden="true"></div>
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -197,6 +198,17 @@ function showMenu(ev: MouseEvent) {
 </script>
 
 <style lang="scss" module>
+// Social Nite: as sobras ao redor da mídia mostram a própria imagem desfocada (como no Story),
+// no lugar das listras.
+.fundo {
+	position: absolute;
+	inset: -12%;
+	background-size: cover;
+	background-position: center;
+	filter: blur(22px) brightness(0.75);
+	pointer-events: none;
+}
+
 .hidden {
 	position: relative;
 }
@@ -254,6 +266,7 @@ function showMenu(ev: MouseEvent) {
 
 .visible {
 	position: relative;
+	overflow: hidden;
 	//box-shadow: 0 0 0 1px var(--MI_THEME-divider) inset;
 	background: var(--MI_THEME-bg);
 	background-size: 16px 16px;
@@ -286,6 +299,7 @@ html[data-color-scheme=light] .visible {
 }
 
 .imageContainer {
+	position: relative;
 	display: block;
 	overflow: hidden;
 	width: 100%;

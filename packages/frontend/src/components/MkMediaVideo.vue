@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</button>
 
 	<div v-else-if="prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.videoRoot">
+		<div v-if="video.thumbnailUrl" :class="$style.fundo" :style="{ backgroundImage: `url('${video.thumbnailUrl}')` }" aria-hidden="true"></div>
 		<video
 			ref="videoEl"
 			:class="$style.video"
@@ -48,6 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-else :class="$style.videoRoot">
+		<div v-if="video.thumbnailUrl" :class="$style.fundo" :style="{ backgroundImage: `url('${video.thumbnailUrl}')` }" aria-hidden="true"></div>
 		<video
 			ref="videoEl"
 			:class="$style.video"
@@ -535,6 +537,17 @@ onDeactivated(() => {
 </script>
 
 <style lang="scss" module>
+// Social Nite: as sobras ao redor da mídia mostram a própria imagem desfocada (como no Story),
+// no lugar das listras.
+.fundo {
+	position: absolute;
+	inset: -12%;
+	background-size: cover;
+	background-position: center;
+	filter: blur(22px) brightness(0.75);
+	pointer-events: none;
+}
+
 .videoContainer {
 	container-type: inline-size;
 	position: relative;
@@ -621,12 +634,14 @@ onDeactivated(() => {
 .videoRoot {
 	background: #000;
 	position: relative;
+	overflow: hidden;
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
 }
 
 .video {
+	position: relative;
 	display: block;
 	height: 100%;
 	width: 100%;

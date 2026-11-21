@@ -16,7 +16,6 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { store } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { getUserMenu } from '@/utility/get-user-menu.js';
 import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/utility/navigator.js';
@@ -430,17 +429,7 @@ export function getNoteMenu(props: {
 			}
 		}
 
-		menuItems.push({
-			type: 'parent',
-			icon: 'ti ti-user',
-			text: i18n.ts.user,
-			children: async () => {
-				const user = appearNote.userId === $i?.id ? $i : await misskeyApi('users/show', { userId: appearNote.userId });
-				const { menu, cleanup } = getUserMenu(user);
-				cleanups.push(cleanup);
-				return menu;
-			},
-		});
+		// Social Nite: o submenu "Usuário" saiu do "⋯" da publicação (fica no perfil da pessoa).
 
 		if (appearNote.userId !== $i.id) {
 			menuItems.push({ type: 'divider' });
